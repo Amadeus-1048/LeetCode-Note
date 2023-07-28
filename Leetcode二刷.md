@@ -1,3 +1,47 @@
+# 数组
+
+## 704.二分查找
+
+答案
+
+```go
+func search(nums []int, target int) int {
+	left := 0
+	right := len(nums)
+	for left < right {
+		mid := left + (right-left)/2
+		if nums[mid] == target {
+			return mid
+		} else if nums[mid] < target {
+			left = mid + 1
+		} else {
+			right = mid // 因为是左闭右开区间，所以这里不能是high = mid - 1，mid-1有可能是答案
+		}
+	}
+	return -1
+}
+```
+
+
+
+分析
+
+```go
+数组为有序数组，同时题目还强调数组中无重复元素，则可以用二分法
+
+第一种二分法：[left, right]
+for left <= right，因为left在区间成立时可能等于right
+取左半边时，right = mid-1， 因为已经确定了nums[mid]不会是target
+
+第二种二分法：[left, right)
+for left < right，因为left在区间成立时不可能等于right
+取左半边时，right = mid， 因为已经确定了nums[mid]不会是target，又因为右区间是开区间，所以不会取到right
+```
+
+
+
+
+
 # 链表
 
 ## 206 反转链表
