@@ -35,7 +35,80 @@ for left <= right，因为left在区间成立时可能等于right
 
 第二种二分法：[left, right)
 for left < right，因为left在区间成立时不可能等于right
-取左半边时，right = mid， 因为已经确定了nums[mid]不会是target，又因为右区间是开区间，所以不会取到right
+取左半边时，right = mid， 因为已经确定了nums[mid]不会是target，又因为右区间是开区间，所以不会取到mid
+```
+
+
+
+## 27.移除元素
+
+答案
+
+```go
+func removeElement(nums []int, val int) int {
+	length := len(nums)
+	slow, fast := 0, 0
+	for fast < length {
+		if nums[fast] != val {
+			nums[slow] = nums[fast]
+			slow++
+			fast++
+		} else {
+			fast++
+		}
+	}
+	return slow
+}
+```
+
+
+
+分析
+
+```go
+双指针法（快慢指针法）： 通过一个快指针和慢指针在一个for循环下完成两个for循环的工作。
+
+定义快慢指针：
+	快指针：寻找新数组的元素 ，新数组就是不含有目标元素的数组
+	慢指针：指向更新 新数组下标的位置
+```
+
+
+
+## 977.有序数组的平方
+
+答案
+
+```go
+func sortedSquares(nums []int) []int {
+	n := len(nums)
+	i, j, k := 0, n-1, n-1
+	ans := make([]int, n)
+	for i <= j {
+		left, right := nums[i]*nums[i], nums[j]*nums[j]
+		if left < right {
+			ans[k] = right
+			j--
+		} else {
+			ans[k] = left
+			i++
+		}
+		k--
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+数组平方的最大值就在数组的两端，不是最左边就是最右边，不可能是中间。
+
+此时可以考虑双指针法了，i指向起始位置，j指向终止位置
+
+定义一个新数组result，和A数组一样的大小，让k指向result数组终止位置
 ```
 
 
