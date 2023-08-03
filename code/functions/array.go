@@ -51,3 +51,25 @@ func sortedSquares(nums []int) []int {
 	}
 	return ans
 }
+
+// 209. 长度最小的子数组
+func minSubArrayLen(target int, nums []int) int {
+	i, sum := 0, 0
+	length := len(nums)
+	res := length + 1
+	for j := 0; j < length; j++ {
+		sum += nums[j]
+		for sum >= target {
+			tmp := j - i + 1
+			if tmp < res {
+				res = tmp
+			}
+			sum -= nums[i]
+			i++
+		}
+	}
+	if res == length+1 {
+		return 0
+	}
+	return res
+}

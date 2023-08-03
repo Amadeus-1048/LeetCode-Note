@@ -115,6 +115,52 @@ func sortedSquares(nums []int) []int {
 
 
 
+## 209. 长度最小的子数组
+
+答案
+
+```go
+func minSubArrayLen(target int, nums []int) int {
+	i, sum := 0, 0
+	length := len(nums)
+	res := length + 1
+	for j := 0; j < length; j++ {
+		sum += nums[j]
+		for sum >= target {
+			tmp := j - i + 1
+			if tmp < res {
+				res = tmp
+			}
+			sum -= nums[i]
+			i++
+		}
+	}
+	if res == length+1 {
+		return 0
+	}
+	return res
+}
+```
+
+
+
+分析
+
+```go
+滑动窗口 : 不断的调节子序列的起始位置和终止位置，从而得出我们要想的结果
+
+在本题中实现滑动窗口，主要确定如下三点：
+窗口内是什么？
+如何移动窗口的起始位置？
+如何移动窗口的结束位置？
+
+只用一个for循环，那么这个循环的索引，一定是表示滑动窗口的终止位置
+```
+
+
+
+
+
 # 链表
 
 ## 206 反转链表
