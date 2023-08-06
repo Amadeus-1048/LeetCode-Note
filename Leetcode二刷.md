@@ -1379,7 +1379,8 @@ func spiralOrder(matrix [][]int) []int {
 			ans = append(ans, matrix[i][right])
 		}
     right--
-		if left <= right && top <= bottom {
+    // 这里的判断条件必须是&&，不能是||
+		if left <= right && top <= bottom {// 当 left > right 或者 top > bottom 时，不会发生右到左和下到上，否则会重复计数
 			for i:=right; i>=left; i-- {		// 右下方到左
 				ans = append(ans, matrix[bottom][i])
 			}
