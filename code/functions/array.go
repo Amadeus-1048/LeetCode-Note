@@ -73,3 +73,38 @@ func minSubArrayLen(target int, nums []int) int {
 	}
 	return res
 }
+
+// 59. 螺旋矩阵II
+func generateMatrix(n int) [][]int {
+	top, bottom := 0, n-1
+	left, right := 0, n-1
+	num := 1 // 给矩阵赋值
+	tar := n * n
+	matrix := make([][]int, n)
+	for i := 0; i < n; i++ {
+		matrix[i] = make([]int, n)
+	}
+	for num <= tar { //
+		for i := left; i <= right; i++ { // 左上到右
+			matrix[top][i] = num
+			num++
+		}
+		top++                            // 右上角往下一格
+		for i := top; i <= bottom; i++ { // 右上到下
+			matrix[i][right] = num
+			num++
+		}
+		right--                          // 右下角往左一格
+		for i := right; i >= left; i-- { // 右下到左
+			matrix[bottom][i] = num
+			num++
+		}
+		bottom--                         // 左下角往上一格
+		for i := bottom; i >= top; i-- { // 左下到上
+			matrix[i][left] = num
+			num++
+		}
+		left++
+	}
+	return matrix
+}

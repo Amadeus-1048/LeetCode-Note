@@ -1333,19 +1333,19 @@ func spiralOrder(matrix [][]int) []int {
 	top, bottom, left, right := 0, m-1, 0, n-1
 	for left <= right && top <= bottom {
 		// 将矩阵看成若干层，首先输出最外层的元素，其次输出次外层的元素，直到输出最内层的元素
-		for i:=left; i<=right; i++ {			// 上方左到右
+		for i:=left; i<=right; i++ {			// 左上方到右
 			ans = append(ans, matrix[top][i])
 		}
-		for i:=top+1; i<=bottom; i++ {			// 右方上到下
+		for i:=top+1; i<=bottom; i++ {			// 右上方到下
 			ans = append(ans, matrix[i][right])
 		}
 		// left == right : 剩余的矩阵是一竖的形状  所以不需要再往上
 		// top == bottom : 剩余的矩阵是一横的形状  所以不需要再往左
 		if left < right && top < bottom {	// 当 left == right 或者 top == bottom 时，不会发生右到左和下到上，否则会重复计数
-			for i:=right-1; i>=left; i-- {		// 下方右到左
+			for i:=right-1; i>=left; i-- {		// 右下方到左
 				ans = append(ans, matrix[bottom][i])
 			}
-			for i:=bottom-1; i>top; i-- {		// 左方下到上   这里的判断条件是特殊的，不加=号
+			for i:=bottom-1; i>top; i-- {		// 左下方到上   这里的判断条件是特殊的，不加=号
 				ans = append(ans, matrix[i][left])
 			}
 		}
@@ -1360,11 +1360,102 @@ func spiralOrder(matrix [][]int) []int {
 
 
 
+根据59改的
+
+```go
+func spiralOrder(matrix [][]int) []int {
+	if len(matrix) == 0 {
+		return []int{}
+	}
+	m, n := len(matrix), len(matrix[0])
+	ans := make([]int, 0)
+	top, bottom, left, right := 0, m-1, 0, n-1
+	for left <= right && top <= bottom {
+		for i:=left; i<=right; i++ {			// 左上方到右
+			ans = append(ans, matrix[top][i])
+		}
+    top++
+		for i:=top; i<=bottom; i++ {			// 右上方到下
+			ans = append(ans, matrix[i][right])
+		}
+    right--
+		if left <= right && top <= bottom {
+			for i:=right; i>=left; i-- {		// 右下方到左
+				ans = append(ans, matrix[bottom][i])
+			}
+      bottom--
+			for i:=bottom; i>=top; i-- {		// 左下方到上
+				ans = append(ans, matrix[i][left])
+			}
+      left++
+		}
+	}
+	return ans
+}
+```
+
+
+
 分析
 
 ```go
+我个人觉得第二个解法比较好，和59是类似的，不用特判，条件也便于理解
+```
+
+
+
+
+
+
+
+## 59. 螺旋矩阵II
+
+```go
+func generateMatrix(n int) [][]int {
+	top, bottom := 0, n-1
+	left, right := 0, n-1
+	num := 1	// 给矩阵赋值
+	tar := n * n
+	matrix := make([][]int, n)
+	for i := 0; i < n; i++ {
+		matrix[i] = make([]int, n)
+	}
+	for num <= tar { //
+		for i := left; i <= right; i++ {	// 左上到右
+			matrix[top][i] = num
+			num++
+		}
+		top++	// 右上角往下一格
+		for i := top; i <= bottom; i++ {	// 右上到下
+			matrix[i][right] = num
+			num++
+		}
+		right--	// 右下角往左一格
+		for i := right; i >= left; i-- {	// 右下到左
+			matrix[bottom][i] = num
+			num++
+		}
+		bottom--	// 左下角往上一格
+		for i := bottom; i >= top; i-- {	// 左下到上
+			matrix[i][left] = num
+			num++
+		}
+		left++
+	}
+	return matrix
+}
 
 ```
+
+
+
+分析
+
+```go
+按照相同的原则，每条边左闭右开或左闭右闭
+```
+
+
 
 
 
