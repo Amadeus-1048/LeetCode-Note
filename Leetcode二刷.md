@@ -163,6 +163,37 @@ func minSubArrayLen(target int, nums []int) int {
 
 # 链表
 
+## 203 移除链表元素
+
+答案
+
+```go
+func removeElements(head *ListNode, val int) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	cur := dummy
+	for cur.Next!=nil {
+		if cur.Next.Val == val {
+			cur.Next = cur.Next.Next
+		} else {
+			cur = cur.Next
+		}
+	}
+	return dummy.Next
+}
+```
+
+
+
+分析
+
+```go
+在单链表中移除头结点 和 移除其他节点的操作方式是不一样的
+设置一个虚拟头结点，这样原链表的所有节点就都可以按照统一的方式进行移除了
+```
+
+
+
 ## 206 反转链表
 
 答案
