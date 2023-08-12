@@ -395,7 +395,7 @@ func swapPairs(head *ListNode) *ListNode {
 分析
 
 ```go
-还是要画一下图
+还是要画一下图，记住三个步骤
 
 head.Next.Next = head	对结点指向哪里进行修改
 pre = head				用变量pre表示head结点（即pre和head同时表示一个结点）
