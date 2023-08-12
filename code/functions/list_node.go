@@ -100,3 +100,32 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 	}
 	this.Size-- // 注意删除节点后应将链表大小减一
 }
+
+// 206. 反转链表
+func reverseList(head *ListNode) *ListNode {
+	cur := head
+	var pre *ListNode // 不能用pre := &ListNode{}    输出结果会在最后多一个0
+	for cur != nil {
+		tmp := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = tmp
+	}
+	return pre // 是返回pre，不是cur，因为最后cur是nil
+}
+
+// 24. 两两交换链表中的节点
+func swapPairs(head *ListNode) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	pre := dummy
+	for head != nil && head.Next != nil {
+		pre.Next = head.Next
+		next := head.Next.Next
+		head.Next.Next = head
+		head.Next = next
+		pre = head
+		head = next
+	}
+	return dummy.Next
+}
