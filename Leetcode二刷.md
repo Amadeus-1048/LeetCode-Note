@@ -394,11 +394,89 @@ func swapPairs(head *ListNode) *ListNode {
 
 分析
 
+初始时，cur指向虚拟头结点，然后进行如下三步：
+
+<img src="https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B91.png" alt="24.两两交换链表中的节点1" style="zoom:50%;" />
+
+操作之后，链表如下：
+
+<img src="https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B92.png" alt="24.两两交换链表中的节点2" style="zoom:50%;" />
+
 ```go
 还是要画一下图，记住三个步骤
 
 head.Next.Next = head	对结点指向哪里进行修改
 pre = head				用变量pre表示head结点（即pre和head同时表示一个结点）
+```
+
+
+
+## 19. 删除链表的倒数第N个节点
+
+答案
+
+```go
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	fast, slow := dummy, dummy
+	for i:=0; i<=n; i++ {
+		fast = fast.Next
+	}
+	for fast != nil {
+		slow = slow.Next
+		fast = fast.Next
+	}
+	slow.Next = slow.Next.Next
+	return dummy.Next
+}
+```
+
+
+
+分析
+
+```go
+双指针的经典应用
+定义fast指针和slow指针，初始值为虚拟头结点
+fast首先走n + 1步 ，为什么是n+1呢，因为只有这样同时移动的时候slow才能指向删除节点的上一个节点（方便做删除操作）
+fast和slow同时移动，直到fast指向末尾(NULL)
+删除slow指向的下一个节点
+```
+
+
+
+## 160. 相交链表
+
+答案
+
+```go
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+    pa, pb := headA, headB
+    for pa != pb {
+        if pa == nil {
+            pa = headB
+        } else {
+            pa = pa.Next
+        }
+        if pb == nil {
+            pb = headA
+        } else {
+            pb = pb.Next
+        }
+    }
+    return pa
+}
+```
+
+
+
+分析
+
+```go
+双指针
+如果有相交，那么相交时两个指针走的步数相等，重合在相交点
+如果没有，两个指针会走完两轮，同时指向null，此时相等，退出循环
 ```
 
 
