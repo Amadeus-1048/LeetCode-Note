@@ -147,3 +147,50 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 }
 
 // 160. 相交链表
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+	pa, pb := headA, headB
+	for pa != pb {
+		if pa == nil {
+			pa = headB
+		} else {
+			pa = pa.Next
+		}
+		if pb == nil {
+			pb = headA
+		} else {
+			pb = pb.Next
+		}
+	}
+	return pa
+}
+
+// 141. 环形链表
+func hasCycle(head *ListNode) bool {
+	slow, fast := head, head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+		if slow == fast {
+			return true
+		}
+	}
+	return false
+}
+
+// 142. 环形链表II
+func detectCycle(head *ListNode) *ListNode {
+	slow, fast := head, head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next // 任意时刻，fast 指针走过的距离都为 slow 指针的 2 倍
+		if slow == fast {     // 找到重合的节点，说明在环中
+			// 当 slow 与 fast 相遇时，head指向链表头部；随后，它和 slow 每次向后移动一个位置。最终，它们会在入环点相遇
+			for slow != head {
+				slow = slow.Next
+				head = head.Next
+			}
+			return head
+		}
+	}
+	return nil
+}

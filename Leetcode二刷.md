@@ -540,7 +540,7 @@ func hasCycle(head *ListNode) bool {
 	slow, fast := head, head
 	for fast!=nil && fast.Next!=nil {
 		slow = slow.Next
-		fast = fast.Next
+		fast = fast.Next.Next
 		if slow == fast {
 			return true
 		}
@@ -666,6 +666,30 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 暴力法：不断的把短链表合并到唯一的长链表中
 归并法：将K个有序链表转换为多个合并两个有序链表的问题
 ```
+
+
+
+
+
+# 哈希表
+
+## 242.有效的字母异位词
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
 
 
 
