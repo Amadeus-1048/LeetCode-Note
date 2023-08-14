@@ -678,7 +678,54 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 答案
 
 ```go
+func isAnagram(s string, t string) bool {
+	record := make([]int, 26)
+	for i:=0; i<len(s); i++ {
+		record[s[i]-'a']++
+	}
+	for i:=0; i<len(t); i++ {
+		record[t[i]-'a']--
+	}
+	for i:=0; i<26; i++ {
+		if record[i] != 0 {
+			return false
+		}
+	}
+	return true
+}
+```
 
+
+
+分析
+
+```go
+把字符映射到数组也就是哈希表的索引下标上
+因为字符a到字符z的ASCII是26个连续的数值
+所以字符a映射为下标0，相应的字符z映射为下标25
+```
+
+
+
+## 349.两个数组的交集
+
+答案
+
+```go
+func intersection(nums1 []int, nums2 []int) []int {
+	m := make(map[int]int)
+	for _, v := range nums1 {
+		m[v] = 1	// 注意是赋值为1，不是++，因为交集中每个数字只出现一次
+	}
+	res := make([]int, 0)
+	for _, v := range nums2 {
+		if count, ok := m[v]; ok && count>0 {
+			res = append(res, v)
+			m[v]--	// 避免交集中出现重复的数字
+		}
+	}
+	return res
+}
 ```
 
 
