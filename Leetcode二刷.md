@@ -867,6 +867,123 @@ func canConstruct(ransomNote string, magazine string) bool {
 
 
 
+## 15. 三数之和
+
+答案
+
+```go
+func threeSum(nums []int) [][]int  {
+	sort.Ints(nums)		// 排序是为了去重
+	res := [][]int{}
+	length := len(nums)
+	for i:=0; i<length-2; i++ {
+		n1 := nums[i]	// 先选第一个数 n1
+		if n1 > 0 {		// 第一个数就大于0，则不可能三个数和为0
+			break	// 接下来都不用再试了
+		}
+		if i>0 && nums[i]==nums[i-1] {	// 避免重复的答案 比如 -1 -1 0 1
+			continue	// 只是跳过当前的i
+		}
+		l, r := i+1, length-1
+		for l < r {
+			n2, n3 := nums[l], nums[r]
+			if n1+n2+n3 == 0 {
+				res = append(res, []int{n1, n2, n3})
+				for l<r && n2==nums[l] {
+					l++
+				}
+				for l<r && n3==nums[r] {
+					r--
+				}
+			} else if n1+n2+n3 < 0 {
+				l++
+			} else {
+				r--
+			}
+		}
+	}
+	return res
+}
+```
+
+
+
+分析
+
+```go
+这道题目使用 双指针法 要比 哈希法 高效一些
+还要注意去重
+```
+
+
+
+## 18. 四数之和
+
+答案
+
+```go
+func fourSum(nums []int, target int) [][]int {
+	if len(nums) < 4 {
+		return nil
+	}
+	sort.Ints(nums)
+	var res [][]int
+	for i := 0; i < len(nums)-3; i++ {
+		n1 := nums[i]
+		// if n1 > target { // 不能这样写,因为可能是负数
+		// 	break
+		// }
+		if i > 0 && n1 == nums[i-1] {
+			continue
+		}
+		for j := i + 1; j < len(nums)-2; j++ {
+			n2 := nums[j]
+			if j > i+1 && n2 == nums[j-1] {
+				continue
+			}
+			l := j + 1
+			r := len(nums) - 1
+			for l < r {
+				n3 := nums[l]
+				n4 := nums[r]
+				sum := n1 + n2 + n3 + n4
+				if sum < target {
+					l++
+				} else if sum > target {
+					r--
+				} else {
+					res = append(res, []int{n1, n2, n3, n4})
+					for l < r && n3 == nums[l] { // 去重	这个for循环会至少进入一次（n3和自己作比较）
+						l++
+					}
+					for l < r && n4 == nums[r] { // 去重	这个for循环会至少进入一次（n4和自己作比较）
+						r--
+					}
+				}
+			}
+		}
+	}
+	return res
+}
+```
+
+
+
+分析
+
+```go
+四数之和，和15.三数之和是一个思路，都是使用双指针法, 基本解法就是在15.三数之和的基础上再套一层for循环
+
+四数之和这道题目 target是任意值
+
+对于15.三数之和双指针法就是将原本暴力O(n^3)的解法，降为O(n^2)的解法
+四数之和的双指针解法就是将原本暴力O(n^4)的解法，降为O(n^3)的解法
+```
+
+
+
+# 字符串
+
 
 
 # 树
