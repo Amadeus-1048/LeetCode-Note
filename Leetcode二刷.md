@@ -984,6 +984,71 @@ func fourSum(nums []int, target int) [][]int {
 
 # 字符串
 
+## 344. 反转字符串
+
+答案
+
+```go
+func reverseString(s []byte)  {
+	left := 0
+	right := len(s)-1
+	for left<right {
+		s[left], s[right] = s[right], s[left]
+		left++
+		right--
+	}
+}
+```
+
+
+
+分析
+
+```go
+对于字符串，我们定义两个指针（也可以说是索引下标），一个从字符串前面，一个从字符串后面，两个指针同时向中间移动，并交换元素
+```
+
+
+
+## 541. 反转字符串II
+
+答案
+
+```go
+func reverseStr(s string, k int) string {
+	ss := []byte(s)
+	length := len(ss)
+	for i:=0; i<length; i+=2*k {
+		if i+k <= length {
+			reverse(ss[i:i+k])
+		} else {
+			reverse(ss[i:length])
+		}
+	}
+	return string(ss)
+}
+
+func reverse(s []byte)  {
+	left := 0
+	right := len(s)-1
+	for left<right {
+		s[left], s[right] = s[right], s[left]
+		left++
+		right--
+	}
+}
+```
+
+
+
+分析
+
+```go
+对于字符串，我们定义两个指针（也可以说是索引下标），一个从字符串前面，一个从字符串后面，两个指针同时向中间移动，并交换元素
+```
+
+
+
 
 
 # 树
