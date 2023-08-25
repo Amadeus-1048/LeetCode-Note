@@ -1044,7 +1044,146 @@ func reverse(s []byte)  {
 分析
 
 ```go
-对于字符串，我们定义两个指针（也可以说是索引下标），一个从字符串前面，一个从字符串后面，两个指针同时向中间移动，并交换元素
+
+```
+
+
+
+## 剑指 Offer 05. 替换空格
+
+答案
+
+```go
+func replaceSpace(s string) string {
+	b := []byte(s)
+	result := make([]byte, 0)
+	for i:=0; i<len(b); i++ {
+		if b[i]==' ' {
+			result = append(result, []byte("%20")...)
+		} else {
+			result = append(result, b[i])
+		}
+	}
+	return string(result)
+}
+```
+
+
+
+分析
+
+```go
+很多数组填充类的问题，都可以先预先给数组扩容带填充后的大小，然后在从后向前进行操作。
+
+这么做有两个好处：
+	不用申请新数组。
+	从后向前填充元素，避免了从前向后填充元素时，每次添加元素都要将添加元素之后的所有元素向后移动的问题。
+```
+
+
+
+## 151.反转字符串中的单词
+
+答案
+
+```go
+func reverseWords(s string) string {
+	//1.使用双指针删除冗余的空格
+	slowIndex, fastIndex := 0, 0
+	b := []byte(s)
+	//删除头部冗余空格
+	for len(b) > 0 && fastIndex < len(b) && b[fastIndex] == ' ' {
+		fastIndex++
+	}
+	//删除单词间冗余空格
+	for ; fastIndex < len(b); fastIndex++ {
+		if fastIndex-1 > 0 && b[fastIndex-1] == b[fastIndex] && b[fastIndex] == ' ' {
+			continue
+		}
+		b[slowIndex] = b[fastIndex]
+		slowIndex++
+	}
+	//删除尾部冗余空格
+	if slowIndex-1 > 0 && b[slowIndex-1] == ' ' {
+		b = b[:slowIndex-1]
+	} else {
+		b = b[:slowIndex]
+	}
+	//2.反转整个字符串
+	reverse151(b, 0, len(b)-1)
+	//3.反转单个单词  i单词开始位置，j单词结束位置
+	i := 0
+	for i < len(b) {
+		j := i
+		for ; j < len(b) && b[j] != ' '; j++ {
+		}
+		reverse151(b, i, j-1)
+		i = j
+		i++
+	}
+	return string(b)
+}
+
+func reverse151(b []byte, left, right int) {
+	for left < right {
+		b[left], b[right] = b[right], b[left]
+		left++
+		right--
+	}
+}
+```
+
+
+
+分析
+
+```go
+将整个字符串都反转过来，那么单词的顺序指定是倒序了，只不过单词本身也倒序了，那么再把单词反转一下，单词不就正过来了。
+
+所以解题思路如下：
+	移除多余空格
+	将整个字符串反转
+	将每个单词反转
+```
+
+
+
+## 剑指 Offer 58 - II. 左旋转字符串
+
+答案
+
+```go
+func reverseLeftWords(s string, n int) string {
+	b := []byte(s)
+	var reverse func(start, end int)
+	reverse = func(start, end int) {
+		for start < end {
+			b[start], b[end] = b[end], b[start]
+			start++
+			end--
+		}
+	}
+	m := len(b)
+	reverse(0, n-1)
+	reverse(n, m-1)
+	reverse(0, m-1)
+	return string(b)
+}
+```
+
+
+
+分析
+
+```go
+可以通过局部反转+整体反转 达到左旋转的目的。
+
+具体步骤为：
+	反转区间为前n的子串
+	反转区间为n到末尾的子串
+	反转整个字符串
+
+最后就可以达到左旋n的目的，而不用定义新的字符串，完全在本串上操作
 ```
 
 
