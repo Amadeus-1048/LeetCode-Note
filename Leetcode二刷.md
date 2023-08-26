@@ -2563,6 +2563,77 @@ func maxSlidingWindow(nums []int, k int) []int {
 
 
 
+## 347. 前 K 个高频元素
+
+```go
+func topKFrequent(nums []int, k int) []int {
+	// 初始化一个map，用来存数字和数字出现的次数
+	hashMap := make(map[int]int)
+	res := make([]int, 0)
+	for _,v := range nums {
+		// 先查询map看一下v有没有存入map中，如果存在ok为true
+		if _, ok := hashMap[v]; ok {
+			// 不是第一次出现map的value数值+1
+			hashMap[v]++
+		} else {
+			hashMap[v] = 1
+			res = append(res, v)
+		}
+	}
+	// 将res 按照map的value进行排序
+	sort.Slice(res, func(i, j int) bool {	 //利用O(nlogn)排序
+		return hashMap[res[i]] > hashMap[res[j]]
+	})
+	return res[:k]
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 71. 简化路径
+
+```go
+func simplifyPath(path string) string {
+    stack := []string{}
+    for _, name := range strings.Split(path, "/") {
+        // 对于「空字符串」以及「一个点」，我们实际上无需对它们进行处理
+        // 遇到「两个点」时，需要将目录切换到上一级，因此只要栈不为空，就弹出栈顶的目录
+        if name == ".." {
+            if len(stack) > 0 {
+                stack = stack[:len(stack)-1]
+            }
+        } else if name != "" && name != "." { 
+            stack = append(stack, name) // 遇到「目录名」时，就把它放入栈
+        }
+    }
+    // 将从栈底到栈顶的字符串用 / 进行连接，再在最前面加上 / 表示根目录
+    return "/" + strings.Join(stack, "/")
+}
+```
+
+
+
+分析
+
+```go
+将给定的字符串 path 根据 / 分割成一个由若干字符串组成的列表，记为 names。
+根据题目中规定的「规范路径的下述格式」，names 中包含的字符串只能为以下几种：
+	空字符串。例如当出现多个连续的 /，就会分割出空字符串；
+	一个点 .；
+	两个点 ..；
+	只包含英文字母、数字或 _ 的目录名
+```
+
+
+
 
 
 # ACM模式
