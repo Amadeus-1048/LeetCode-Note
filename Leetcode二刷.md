@@ -1299,6 +1299,91 @@ func levelOrder(root *TreeNode) [][]int {
 
 
 
+## 107. 二叉树的层序遍历II
+
+答案
+
+```go
+func levelOrderBottom(root *TreeNode) [][]int {
+	ans := [][]int{}
+	if root == nil {
+		return ans
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		tmp := []int{}
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			tmp = append(tmp, node.Val) //将值加入本层切片中
+		}
+		ans = append(ans, tmp) //放入结果集
+	}
+	for i := 0; i < len(ans)/2; i++ {
+		ans[i], ans[len(ans)-i-1] = ans[len(ans)-i-1], ans[i]
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 199. 二叉树的右视图
+
+答案
+
+```go
+func rightSideView(root *TreeNode) []int {
+	ans := []int{}
+	if root == nil {
+		return ans
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		tmp := []int{}
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			tmp = append(tmp, node.Val) //将值加入本层切片中
+		}
+		ans = append(ans, tmp[len(tmp)-1]) //放入结果集
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+每次返回每层的最后一个字段即可
+```
+
+
+
 
 
 ## 637. 二叉树的层平均值
