@@ -1881,6 +1881,43 @@ func max(a, b int) int {
 
 
 
+## 257. 二叉树的所有路径
+
+答案
+
+```go
+func binaryTreePaths(root *TreeNode) []string {
+	res := make([]string, 0)
+	var travel func(node *TreeNode, s string)
+	travel = func(node *TreeNode, s string) {
+		if node.Left == nil && node.Right == nil { // 找到了叶子节点
+			v := s + strconv.Itoa(node.Val) // 找到一条路径
+			res = append(res, v)            // 添加到结果集
+			return
+		}
+		s += strconv.Itoa(node.Val) + "->" // 非叶子节点，后面多加符号
+		if node.Left != nil {
+			travel(node.Left, s)
+		}
+		if node.Right != nil {
+			travel(node.Right, s)
+		}
+	}
+	travel(root, "")
+	return res
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
 
 
 ## 103. 二叉树的锯齿形层序遍历
