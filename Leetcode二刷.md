@@ -1706,6 +1706,183 @@ func minDepth(root *TreeNode) int {
 
 
 
+## 226. 翻转二叉树
+
+答案
+
+```go
+func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return root
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			node.Left, node.Right = node.Right, node.Left
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+	}
+	return root
+}
+```
+
+
+
+分析
+
+```go
+只要把每一个节点的左右孩子翻转一下，就可以达到整体翻转的效果
+
+这道题目使用前序遍历、后序遍历、层序遍历都可以，唯独中序遍历不方便，因为中序遍历会把某些节点的左右孩子翻转了两次
+```
+
+
+
+## 101. 对称二叉树
+
+答案
+
+```go
+// 101. 对称二叉树
+func isSymmetric(root *TreeNode) bool {
+	var queue []*TreeNode
+	if root != nil {
+		queue = append(queue, root.Left, root.Right)
+	}
+	for len(queue) > 0 {
+		left := queue[0]  // 将左子树头结点加入队列
+		right := queue[1] // 将右子树头结点加入队列
+		queue = queue[2:]
+		if left == nil && right == nil { // 左节点为空、右节点为空，此时说明是对称的
+			continue
+		}
+		// 左右一个节点不为空，或者都不为空但数值不相同，返回false
+		if left == nil || right == nil || left.Val != right.Val {
+			return false
+		}
+		// 依次加入：左节点左孩子、右节点右孩子、左节点右孩子、右节点左孩子
+		queue = append(queue, left.Left, right.Right, left.Right, right.Left)
+	}
+	return true
+}
+```
+
+
+
+分析
+
+```go
+通过队列来判断根节点的左子树和右子树的内侧和外侧是否相等
+```
+
+
+
+## 222. 完全二叉树的节点个数
+
+答案
+
+```go
+func countNodes(root *TreeNode) int {
+	ans := 0
+	if root == nil {
+		return ans
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			ans++
+		}
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 110. 平衡二叉树
+
+答案
+
+```go
+func isBalanced(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	if !isBalanced(root.Left) || !isBalanced(root.Right) {
+		return false
+	}
+	// 分别求出其左右子树的高度
+	LeftH := maxHeight(root.Left) + 1 // 以当前节点为根节点的树的最大高度
+	RightH := maxHeight(root.Right) + 1
+	// 如果差值大于1，表示已经不是二叉平衡树
+	if abs(LeftH-RightH) > 1 {
+		return false
+	}
+	return true
+}
+
+func maxHeight(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	return max(maxHeight(root.Left), maxHeight(root.Right)) + 1
+}
+
+func abs(a int) int {
+	if a < 0 {
+		return -a
+	}
+	return a
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+
+
+分析
+
+```go
+二叉树节点的深度：指从根节点到该节点的最长简单路径边的条数。
+二叉树节点的高度：指从该节点到叶子节点的最长简单路径边的条数。
+
+因为求深度可以从上到下去查 所以需要前序遍历（中左右），而高度只能从下到上去查，所以只能后序遍历（左右中）
+```
+
+
+
+
+
 ## 103. 二叉树的锯齿形层序遍历
 
 答案
