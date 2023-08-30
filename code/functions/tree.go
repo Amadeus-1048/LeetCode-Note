@@ -459,3 +459,85 @@ func binaryTreePaths(root *TreeNode) []string {
 	travel(root, "")
 	return res
 }
+
+// 404. 左叶子之和
+func sumOfLeftLeaves(root *TreeNode) int {
+	res := 0
+	var findLeft func(node *TreeNode)
+	findLeft = func(node *TreeNode) {
+		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil {
+			res += node.Left.Val
+		}
+		if node.Left != nil {
+			findLeft(node.Left)
+		}
+		if node.Right != nil {
+			findLeft(node.Right)
+		}
+	}
+	findLeft(root)
+	return res
+}
+
+// 513. 找树左下角的值
+func findBottomLeftValue(root *TreeNode) int {
+	ans := 0
+	if root == nil {
+		return ans
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			if i == 0 { // 记录每一行第一个元素
+				ans = node.Val
+			}
+		}
+	}
+	return ans
+}
+
+// 112. 路径总和
+func hasPathSum(root *TreeNode, targetSum int) bool {
+	if root == nil {
+		return false
+	}
+	targetSum -= root.Val
+	if root.Left == nil && root.Right == nil && targetSum == 0 { // 遇到叶子节点，并且计数为0
+		return true
+	}
+	return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
+}
+
+// 113. 路径总和 II
+func pathSum(root *TreeNode, targetSum int) [][]int {
+	res := make([][]int, 0)
+	curPath := make([]int, 0)
+	var traverse func(node *TreeNode, targetSum int)
+	traverse = func(node *TreeNode, targetSum int) {
+		if node == nil {
+			return
+		}
+		targetSum -= node.Val                                        // 将targetSum在遍历每层的时候都减去本层节点的值
+		curPath = append(curPath, node.Val)                          // 把当前节点放到路径记录里
+		if node.Left == nil && node.Right == nil && targetSum == 0 { // 遇到叶子节点，并且计数为0
+			// 不能直接将currPath放到result里面, 因为currPath是共享的, 每次遍历子树时都会被修改
+			pathCopy := make([]int, len(curPath))
+			copy(pathCopy, curPath)
+			res = append(res, pathCopy) // 将副本放到结果集里
+		}
+		traverse(node.Left, targetSum)
+		traverse(node.Right, targetSum)
+		curPath = curPath[:len(curPath)-1] // 当前节点遍历完成, 从路径记录里删除掉
+	}
+	traverse(root, targetSum)
+	return res
+}

@@ -1918,6 +1918,152 @@ func binaryTreePaths(root *TreeNode) []string {
 
 
 
+## 404. 左叶子之和
+
+答案
+
+```go
+func binaryTreePaths(root *TreeNode) []string {
+	res := make([]string, 0)
+	var travel func(node *TreeNode, s string)
+	travel = func(node *TreeNode, s string) {
+		if node.Left == nil && node.Right == nil { // 找到了叶子节点
+			v := s + strconv.Itoa(node.Val) // 找到一条路径
+			res = append(res, v)            // 添加到结果集
+			return
+		}
+		s += strconv.Itoa(node.Val) + "->" // 非叶子节点，后面多加符号
+		if node.Left != nil {
+			travel(node.Left, s)
+		}
+		if node.Right != nil {
+			travel(node.Right, s)
+		}
+	}
+	travel(root, "")
+	return res
+}
+```
+
+
+
+分析
+
+```go
+左叶子的明确定义：
+节点A的左孩子不为空，且左孩子的左右孩子都为空（说明是叶子节点），那么A节点的左孩子为左叶子节点
+```
+
+
+
+## 513. 找树左下角的值
+
+答案
+
+```go
+func findBottomLeftValue(root *TreeNode) int {
+	ans := 0
+	if root == nil {
+		return ans
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			if i == 0 {	// 记录每一行第一个元素
+				ans = node.Val
+			}
+		}
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+在树的最后一行找到最左边的值
+```
+
+
+
+## 112. 路径总和
+
+答案
+
+```go
+func hasPathSum(root *TreeNode, targetSum int) bool {
+	if root == nil {
+		return false
+	}
+	targetSum -= root.Val
+	if root.Left == nil && root.Right == nil && targetSum == 0 { // 遇到叶子节点，并且计数为0
+		return true
+	}
+	return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 113. 路径总和II
+
+答案
+
+```go
+func pathSum(root *TreeNode, targetSum int) [][]int {
+	res := make([][]int, 0)
+	curPath := make([]int, 0)
+	var traverse func(node *TreeNode, targetSum int)
+	traverse = func(node *TreeNode, targetSum int) {
+		if node == nil {
+			return
+		}
+		targetSum -= node.Val                                        // 将targetSum在遍历每层的时候都减去本层节点的值
+		curPath = append(curPath, node.Val)                          // 把当前节点放到路径记录里
+		if node.Left == nil && node.Right == nil && targetSum == 0 { // 遇到叶子节点，并且计数为0
+			// 不能直接将currPath放到result里面, 因为currPath是共享的, 每次遍历子树时都会被修改
+			pathCopy := make([]int, len(curPath))
+			copy(pathCopy, curPath)
+			res = append(res, pathCopy) // 将副本放到结果集里
+		}
+		traverse(node.Left, targetSum)
+		traverse(node.Right, targetSum)
+		curPath = curPath[:len(curPath)-1] // 当前节点遍历完成, 从路径记录里删除掉
+	}
+	traverse(root, targetSum)
+	return res
+}
+```
+
+
+
+分析
+
+```go
+要遍历整个树，找到所有路径，所以需要回溯
+```
+
+
+
 
 
 ## 103. 二叉树的锯齿形层序遍历
