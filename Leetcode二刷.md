@@ -2196,6 +2196,77 @@ func findMax(nums []int) (index int) {
 
 
 
+## 617. 合并二叉树
+
+答案
+
+```go
+func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
+	if root1 == nil {
+		return root2
+	}
+	if root2 == nil {
+		return root1
+	}
+	root1.Val += root2.Val
+	root1.Left = mergeTrees(root1.Left, root2.Left)
+	root1.Right = mergeTrees(root1.Right, root2.Right)
+	return root1
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 700. 二叉搜索树中的搜索
+
+答案
+
+```go
+// 递归
+func searchBST(root *TreeNode, val int) *TreeNode {
+	if root==nil{
+		return nil
+	}
+	if root.Val == val {
+		return root
+	}
+	if root.Val > val {
+		return searchBST(root.Left, val)
+	}
+	return searchBST(root.Right, val)
+}
+
+// 迭代
+func searchBST(root *TreeNode, val int) *TreeNode {
+	for root != nil {
+		if root.Val > val {
+			root = root.Left
+		} else if root.Val < val {
+			root = root.Right
+		} else {
+			return root
+		}
+	}
+	return nil
+}
+```
+
+
+
+分析
+
+```go
+因为二叉搜索树的特殊性，也就是节点的有序性，可以不使用辅助栈或者队列就可以写出迭代法
+```
+
 
 
 
