@@ -2483,6 +2483,89 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 
 
 
+## 701. 二叉搜索树中的插入操作
+
+答案
+
+```go
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	// 找到遍历的节点为null的时候，就是要插入节点的位置了，并把插入的节点返回
+	if root == nil {
+		root = &TreeNode{Val: val}
+		return root
+	}
+	if root.Val > val {
+		root.Left = insertIntoBST(root.Left, val)
+	} else {
+		root.Right = insertIntoBST(root.Right, val)
+	}
+	return root
+}
+```
+
+
+
+分析
+
+```go
+只要遍历二叉搜索树，找到空节点 插入元素就可以
+```
+
+
+
+## 450.删除二叉搜索树中的节点
+
+答案
+
+```go
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	switch {
+	// 没找到删除的节点，遍历到空节点直接返回了
+	case root == nil:
+		return nil
+	// 说明要删除的节点在左子树	左递归
+	case root.Val > key:
+		root.Left = deleteNode(root.Left, key)
+	// 说明要删除的节点在右子树	右递归
+	case root.Val < key:
+		root.Right = deleteNode(root.Right, key)
+	// 找到了节点，且左儿子或右儿子有空的
+	case root.Left == nil || root.Right == nil:
+		// 右儿子为空，删除节点后左儿子补位
+		if root.Left != nil {
+			return root.Left
+		}
+		// 左儿子为空，删除节点后右儿子补位
+		return root.Right
+	// 找到了节点，且左右儿子都不为空
+	// 则将删除节点的左子树放到删除节点的右子树的最左面节点的左孩子的位置
+	// 并返回删除节点右孩子为新的根节点
+	default:
+		successor := root.Right
+		for successor.Left != nil {
+			successor = successor.Left
+		}
+		// 删除节点的右子树的最左面节点变为新的根节点
+		// 所以新的根节点的右子树应该是删除节点的右子树去掉该新根节点
+		// 新的根节点的左子树应该是删除节点的左子树
+		successor.Right = deleteNode(root.Right, successor.Val)
+		successor.Left = root.Left
+		return successor
+	}
+	return root
+}
+```
+
+
+
+分析
+
+```go
+只要遍历二叉搜索树，找到空节点 插入元素就可以
+```
+
+
+
 
 
 ## 103. 二叉树的锯齿形层序遍历
@@ -2532,58 +2615,6 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 ```go
 层序遍历
 ```
-
-
-
-## 236. 二叉树的最近公共祖先
-
-答案
-
-```go
-func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	parent := map[int]*TreeNode{}	// 题目给出：所有 Node.val 互不相同，所以可以用int存储
-	visited := map[int]bool{}
-	var dfs func(node *TreeNode)
-	// 从根节点开始遍历整棵二叉树，用哈希表记录每个节点的父节点指针
-	dfs = func(node *TreeNode) {
-		if node == nil {
-			return
-		}
-		if node.Left != nil {
-			parent[node.Left.Val] = node
-			dfs(node.Left)
-		}
-		if node.Right != nil {
-			parent[node.Right.Val] = node
-			dfs(node.Right)
-		}
-	}
-	dfs(root)
-	// 从 p 节点开始不断往它的祖先移动，并记录已经访问过的祖先节点
-	for p != nil {
-		visited[p.Val] = true
-		p = parent[p.Val]
-	}
-	// 再从 q 节点开始不断往它的祖先移动，如果有祖先已经被访问过，即意味着这是 p 和 q 的深度最深的公共祖先，即 LCA 节点
-	for q != nil {
-		if visited[q.Val] {
-			return q
-		}
-		q = parent[q.Val]
-	}
-	return nil
-}
-```
-
-
-
-分析
-
-```go
-递归比较难理解，这个方法容易理解
-```
-
-
 
 
 

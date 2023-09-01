@@ -772,3 +772,56 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 	}
 	return root
 }
+
+// 701. 二叉搜索树中的插入操作
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+	// 找到遍历的节点为null的时候，就是要插入节点的位置了，并把插入的节点返回
+	if root == nil {
+		root = &TreeNode{Val: val}
+		return root
+	}
+	if root.Val > val {
+		root.Left = insertIntoBST(root.Left, val)
+	} else {
+		root.Right = insertIntoBST(root.Right, val)
+	}
+	return root
+}
+
+// 450.删除二叉搜索树中的节点
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	switch {
+	// 没找到删除的节点，遍历到空节点直接返回了
+	case root == nil:
+		return nil
+	// 说明要删除的节点在左子树	左递归
+	case root.Val > key:
+		root.Left = deleteNode(root.Left, key)
+	// 说明要删除的节点在右子树	右递归
+	case root.Val < key:
+		root.Right = deleteNode(root.Right, key)
+	// 找到了节点，且左儿子或右儿子有空的
+	case root.Left == nil || root.Right == nil:
+		// 右儿子为空，删除节点后左儿子补位
+		if root.Left != nil {
+			return root.Left
+		}
+		// 左儿子为空，删除节点后右儿子补位
+		return root.Right
+	// 找到了节点，且左右儿子都不为空
+	// 则将删除节点的左子树放到删除节点的右子树的最左面节点的左孩子的位置
+	// 并返回删除节点右孩子为新的根节点
+	default:
+		successor := root.Right
+		for successor.Left != nil {
+			successor = successor.Left
+		}
+		// 删除节点的右子树的最左面节点变为新的根节点
+		// 所以新的根节点的右子树应该是删除节点的右子树去掉该新根节点
+		// 新的根节点的左子树应该是删除节点的左子树
+		successor.Right = deleteNode(root.Right, successor.Val)
+		successor.Left = root.Left
+		return successor
+	}
+	return root
+}
