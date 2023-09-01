@@ -638,3 +638,137 @@ func searchBST(root *TreeNode, val int) *TreeNode {
 	}
 	return nil
 }
+
+// 98. 验证二叉搜索树
+func isValidBST(root *TreeNode) bool {
+	var pre *TreeNode // 用来记录前一个节点
+	var check func(node *TreeNode) bool
+	check = func(node *TreeNode) bool {
+		if node == nil {
+			return true
+		}
+		// 中序遍历，验证遍历的元素是不是从小到大
+		left := check(node.Left)
+		if pre != nil && pre.Val >= node.Val {
+			return false
+		}
+		pre = node
+		right := check(node.Right)
+
+		return left && right // 分别对左子树和右子树递归判断，如果左子树和右子树都符合则返回true
+	}
+	return check(root)
+}
+
+// 530. 二叉搜索树的最小绝对差
+func getMinimumDifference(root *TreeNode) int {
+	var pre *TreeNode // 用来记录前一个节点
+	minDelta := math.MaxInt64
+	var calc func(node *TreeNode)
+	calc = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		// 中序遍历
+		calc(node.Left)
+		if pre != nil {
+			minDelta = min(minDelta, node.Val-pre.Val)
+		}
+		pre = node
+		calc(node.Right)
+	}
+	calc(root)
+	return minDelta
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// 501.二叉搜索树中的众数
+func findMode(root *TreeNode) []int {
+	res := make([]int, 0)
+	count := 1
+	max := 1
+	var prev *TreeNode
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) { // 中序遍历
+		if node == nil {
+			return
+		}
+		travel(node.Left)
+		if prev != nil && prev.Val == node.Val { // 遇到相同的值，计数+1
+			count++
+		} else {
+			count = 1 // 遇到新的值，重新开始计数
+		}
+		if count >= max {
+			if count > max && len(res) > 0 { // 遇到出现次数更多的值，重置res
+				res = []int{node.Val}
+			} else {
+				res = append(res, node.Val) // 遇到出现次数相同的值，res多加一个值
+			}
+			max = count
+		}
+		prev = node
+		travel(node.Right)
+	}
+	travel(root)
+	return res
+}
+
+// 236. 二叉树的最近公共祖先
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	parent := map[int]*TreeNode{} // 题目给出：所有 Node.val 互不相同，所以可以用int存储
+	visited := map[int]bool{}
+	var dfs func(node *TreeNode)
+	// 从根节点开始遍历整棵二叉树，用哈希表记录每个节点的父节点指针
+	dfs = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		if node.Left != nil {
+			parent[node.Left.Val] = node
+			dfs(node.Left)
+		}
+		if node.Right != nil {
+			parent[node.Right.Val] = node
+			dfs(node.Right)
+		}
+	}
+	dfs(root)
+	// 从 p 节点开始不断往它的祖先移动，并记录已经访问过的祖先节点
+	for p != nil {
+		visited[p.Val] = true
+		p = parent[p.Val]
+	}
+	// 再从 q 节点开始不断往它的祖先移动，如果有祖先已经被访问过，即意味着这是 p 和 q 的深度最深的公共祖先，即 LCA 节点
+	for q != nil {
+		if visited[q.Val] {
+			return q
+		}
+		q = parent[q.Val]
+	}
+	return nil
+}
+
+// 235. 二叉搜索树的最近公共祖先
+func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
+	// 如果找到了 节点p或者q，或者遇到空节点，就返回。
+	if root == nil {
+		return nil
+	}
+	if root.Val >= p.Val && root.Val <= q.Val { // 当前节点的值在给定值的中间（或者等于），即为最深的祖先
+		return root
+	}
+	if root.Val > p.Val && root.Val > q.Val { // 当前节点的值大于给定的值，则说明满足条件的在左边
+		return lowestCommonAncestor(root.Left, p, q)
+	}
+	if root.Val < p.Val && root.Val < q.Val { // 当前节点的值小于各点的值，则说明满足条件的在右边
+		return lowestCommonAncestor(root.Right, p, q)
+	}
+	return root
+}
