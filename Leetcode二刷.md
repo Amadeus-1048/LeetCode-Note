@@ -2724,6 +2724,144 @@ func convertBST(root *TreeNode) *TreeNode {
 
 # 回溯
 
+## 77. 组合
+
+答案
+
+```go
+func combine(n int, k int) [][]int {
+	res := [][]int{}
+	var backtrace func(start int, trace []int)
+	backtrace = func(start int, trace []int) {
+		if len(trace) == k {
+			tmp := make([]int, k)
+			copy(tmp, trace)
+			res = append(res, tmp)
+		}
+		if len(trace)+n-start+1 < k { // 剪枝优化
+			return
+		}
+		for i := start; i <= n; i++ { // 选择本层集合中元素，控制树的横向遍历
+			trace = append(trace, i)     // 处理节点
+			backtrace(i+1, trace)        // 递归：控制树的纵向遍历，注意下一层搜索要从i+1开始
+			trace = trace[:len(trace)-1] // 回溯，撤销处理结果
+		}
+	}
+	backtrace(1, []int{})
+	return res
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 216. 组合总和 III
+
+答案
+
+```go
+func combinationSum3(k int, n int) [][]int {
+	res := [][]int{}
+	var backtrace func(start int, trace []int)
+	backtrace = func(start int, trace []int) {
+		if len(trace) == k {
+			sum := 0
+			tmp := make([]int, k)
+			for i, v := range trace {
+				sum += v
+				tmp[i] = v
+			}
+			if sum == n {
+				res = append(res, tmp)
+			}
+			return
+		}
+		if start > n { // 剪枝优化
+			return
+		}
+		for i := start; i <= 9; i++ { // 选择本层集合中元素，控制树的横向遍历
+			trace = append(trace, i)     // 处理节点
+			backtrace(i+1, trace)        // 递归：控制树的纵向遍历，注意下一层搜索要从i+1开始
+			trace = trace[:len(trace)-1] // 回溯，撤销处理结果
+		}
+	}
+	backtrace(1, []int{})
+	return res
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 17. 电话号码的字母组合
+
+答案
+
+```go
+func letterCombinations(digits string) []string {
+	digitsMap := [10]string{
+		"",     // 0
+		"",     // 1
+		"abc",  // 2
+		"def",  // 3
+		"ghi",  // 4
+		"jkl",  // 5
+		"mno",  // 6
+		"pqrs", // 7
+		"tuv",  // 8
+		"wxyz", // 9
+	}
+
+	res := []string{}
+	length := len(digits)
+	if length <= 0 || length > 4 {
+		return res
+	}
+	var backtrace func(s string, index int)
+	backtrace = func(s string, index int) {
+		if len(s) == length {
+			res = append(res, s)
+			return
+		}
+		num := digits[index] - '0' // 将index指向的数字转为int
+		letter := digitsMap[num]   // 取数字对应的字符集
+		for i := 0; i < len(letter); i++ {
+			s += string(letter[i])
+			backtrace(s, index+1)
+			s = s[:len(s)-1]
+		}
+	}
+	backtrace("", 0)
+	return res
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+
+
 ## 39. 组合总和
 
 答案
@@ -2773,7 +2911,63 @@ func combinationSum(candidates []int, target int) [][]int {
 			return
 		}
 ----------------------------------------------------------------------
+    
+剪枝优化的思路：
+    对candidates排序之后，如果下一层的sum（就是本层的 sum + candidates[i]）已经大于target，就可以结束本轮for循环的遍历。
 ```
+
+
+
+
+
+## 40. 组合总和 II
+
+答案
+
+```go
+func combinationSum2(candidates []int, target int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	sort.Ints(candidates)
+	var backtrace func(start, sum int)
+	backtrace = func(start, sum int) {
+		if sum == target {
+			tmp := make([]int, len(trace))
+			copy(tmp, trace)
+			res = append(res, tmp)
+			return
+		}
+		if sum > target {
+			return
+		}
+
+		for i:=start; i<len(candidates); i++ {
+			if i>start && candidates[i]==candidates[i-1] {
+				continue
+			}
+			trace = append(trace, candidates[i])
+			sum += candidates[i]
+			backtrace(i+1, sum)
+			trace = trace[:len(trace)-1]
+			sum -= candidates[i]
+		}
+	}
+	backtrace(0, 0)
+	return res
+}
+```
+
+
+
+分析
+
+```
+本题的难点在于：集合（数组candidates）有重复元素，但还不能有重复的组合
+即要去重的是同一树层上的“使用过”。同一树枝上的都是一个组合里的元素，不用去重
+加一个bool型数组used，用来记录同一树枝上的元素是否使用过
+```
+
+
 
 
 
