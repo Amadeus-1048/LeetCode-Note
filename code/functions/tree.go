@@ -825,3 +825,57 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 	}
 	return root
 }
+
+// 669. 修剪二叉搜索树
+func trimBST(root *TreeNode, low int, high int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	// 如果该节点值小于最小值，则该节点更换为该节点的经过递归处理的右节点值，继续遍历
+	if root.Val < low {
+		return trimBST(root.Right, low, high)
+	}
+	// 如果该节点的值大于最大值，则该节点更换为该节点的经过递归处理的左节点值，继续遍历
+	if root.Val > high {
+		return trimBST(root.Left, low, high)
+	}
+	// 该节点的值在low和high之间，则处理符合条件的左右子树
+	root.Left = trimBST(root.Left, low, high)
+	root.Right = trimBST(root.Right, low, high)
+	return root
+}
+
+// 108. 将有序数组转换为二叉搜索树
+func sortedArrayToBST(nums []int) *TreeNode {
+	// 终止条件，最后数组为空则可以返回
+	if len(nums) == 0 {
+		return nil
+	}
+	// 按照BSL的特点，从中间构造节点
+	root := &TreeNode{nums[len(nums)/2], nil, nil}
+	// 数组的左边为左子树
+	root.Left = sortedArrayToBST(nums[:len(nums)/2])
+	// 数字的右边为右子树
+	root.Right = sortedArrayToBST(nums[len(nums)/2+1:])
+	return root
+}
+
+// 538. 把二叉搜索树转换为累加树
+// 右中左
+func convertBST(root *TreeNode) *TreeNode {
+	sum := 0
+	var rightMLeft func(root *TreeNode)
+	rightMLeft = func(root *TreeNode) {
+		if root == nil { // 终止条件，遇到空节点就返回
+			return
+		}
+		rightMLeft(root.Right) // 先遍历右边
+		tmp := sum             // 暂存总和值
+		sum += root.Val        // 将总和值变更
+		root.Val += tmp        // 更新节点值
+		rightMLeft(root.Left)  // 遍历左节点
+		return
+	}
+	rightMLeft(root)
+	return root
+}

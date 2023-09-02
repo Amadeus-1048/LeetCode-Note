@@ -1824,6 +1824,58 @@ func countNodes(root *TreeNode) int {
 
 
 
+## 103. 二叉树的锯齿形层序遍历
+
+答案
+
+```go
+func zigzagLevelOrder(root *TreeNode) [][]int {
+	ans := [][]int{}
+	if root == nil {	// 漏掉了
+		return ans
+	}
+	queue := []*TreeNode{root}
+	length := len(queue)
+	for level:=0; len(queue)>0; level++ {		// 是len(queue)>0   不是 queue != nil，会报错
+		tmp := []int{}
+		length = len(queue)
+		for length > 0 {
+			tmp = append(tmp, queue[0].Val)
+			if queue[0].Left != nil {		// append之前要先判断是不是nil
+				queue = append(queue, queue[0].Left)
+			}
+			if queue[0].Right != nil {		// append之前要先判断是不是nil
+				queue = append(queue, queue[0].Right)
+			}
+			queue = queue[1:]
+			length--	// 漏掉了
+		}
+		if level % 2 == 1 {			// 用level还可以计算层数，所以不用bool
+			i, j := 0, len(tmp)-1
+			for i < j {
+				tmp[i], tmp[j] = tmp[j], tmp[i]
+				i++
+				j--
+			}
+		}
+		ans = append(ans, tmp)
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+层序遍历
+```
+
+
+
+
+
 ## 110. 平衡二叉树
 
 答案
@@ -2566,45 +2618,27 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 
 
 
-
-
-## 103. 二叉树的锯齿形层序遍历
+## 669. 修剪二叉搜索树
 
 答案
 
 ```go
-func zigzagLevelOrder(root *TreeNode) [][]int {
-	ans := [][]int{}
-	if root == nil {	// 漏掉了
-		return ans
+func trimBST(root *TreeNode, low int, high int) *TreeNode {
+	if root == nil {
+		return nil
 	}
-	queue := []*TreeNode{root}
-	length := len(queue)
-	for level:=0; len(queue)>0; level++ {		// 是len(queue)>0   不是 queue != nil，会报错
-		tmp := []int{}
-		length = len(queue)
-		for length > 0 {
-			tmp = append(tmp, queue[0].Val)
-			if queue[0].Left != nil {		// append之前要先判断是不是nil
-				queue = append(queue, queue[0].Left)
-			}
-			if queue[0].Right != nil {		// append之前要先判断是不是nil
-				queue = append(queue, queue[0].Right)
-			}
-			queue = queue[1:]
-			length--	// 漏掉了
-		}
-		if level % 2 == 1 {			// 用level还可以计算层数，所以不用bool
-			i, j := 0, len(tmp)-1
-			for i < j {
-				tmp[i], tmp[j] = tmp[j], tmp[i]
-				i++
-				j--
-			}
-		}
-		ans = append(ans, tmp)
+	// 如果该节点值小于最小值，则该节点更换为该节点的经过递归处理的右节点值，继续遍历
+	if root.Val < low {
+		return trimBST(root.Right, low, high)
 	}
-	return ans
+	// 如果该节点的值大于最大值，则该节点更换为该节点的经过递归处理的左节点值，继续遍历
+	if root.Val > high {
+		return trimBST(root.Left, low, high)
+	}
+	// 该节点的值在low和high之间，则处理符合条件的左右子树
+	root.Left = trimBST(root.Left, low, high)
+	root.Right = trimBST(root.Right, low, high)
+	return root
 }
 ```
 
@@ -2613,8 +2647,78 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 分析
 
 ```go
-层序遍历
+
 ```
+
+
+
+## 108. 将有序数组转换为二叉搜索树
+
+答案
+
+```go
+func sortedArrayToBST(nums []int) *TreeNode {
+	// 终止条件，最后数组为空则可以返回
+	if len(nums) == 0 {
+		return nil
+	}
+	// 按照BSL的特点，从中间构造节点
+	root := &TreeNode{nums[len(nums)/2], nil, nil}
+	// 数组的左边为左子树
+	root.Left = sortedArrayToBST(nums[:len(nums)/2])
+	// 数字的右边为右子树
+	root.Right = sortedArrayToBST(nums[len(nums)/2+1:])
+	return root
+}
+```
+
+
+
+分析
+
+```go
+如果根据数组构造一棵二叉树，本质就是寻找分割点，分割点作为当前节点，然后递归左区间和右区间
+
+有序数组构造二叉搜索树，分割点就是数组中间位置的节点。
+
+本题要构造二叉树，依然用递归函数的返回值来构造中节点的左右孩子
+```
+
+
+
+## 538. 把二叉搜索树转换为累加树
+
+答案
+
+```go
+func convertBST(root *TreeNode) *TreeNode {
+	sum := 0
+	var rightMLeft func(root *TreeNode)
+	rightMLeft = func(root *TreeNode) {
+		if root == nil { // 终止条件，遇到空节点就返回
+			return
+		}
+		rightMLeft(root.Right) // 先遍历右边
+		tmp := sum             // 暂存总和值
+		sum += root.Val        // 将总和值变更
+		root.Val += tmp        // 更新节点值
+		rightMLeft(root.Left)  // 遍历左节点
+		return
+	}
+	rightMLeft(root)
+	return root
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
 
 
 
