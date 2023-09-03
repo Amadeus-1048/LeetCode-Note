@@ -1,6 +1,10 @@
 package functions
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+	"strconv"
+)
 
 // 77. 组合
 func combine(n int, k int) [][]int {
@@ -152,5 +156,129 @@ func combinationSum2(candidates []int, target int) [][]int {
 		}
 	}
 	backtrace(0, 0)
+	return res
+}
+
+// 131. 分割回文串
+func partition(s string) [][]string {
+	res := [][]string{}
+	trace := []string{}
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		if start == len(s) {
+			tmp := make([]string, len(trace))
+			copy(tmp, trace)
+			res = append(res, tmp)
+			return
+		}
+
+		for i := start; i < len(s); i++ { // 横向遍历：找切割线  切割到字符串的结尾位置
+			if isPartition(s, start, i) { // 是回文子串
+				trace = append(trace, s[start:i+1]) // 左开右闭，所以i+1
+			} else {
+				continue
+			}
+			backtrace(i + 1) // i+1 表示下一轮递归遍历的起始位置
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+// 判断是否为回文
+func isPartition(s string, startIndex, end int) bool {
+	for startIndex < end {
+		if s[startIndex] != s[end] {
+			return false
+		}
+		//移动左右指针
+		startIndex++
+		end--
+	}
+	return true
+}
+
+// 93. 复原 IP 地址
+func restoreIpAddresses(s string) []string {
+	var res, path []string
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		if start == len(s) && len(path) == 4 {
+			tmpString := path[0] + "." + path[1] + "." + path[2] + "." + path[3]
+			fmt.Println("tmpString:", tmpString)
+			res = append(res, tmpString)
+		}
+		for i := start; i < len(s); i++ {
+			path = append(path, s[start:i+1])
+			fmt.Println("path:", path)
+			if i-start+1 <= 3 && len(path) <= 4 && isIP(s, start, i) {
+				backtrace(i + 1)
+			} else {
+				path = path[:len(path)-1]
+				return // 直接返回
+			}
+			path = path[:len(path)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+// 判断字符串s在左闭右闭区间[start, end]所组成的数字是否合法
+func isIP(s string, start int, end int) bool {
+	check, err := strconv.Atoi(s[start : end+1])
+	if err != nil { // 遇到非数字字符不合法
+		return false
+	}
+	if end-start+1 > 1 && s[start] == '0' { // 0开头的数字不合法
+		return false
+	}
+	if check > 255 { // 大于255了不合法
+		return false
+	}
+	return true
+}
+
+// 78. 子集
+func subsets(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	sort.Ints(nums)
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		tmp := make([]int, len(trace))
+		copy(tmp, trace)
+		res = append(res, tmp)
+		for i := start; i < len(nums); i++ {
+			trace = append(trace, nums[i])
+			backtrace(i + 1) // 取过的元素不会重复取
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+// 90. 子集 II
+func subsetsWithDup(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	sort.Ints(nums) // 去重需要排序
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		tmp := make([]int, len(trace))
+		copy(tmp, trace)
+		res = append(res, tmp)
+		for i := start; i < len(nums); i++ {
+			if i > start && nums[i] == nums[i-1] { // 对同一树层使用过的元素进行跳过
+				continue
+			}
+			trace = append(trace, nums[i])
+			backtrace(i + 1)
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
 	return res
 }

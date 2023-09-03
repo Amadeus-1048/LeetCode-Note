@@ -2926,9 +2926,9 @@ func combinationSum(candidates []int, target int) [][]int {
 
 ```go
 func combinationSum2(candidates []int, target int) [][]int {
-	res := [][]int{}
-	trace := []int{}
-	sort.Ints(candidates)
+	res := [][]int{}      // 存放组合集合
+	trace := []int{}      // 符合条件的组合
+	sort.Ints(candidates) // 首先把给candidates排序，让其相同的元素都挨在一起。
 	var backtrace func(start, sum int)
 	backtrace = func(start, sum int) {
 		if sum == target {
@@ -2941,13 +2941,14 @@ func combinationSum2(candidates []int, target int) [][]int {
 			return
 		}
 
-		for i:=start; i<len(candidates); i++ {
-			if i>start && candidates[i]==candidates[i-1] {
+		for i := start; i < len(candidates); i++ {
+			// 前一个树枝，使用了candidates[i - 1]，也就是说同一树层使用过candidates[i - 1]。
+			if i > start && candidates[i] == candidates[i-1] {
 				continue
 			}
 			trace = append(trace, candidates[i])
 			sum += candidates[i]
-			backtrace(i+1, sum)
+			backtrace(i+1, sum) // 和39.组合总和的区别1，这里是i+1，每个数字在每个组合中只能使用一次
 			trace = trace[:len(trace)-1]
 			sum -= candidates[i]
 		}
@@ -2965,6 +2966,281 @@ func combinationSum2(candidates []int, target int) [][]int {
 本题的难点在于：集合（数组candidates）有重复元素，但还不能有重复的组合
 即要去重的是同一树层上的“使用过”。同一树枝上的都是一个组合里的元素，不用去重
 加一个bool型数组used，用来记录同一树枝上的元素是否使用过
+```
+
+
+
+## 131. 分割回文串
+
+答案
+
+```go
+func partition(s string) [][]string {
+	res := [][]string{}
+	trace := []string{}
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		if start == len(s) {
+			tmp := make([]string, len(trace))
+			copy(tmp, trace)
+			res = append(res, tmp)
+			return
+		}
+
+		for i := start; i < len(s); i++ { // 横向遍历：找切割线  切割到字符串的结尾位置
+			if isPartition(s, start, i) { // 是回文子串
+				trace = append(trace, s[start:i+1]) // 左开右闭，所以i+1
+			} else {
+				continue
+			}
+			backtrace(i + 1) // i+1 表示下一轮递归遍历的起始位置
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+// 判断是否为回文
+func isPartition(s string, startIndex, end int) bool {
+	for startIndex < end {
+		if s[startIndex] != s[end] {
+			return false
+		}
+		//移动左右指针
+		startIndex++
+		end--
+	}
+	return true
+}
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
+## 93. 复原 IP 地址
+
+答案
+
+```go
+func restoreIpAddresses(s string) []string {
+	var res, path []string
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		if start == len(s) && len(path) == 4 {
+			tmpString := path[0] + "." + path[1] + "." + path[2] + "." + path[3]
+			fmt.Println("tmpString:", tmpString)
+			res = append(res, tmpString)
+		}
+		for i := start; i < len(s); i++ {
+			path = append(path, s[start:i+1])
+			fmt.Println("path:", path)
+			if i-start+1 <= 3 && len(path) <= 4 && isIP(s, start, i) {
+				backtrace(i + 1)
+			} else {
+				path = path[:len(path)-1] // 因为下面是return，所以要提前回溯
+				return	// 直接返回 
+			}
+			path = path[:len(path)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+// 判断字符串s在左闭右闭区间[start, end]所组成的数字是否合法
+func isIP(s string, start int, end int) bool {
+	check, err := strconv.Atoi(s[start : end+1])
+	if err != nil { // 遇到非数字字符不合法
+		return false
+	}
+	if end-start+1 > 1 && s[start] == '0' { // 0开头的数字不合法
+		return false
+	}
+	if check > 255 { // 大于255了不合法
+		return false
+	}
+	return true
+}
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
+## 78. 子集
+
+答案
+
+```go
+func subsets(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	sort.Ints(nums)
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		tmp := make([]int, len(trace))
+		copy(tmp, trace)
+		res = append(res, tmp)
+		for i := start; i < len(nums); i++ {
+			trace = append(trace, nums[i])
+			backtrace(i + 1) // 取过的元素不会重复取
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+```
+
+
+
+分析
+
+```
+子集问题是找树的所有节点
+求取子集问题，不需要任何剪枝！因为子集就是要遍历整棵树
+```
+
+
+
+## 90. 子集 II
+
+答案
+
+```go
+func subsetsWithDup(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	sort.Ints(nums)	// 去重需要排序
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		tmp := make([]int, len(trace))
+		copy(tmp, trace)
+		res = append(res, tmp)
+		for i := start; i < len(nums); i++ {
+			if i > start && nums[i] == nums[i-1] { // 对同一树层使用过的元素进行跳过
+				continue
+			}
+			trace = append(trace, nums[i])
+			backtrace(i + 1)
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+```
+
+
+
+分析
+
+```
+关于回溯算法中的树层去重问题，在 40.组合总和II 中已经详细讲解过了，和本题是一个套路。
+```
+
+
+
+## 9
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
+## 9
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
+## 9
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
+## 9
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
+## 9
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```
+
 ```
 
 
