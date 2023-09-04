@@ -282,3 +282,88 @@ func subsetsWithDup(nums []int) [][]int {
 	backtrace(0)
 	return res
 }
+
+// 491. 递增子序列
+func findSubsequences(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	var backtrace func(start int)
+	backtrace = func(start int) {
+		if len(trace) > 1 {
+			tmp := make([]int, len(trace))
+			copy(tmp, trace)
+			res = append(res, tmp)
+			// 注意这里不要加return，因为要取树上的所有节点
+		}
+		used := [201]int{} // 使用数组来进行去重操作，题目表明数值范围[-100, 100]
+		for i := start; i < len(nums); i++ {
+			if len(trace) > 0 && nums[i] < trace[len(trace)-1] || used[nums[i]+100] == 1 {
+				continue // 非递增 或 同一树层使用过相同的数字，则跳过
+			}
+			used[nums[i]+100] = 1 // 记录这个元素在本层用过了，本层后面不能再用了
+			trace = append(trace, nums[i])
+			backtrace(i + 1)
+			trace = trace[:len(trace)-1]
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+// 46.全排列
+func permute(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	used := [21]int{}
+	var backtrace func()
+	backtrace = func() {
+		if len(trace) == len(nums) {
+			tmp := make([]int, len(trace))
+			copy(tmp, trace)
+			res = append(res, tmp) // 如果这里是res = append(res, trace)，则res里的每个值会随着trace的变化而变化
+			return
+		}
+		for i := 0; i < len(nums); i++ {
+			if used[nums[i]+10] == 0 { // 因为 nums[i] 为 -10 ~ 10
+				trace = append(trace, nums[i])
+				used[nums[i]+10] = 1
+				backtrace()
+				trace = trace[:len(trace)-1] // 回溯时要消除之前的影响
+				used[nums[i]+10] = 0
+			}
+		}
+	}
+	backtrace()
+	return res
+}
+
+// 47. 全排列 II
+func permuteUnique(nums []int) [][]int {
+	res := [][]int{}
+	trace := []int{}
+	used := [10]int{}
+	sort.Ints(nums)
+	var backtrace func()
+	backtrace = func() {
+		if len(trace) == len(nums) {
+			tmp := make([]int, len(trace))
+			copy(tmp, trace)
+			res = append(res, tmp) // 如果这里是res = append(res, trace)，则res里的每个值会随着trace的变化而变化
+			return
+		}
+		for i := 0; i < len(nums); i++ {
+			if i > 0 && nums[i] == nums[i-1] && used[i-1] == 0 { // 对树层中前一位去重
+				continue // 要对树层中前一位去重，used[i-1]=0；要对树枝前一位去重，used[i-1]=1
+			}
+			if used[i] == 0 { // 因为 nums[i] 为 -10 ~ 10
+				used[i] = 1
+				trace = append(trace, nums[i])
+				backtrace()
+				trace = trace[:len(trace)-1] // 回溯时要消除之前的影响
+				used[i] = 0
+			}
+		}
+	}
+	backtrace()
+	return res
+}
