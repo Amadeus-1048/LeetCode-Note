@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // 77. 组合
@@ -366,4 +367,115 @@ func permuteUnique(nums []int) [][]int {
 	}
 	backtrace()
 	return res
+}
+
+// 51. N 皇后
+func solveNQueens(n int) [][]string {
+	res := [][]string{}
+	chessboard := make([][]string, n)
+	for i := 0; i < n; i++ {
+		chessboard[i] = make([]string, n)
+	}
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			chessboard[i][j] = "."
+		}
+	}
+
+	var backtrace func(row int)
+	backtrace = func(row int) { // n是棋盘的大小，用row来记录当前遍历到棋盘的第几层
+		if row == n {
+			tmp := make([]string, n)
+			for i, rowStr := range chessboard {
+				tmp[i] = strings.Join(rowStr, "") // 将rowStr中的子串连接成一个单独的字符串，子串之间用""分隔
+			}
+			res = append(res, tmp)
+			return
+		}
+		for i := 0; i < n; i++ { // 在第row行，第i列放皇后  每次都是要从新的一行的起始位置开始搜，所以都是从0开始
+			if isValidForQueens(n, row, i, chessboard) {
+				chessboard[row][i] = "Q" // 放置皇后
+				backtrace(row + 1)
+				chessboard[row][i] = "." // 回溯，撤销皇后
+			}
+		}
+	}
+	backtrace(0)
+	return res
+}
+
+func isValidForQueens(n, row, col int, chessboard [][]string) bool {
+	// 3个判断都进行了剪枝  因为大于row的行还没有处理，所以不可能有皇后
+	// 检查列（正上方）
+	for i := 0; i < row; i++ {
+		if chessboard[i][col] == "Q" { // 行不固定，列固定，遍历检查
+			return false
+		}
+	}
+	// 检查 45度角是否有皇后（左上角）
+	for i, j := row-1, col-1; i >= 0 && j >= 0; i, j = i-1, j-1 {
+		if chessboard[i][j] == "Q" {
+			return false
+		}
+	}
+	// 检查 135度角是否有皇后（右上角）
+	for i, j := row-1, col+1; i >= 0 && j < n; i, j = i-1, j+1 {
+		if chessboard[i][j] == "Q" {
+			return false
+		}
+	}
+	return true
+}
+
+// 37. 解数独
+func solveSudoku(board [][]byte) {
+	var dfs func(board [][]byte) bool
+	dfs = func(board [][]byte) bool {
+		for i := 0; i < 9; i++ { // 遍历行
+			for j := 0; j < 9; j++ { // 遍历列
+				// 判断此位置是否适合填数字
+				if board[i][j] != '.' {
+					continue
+				}
+
+				// 尝试填1-9
+				for k := '1'; k <= '9'; k++ {
+					if isvalid(i, j, byte(k), board) == true { // (i, j) 这个位置放k是否合适
+						board[i][j] = byte(k)   // 放置k
+						if dfs(board) == true { // 如果找到合适一组立刻返回
+							return true
+						}
+						board[i][j] = '.' // 回溯，撤销k
+					}
+				}
+				return false // 9个数都试完了，都不行，那么就返回false
+			}
+		}
+		return true // 遍历完没有返回false，说明找到了合适棋盘位置了
+	}
+	dfs(board)
+}
+
+// 判断填入数字是否满足要求
+func isvalid(row, col int, k byte, board [][]byte) bool {
+	for i := 0; i < 9; i++ { // 判断行里是否重复
+		if board[row][i] == k {
+			return false
+		}
+	}
+	for i := 0; i < 9; i++ { // 判断列里是否重复
+		if board[i][col] == k {
+			return false
+		}
+	}
+	startrow := (row / 3) * 3
+	startcol := (col / 3) * 3
+	for i := startrow; i < startrow+3; i++ { // 判断9方格里是否重复
+		for j := startcol; j < startcol+3; j++ {
+			if board[i][j] == k {
+				return false
+			}
+		}
+	}
+	return true
 }
