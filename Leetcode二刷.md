@@ -3484,12 +3484,26 @@ func findContentChildren(g []int, s []int) int {
 
 
 
-## 3
+## 376. 摆动序列
 
 答案
 
 ```go
-
+func wiggleMaxLength(nums []int) int {
+	count, preDiff, curDiff := 1, 0, 0 // 序列默认序列最右边有一个峰值
+	if len(nums) < 2 {
+		return 1
+	}
+	for i := 0; i < len(nums)-1; i++ {
+		curDiff = nums[i+1] - nums[i]
+		// //如果有正有负则更新下标值||或者只有前一个元素为0（针对两个不等元素的序列也视作摆动序列，且摆动长度为2）
+		if (curDiff > 0 && preDiff <= 0) || (preDiff >= 0 && curDiff < 0) {
+			preDiff = curDiff
+			count++ // 统计数组的峰值数量	相当于是删除单一坡度上的节点，然后统计长度
+		}
+	}
+	return count
+}
 ```
 
 
@@ -3497,17 +3511,34 @@ func findContentChildren(g []int, s []int) int {
 分析
 
 ```go
-
+在计算是否有峰值的时候，根据遍历下标 i ，
+计算 prediff（nums[i] - nums[i-1]） 和 curdiff（nums[i+1] - nums[i]），
+如果prediff < 0 && curdiff > 0 或者 prediff > 0 && curdiff < 0 此时就有波动就需要统计
 ```
 
 
 
-## 3
+## 53. 最大子数组和
 
 答案
 
 ```go
-
+func maxSubArray(nums []int) int {
+	length := len(nums)
+	if length == 1 {
+		return nums[0]
+	}
+	res, sum := nums[0], nums[0]
+	for i := 1; i < length; i++ {
+		if sum < 0 { // 相当于重置最大子序起始位置，因为遇到负数一定是拉低总和
+			sum = nums[i]
+		} else {
+			sum += nums[i] // 取区间累计的最大值（相当于不断确定最大子序终止位置）
+		}
+		res = max(res, sum)
+	}
+	return res
+}
 ```
 
 
@@ -3515,17 +3546,29 @@ func findContentChildren(g []int, s []int) int {
 分析
 
 ```go
+局部最优：当前“连续和”为负数的时候立刻放弃，从下一个元素重新计算“连续和”，因为负数加上下一个元素 “连续和”只会越来越小。
 
+全局最优：选取最大“连续和”
+
+局部最优的情况下，并记录最大的“连续和”，可以推出全局最优。
 ```
 
 
 
-## 3
+## 122. 买卖股票的最佳时机 II
 
 答案
 
 ```go
-
+func maxProfit(prices []int) int {
+	sum := 0
+	for i := 1; i < len(prices); i++ { // 第一天没有利润，至少要第二天才会有利润
+		if prices[i]-prices[i-1] > 0 {
+			sum += prices[i] - prices[i-1]
+		}
+	}
+	return sum
+}
 ```
 
 
@@ -3533,17 +3576,31 @@ func findContentChildren(g []int, s []int) int {
 分析
 
 ```go
+把利润分解为每天为单位的维度
 
+局部最优：收集每天的正利润，全局最优：求得最大利润
+
+假如第 0 天买入，第 3 天卖出，那么利润为：prices[3] - prices[0]。
+相当于(prices[3] - prices[2]) + (prices[2] - prices[1]) + (prices[1] - prices[0])。
 ```
 
 
 
-## 3
+## 55. 跳跃游戏
 
 答案
 
 ```go
-
+func canJump(nums []int) bool {
+	mx := 0
+	for i, num := range nums {
+		if i > mx {
+			return false
+		}
+		mx = max(mx, i+num)
+	}
+	return true
+}
 ```
 
 
@@ -3551,17 +3608,31 @@ func findContentChildren(g []int, s []int) int {
 分析
 
 ```go
-
+不用拘泥于每次究竟跳几步，而是看覆盖范围，覆盖范围内一定是可以跳过来的，不用管是怎么跳的。
 ```
 
 
 
-## 3
+## 45. 跳跃游戏 II
 
 答案
 
 ```go
-
+func jump(nums []int) int {
+	curDistance := 0                   // 当前覆盖的最远距离下标
+	ans := 0                           // 记录走的最大步数
+	nextDistance := 0                  // 下一步覆盖的最远距离下标
+	for i := 0; i < len(nums)-1; i++ { // 注意这里是小于nums.size() - 1，这是关键所在
+		if nums[i]+i > nextDistance {
+			nextDistance = nums[i] + i // 更新下一步覆盖的最远距离下标
+		}
+		if i == curDistance { // 遇到当前覆盖的最远距离下标，直接步数加一
+			curDistance = nextDistance // 更新当前覆盖的最远距离下标
+			ans++
+		}
+	}
+	return ans
+}
 ```
 
 
@@ -3569,7 +3640,11 @@ func findContentChildren(g []int, s []int) int {
 分析
 
 ```go
+贪心的思路，局部最优：当前可移动距离尽可能多走，如果还没到终点，步数再加一。整体最优：一步尽可能多走，从而达到最小步数。
 
+所以真正解题的时候，要从覆盖范围出发，不管怎么跳，覆盖范围内一定是可以跳到的，以最小的步数增加覆盖范围，覆盖范围一旦覆盖了终点，得到的就是最小步数
+
+如果移动下标达到了当前这一步的最大覆盖最远距离了，还没有到终点的话，那么就必须再走一步来增加覆盖范围，直到覆盖范围覆盖了终点。	
 ```
 
 
