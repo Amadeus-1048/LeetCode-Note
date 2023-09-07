@@ -1,6 +1,10 @@
 package functions
 
-import "sort"
+import (
+	"math"
+	"sort"
+	"strconv"
+)
 
 // 455. 分发饼干
 func findContentChildren(g []int, s []int) int {
@@ -90,4 +94,51 @@ func jump(nums []int) int {
 		}
 	}
 	return ans
+}
+
+// 1005. K 次取反后最大化的数组和
+func largestSumAfterKNegations(nums []int, K int) int {
+	// 将数组按照绝对值大小从大到小排序
+	sort.Slice(nums, func(i, j int) bool {
+		return math.Abs(float64(nums[i])) > math.Abs(float64(nums[j]))
+	})
+	// 从前向后遍历，遇到负数将其变为正数
+	for i := 0; i < len(nums); i++ {
+		if K > 0 && nums[i] < 0 {
+			K--
+			nums[i] = -nums[i]
+		}
+	}
+	// 如果K还大于0，那么反复转变数值最小的元素，将K用完
+	if K%2 == 1 {
+		nums[len(nums)-1] *= -1
+	}
+	// 求和
+	res := 0
+	for i := 0; i < len(nums); i++ {
+		res += nums[i]
+	}
+	return res
+}
+
+// 738. 单调递增的数字
+func monotoneIncreasingDigits(N int) int {
+	//将数字转为字符串，方便使用下标
+	s := strconv.Itoa(N)
+	//将字符串转为byte数组，方便更改
+	ss := []byte(s)
+	n := len(ss)
+	if n < 2 {
+		return N
+	}
+	for i := n - 1; i > 0; i-- { // 从后向前遍历
+		if ss[i-1] > ss[i] { //前一个大于后一位,前一位减1，后面的全部置为9
+			ss[i-1] -= 1
+			for j := i; j < n; j++ { //后面的全部置为9
+				ss[j] = '9'
+			}
+		}
+	}
+	res, _ := strconv.Atoi(string(ss))
+	return res
 }
