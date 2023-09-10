@@ -3733,7 +3733,17 @@ func monotoneIncreasingDigits(N int) int {
 答案
 
 ```go
-
+func fib(n int) int {
+	if n < 2 {
+		return n
+	}
+	a, b, c := 0, 1, 1
+	for i := 2; i <= n; i++ {
+		c = a + b
+		a, b = b, c
+	}
+	return c
+}
 ```
 
 
@@ -3741,17 +3751,29 @@ func monotoneIncreasingDigits(N int) int {
 分析
 
 ```go
+状态转移方程 dp[i] = dp[i - 1] + dp[i - 2]
 
+初始化：dp[0] = 0;	dp[1] = 1
 ```
 
 
 
-## 509. 斐波那契数
+## 70. 爬楼梯
 
 答案
 
 ```go
-
+func climbStairs(n int) int {
+	if n < 3 {
+		return n
+	}
+	a, b, c := 1, 2, 3
+	for i := 3; i <= n; i++ { // 如果从i=2开始遍历，那么判断条件要去掉=
+		c = a + b
+		a, b = b, c
+	}
+	return c
+}
 ```
 
 
@@ -3759,17 +3781,26 @@ func monotoneIncreasingDigits(N int) int {
 分析
 
 ```go
+dp[i] = dp[i - 1] + dp[i - 2]
 
+初始化：dp[1] = 1，dp[2] = 2
 ```
 
 
 
-## 509. 斐波那契数
+## 746. 使用最小花费爬楼梯
 
 答案
 
 ```go
-
+func minCostClimbingStairs(cost []int) int {
+	a, b, c := 0, 0, 0
+	for i := 2; i <= len(cost); i++ {
+		c = min(a+cost[i-2], b+cost[i-1])
+		a, b = b, c
+	}
+	return c
+}
 ```
 
 
@@ -3777,12 +3808,16 @@ func monotoneIncreasingDigits(N int) int {
 分析
 
 ```go
+dp[i]的定义：到达第i台阶所花费的最少体力为dp[i]
 
+dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
+
+初始化 ：dp[0] = 0，dp[1] = 0
 ```
 
 
 
-## 509. 斐波那契数
+## 62. 不同路径
 
 答案
 
