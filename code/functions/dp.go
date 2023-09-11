@@ -37,3 +37,17 @@ func minCostClimbingStairs(cost []int) int {
 }
 
 // 62. 不同路径
+func uniquePaths(m int, n int) int {
+	a := 1     // 分子  从m+n-2开始累乘m-1个数
+	b := m - 1 // 分母 从 1 累乘到 m-1
+	t := m + n - 2
+	for i := m - 1; i > 0; i-- {
+		a *= t
+		t--
+		for b != 0 && a%b == 0 {
+			a /= b
+			b--
+		}
+	}
+	return a
+}
