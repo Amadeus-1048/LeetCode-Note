@@ -51,3 +51,53 @@ func uniquePaths(m int, n int) int {
 	}
 	return a
 }
+
+// 63. 不同路径 II
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+	m, n := len(obstacleGrid), len(obstacleGrid[0])
+	dp := make([][]int, m)
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, n)
+	}
+	for i := 0; i < m && obstacleGrid[i][0] == 0; i++ { // 障碍之后的dp还是初始值0
+		dp[i][0] = 1
+	}
+	for j := 0; j < n && obstacleGrid[0][j] == 0; j++ { // 障碍之后的dp还是初始值0
+		dp[0][j] = 1
+	}
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			if obstacleGrid[i][j] != 1 {
+				dp[i][j] = dp[i-1][j] + dp[i][j-1]
+			}
+		}
+	}
+	return dp[m-1][n-1]
+}
+
+// 343. 整数拆分
+func integerBreak(n int) int {
+	dp := make([]int, n+1)
+	dp[2] = 1
+	for i := 3; i <= n; i++ {
+		for j := 1; j <= i-2; j++ {
+			dp[i] = max(dp[i], max(j*(i-j), dp[i-j]*j))
+		}
+	}
+	return dp[n]
+}
+
+// 96. 不同的二叉搜索树
+func numTrees(n int) int {
+	dp := make([]int, n+1)
+	// dp[i] ： 1到i为节点组成的二叉搜索树的个数为dp[i]
+	dp[0] = 1
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= i; j++ {
+			// j-1 为 以j为头结点左子树节点数量
+			// i-j 为以j为头结点右子树节点数量
+			dp[i] += dp[j-1] * dp[i-j]
+		}
+	}
+	return dp[n]
+}

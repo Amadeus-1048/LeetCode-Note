@@ -3874,12 +3874,32 @@ for (int j = 0; j < n; j++) dp[0][j] = 1;
 
 
 
-## 509. 斐波那契数
+## 63. 不同路径 II
 
 答案
 
 ```go
-
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+	m, n := len(obstacleGrid), len(obstacleGrid[0])
+	dp := make([][]int, m)
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, n)
+	}
+	for i := 0; i < m && obstacleGrid[i][0] == 0; i++ { // 障碍之后的dp还是初始值0
+		dp[i][0] = 1
+	}
+	for j := 0; j < n && obstacleGrid[0][j] == 0; j++ { // 障碍之后的dp还是初始值0
+		dp[0][j] = 1
+	}
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			if obstacleGrid[i][j] != 1 {
+				dp[i][j] = dp[i-1][j] + dp[i][j-1]
+			}
+		}
+	}
+	return dp[m-1][n-1]
+}
 ```
 
 
@@ -3887,17 +3907,42 @@ for (int j = 0; j < n; j++) dp[0][j] = 1;
 分析
 
 ```go
+dp[i][j] ：表示从（0 ，0）出发，到(i, j) 有dp[i][j]条不同的路径
 
+dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+(i, j)如果就是障碍的话应该就保持初始状态（初始状态为0）
+
+初始化：
+因为从(0, 0)的位置到(i, 0)的路径只有一条，所以dp[i][0]一定为1，dp[0][j]也同理。
+但如果(i, 0) 这条边有了障碍之后，障碍之后（包括障碍）都是走不到的位置了，所以障碍之后的dp[i][0]应该还是初始值0
+下标(0, j)的初始化情况同理
 ```
 
 
 
-## 509. 斐波那契数
+## 343. 整数拆分
 
 答案
 
 ```go
+func integerBreak(n int) int {
+	dp := make([]int, n+1)
+	dp[2] = 1
+	for i:=3; i<=n; i++ {
+		for j:=1; j<=i-2; j++ {
+			dp[i] = max(dp[i], max(j*(i-j), dp[i-j]*j))
+		}
+	}
+	return dp[n]
+}
 
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 ```
 
 
@@ -3905,17 +3950,33 @@ for (int j = 0; j < n; j++) dp[0][j] = 1;
 分析
 
 ```go
+dp[i]：分拆数字i，可以得到的最大乘积为dp[i]
 
+递推公式：dp[i] = max({dp[i], (i - j) * j, dp[i - j] * j})
+
+初始化：dp[2] = 1，从dp[i]的定义来说，拆分数字2，得到的最大乘积是1
 ```
 
 
 
-## 509. 斐波那契数
+## 96. 不同的二叉搜索树
 
 答案
 
 ```go
-
+func numTrees(n int)int{
+	dp := make([]int, n+1)
+	// dp[i] ： 1到i为节点组成的二叉搜索树的个数为dp[i]
+	dp[0] = 1
+	for i:=1; i<=n; i++ {
+		for j:=1; j<=i; j++ {
+			// j-1 为 以j为头结点左子树节点数量
+			// i-j 为以j为头结点右子树节点数量
+			dp[i] += dp[j-1] * dp[i-j]
+		}
+	}
+	return dp[n]
+}
 ```
 
 
@@ -3923,7 +3984,11 @@ for (int j = 0; j < n; j++) dp[0][j] = 1;
 分析
 
 ```go
+dp[i] ： 1到i为节点组成的二叉搜索树的个数为dp[i]
 
+递推公式：dp[i] += dp[j - 1] * dp[i - j]; ，j-1 为j为头结点左子树节点数量，i-j 为以j为头结点右子树节点数量
+
+dp[0] = 1
 ```
 
 
