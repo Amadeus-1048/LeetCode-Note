@@ -123,3 +123,22 @@ func canPartition(nums []int) bool {
 	}
 	return dp[sum] == sum // 集合中的元素正好可以凑成总和target
 }
+
+// 1049. 最后一块石头的重量 II
+func lastStoneWeightII(stones []int) int {
+	n := len(stones)
+	sum := 0
+	target := 0
+	for i := 0; i < n; i++ {
+		sum += stones[i]
+	}
+	target = sum / 2 // target总是较小的，且dp[target]<=target
+
+	dp := make([]int, sum+1)
+	for i := 0; i < n; i++ {
+		for j := target; j >= stones[i]; j-- { // 每一个元素一定是不可重复放入，所以从大到小遍历
+			dp[j] = max(dp[j], dp[j-stones[i]]+stones[i])
+		}
+	}
+	return sum - dp[target] - dp[target]
+}

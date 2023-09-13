@@ -4036,6 +4036,161 @@ dp[0]一定是0。
 
 
 
+## 1049. 最后一块石头的重量 II
+
+答案
+
+```go
+func lastStoneWeightII(stones []int) int {
+	n := len(stones)
+	sum := 0
+	target := 0
+	for i := 0; i < n; i++ {
+		sum += stones[i]
+	}
+	target = sum / 2 // target总是较小的，且dp[target]<=target
+
+	dp := make([]int, sum+1)
+	for i := 0; i < n; i++ {
+		for j := target; j >= stones[i]; j-- { // 每一个元素一定是不可重复放入，所以从大到小遍历
+			dp[j] = max(dp[j], dp[j-stones[i]]+stones[i])
+		}
+	}
+	return sum - dp[target] - dp[target]
+}
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+
+
+分析
+
+```go
+dp[j]表示容量（这里说容量更形象，其实就是重量）为j的背包，最多可以背最大重量为dp[j]
+本题中，石头的重量是 stones[i]，石头的价值也是 stones[i] ，可以 “最多可以装的价值为 dp[j]” == “最多可以背的重量为dp[j]“
+
+dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
+
+重量都不会是负数，所以dp[j]都初始化为0
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
 ## 509. 斐波那契数
 
 答案
