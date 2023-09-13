@@ -101,3 +101,25 @@ func numTrees(n int) int {
 	}
 	return dp[n]
 }
+
+// 416. 分割等和子集
+func canPartition(nums []int) bool {
+	n := len(nums)
+	sum := 0
+	for i := 0; i < n; i++ {
+		sum += nums[i]
+	}
+	if sum%2 == 1 {
+		return false
+	} else {
+		sum /= 2
+	}
+
+	dp := make([]int, sum+1)
+	for i := 0; i < n; i++ {
+		for j := sum; j >= nums[i]; j-- { // 每一个元素一定是不可重复放入，所以从大到小遍历
+			dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
+		}
+	}
+	return dp[sum] == sum // 集合中的元素正好可以凑成总和target
+}

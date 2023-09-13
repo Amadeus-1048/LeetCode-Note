@@ -3993,12 +3993,31 @@ dp[0] = 1
 
 
 
-## 509. 斐波那契数
+## 416. 分割等和子集
 
 答案
 
 ```go
+func canPartition(nums []int) bool {
+	n := len(nums)
+	sum := 0
+	for i := 0; i < n; i++ {
+		sum += nums[i]
+	}
+	if sum%2 == 1 {
+		return false
+	} else {
+		sum /= 2
+	}
 
+	dp := make([]int, sum+1)
+	for i := 0; i < n; i++ {
+		for j := sum; j >= nums[i]; j-- { // 每一个元素一定是不可重复放入，所以从大到小遍历
+			dp[j] = max(dp[j], dp[j-nums[i]]+nums[i])
+		}
+	}
+	return dp[sum] == sum // 集合中的元素正好可以凑成总和target
+}
 ```
 
 
@@ -4006,7 +4025,13 @@ dp[0] = 1
 分析
 
 ```go
+dp[j]表示 背包总容量（所能装的总重量）是j，放进物品后，背的最大重量为dp[j]。
+本题中每一个元素的数值既是重量，也是价值，所以不会有价值超过容量的情况。所以dp[j] <= j
 
+dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);
+
+dp[0]一定是0。
+如果题目给的价值都是正整数那么非0下标都初始化为0就可以了，如果题目给的价值有负数，那么非0下标就要初始化为负无穷
 ```
 
 
