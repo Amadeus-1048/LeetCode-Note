@@ -4083,12 +4083,55 @@ dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
 
 
 
-## 509. 斐波那契数
+## 494. 目标和
 
 答案
 
 ```go
+func findTargetSumWays(nums []int, target int) int {
+	n := len(nums)
+	sum := 0
+	for i:=0; i<n; i++ {
+		sum += nums[i]
+	}
+	x := (sum+target)/2
+	if (sum+target)%2 == 1 || abs(target)>sum {
+		return 0
+	}
+	dp := make([]int, x+1)
+	dp[0] = 1
+	for i:=0; i<n; i++ {
+		for j:=x; j>=nums[i]; j-- {
+			dp[j] += dp[j-nums[i]]
+		}
+	}
+	return dp[x]
+}
 
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// 求两个数中的较小者
+func min(a, b int) int {
+	if a > b {
+		return b
+	}
+	return a
+}
+
+// 求绝对值
+func abs(a int) int {
+	if a < 0 {
+		return -a
+	}
+	return a
+}
 ```
 
 
@@ -4096,17 +4139,51 @@ dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
 分析
 
 ```go
+dp[j] 表示：填满j（包括j）这么大容积的包，有dp[j]种方法
 
+只要搞到nums[i]，凑成dp[j]就有dp[j - nums[i]] 种方法
+
+dp[0] 为 1
 ```
 
 
 
-## 509. 斐波那契数
+## 474. 一和零
 
 答案
 
 ```go
+func findMaxForm(strs []string, m int, n int) int {
+	one, zero := 0, 0
+	dp := make([][]int, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+	}
+	for i := 0; i < len(strs); i++ { // 遍历物品
+		zero, one = 0, 0 // 物品i中0和1的数量
+		for _, v := range strs[i] {
+			if v == '0' {
+				zero++
+			}
+		}
+		one = len(strs[i]) - zero
+		for j := m; j >= zero; j-- { // 遍历背包容量且从后向前遍历！
+			for k := n; k >= one; k-- {
+				dp[j][k] = max(dp[j][k], dp[j-zero][k-one]+1)
+			}
+		}
+	}
+	return dp[m][n]
+}
 
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 ```
 
 
@@ -4114,7 +4191,12 @@ dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
 分析
 
 ```go
+dp[i][j]：最多有i个0和j个1的strs的最大子集的大小为dp[i][j]
 
+dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1)
+这就是一个典型的01背包！ 只不过物品的重量有了两个维度而已
+
+物品价值不会是负数，初始为0，保证递推的时候dp[i][j]不会被初始值覆盖
 ```
 
 

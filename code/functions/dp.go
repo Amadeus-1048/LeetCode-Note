@@ -142,3 +142,48 @@ func lastStoneWeightII(stones []int) int {
 	}
 	return sum - dp[target] - dp[target]
 }
+
+// 494. 目标和
+func findTargetSumWays(nums []int, target int) int {
+	n := len(nums)
+	sum := 0
+	for i := 0; i < n; i++ {
+		sum += nums[i]
+	}
+	x := (sum + target) / 2
+	if (sum+target)%2 == 1 || abs(target) > sum {
+		return 0
+	}
+	dp := make([]int, x+1)
+	dp[0] = 1
+	for i := 0; i < n; i++ {
+		for j := x; j >= nums[i]; j-- {
+			dp[j] += dp[j-nums[i]]
+		}
+	}
+	return dp[x]
+}
+
+// 474. 一和零
+func findMaxForm(strs []string, m int, n int) int {
+	one, zero := 0, 0
+	dp := make([][]int, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+	}
+	for i := 0; i < len(strs); i++ { // 遍历物品
+		zero, one = 0, 0 // 物品i中0和1的数量
+		for _, v := range strs[i] {
+			if v == '0' {
+				zero++
+			}
+		}
+		one = len(strs[i]) - zero
+		for j := m; j >= zero; j-- { // 遍历背包容量且从后向前遍历！
+			for k := n; k >= one; k-- {
+				dp[j][k] = max(dp[j][k], dp[j-zero][k-one]+1)
+			}
+		}
+	}
+	return dp[m][n]
+}
