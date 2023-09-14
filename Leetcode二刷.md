@@ -1,3 +1,33 @@
+# 总结
+
+## 数组
+
+
+
+## 链表
+
+
+
+## 哈希表
+
+
+
+## 树
+
+
+
+## 回溯
+
+
+
+## 贪心
+
+
+
+## 动态规划
+
+
+
 # 数组
 
 ## 704.二分查找
@@ -4201,12 +4231,22 @@ dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1)
 
 
 
-## 509. 斐波那契数
+## 518. 零钱兑换 II
 
 答案
 
 ```go
-
+func change(amount int, coins []int) int {
+	n := len(coins)
+	dp := make([]int, amount+1)
+	dp[0] = 1
+	for i := 0; i < n; i++ { // 遍历物品
+		for j := coins[i]; j <= amount; j++ { // 遍历背包
+			dp[j] += dp[j-coins[i]]
+		}
+	}
+	return dp[amount]
+}
 ```
 
 
@@ -4214,82 +4254,17 @@ dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1)
 分析
 
 ```go
+dp[j]：凑成总金额j的货币组合数为dp[j]
 
+dp[j] 就是所有的dp[j - coins[i]]（考虑coins[i]的情况）相加。
+所以递推公式：dp[j] += dp[j - coins[i]]
+求装满背包有几种方法，公式都是：dp[j] += dp[j - nums[i]]
+
+dp[0] = 1是 递归公式的基础。如果dp[0] = 0 的话，后面所有推导出来的值都是0
+
+如果求组合数就是外层for循环遍历物品，内层for遍历背包。
+如果求排列数就是外层for遍历背包，内层for循环遍历物品。
 ```
-
-
-
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
 
 
 
@@ -4302,8 +4277,8 @@ func combinationSum4(nums []int, target int) int {
 	n := len(nums)
 	dp := make([]int, target+1)
 	dp[0] = 1
-	for i:=0; i<=target; i++ {
-		for j:=0; j<n; j++ {
+	for i := 0; i <= target; i++ { // 遍历背包
+		for j := 0; j < n; j++ { // 遍历物品
 			if i >= nums[j] {
 				dp[i] += dp[i-nums[j]]
 			}
@@ -4316,6 +4291,20 @@ func combinationSum4(nums []int, target int) int {
 
 
 分析
+
+```go
+dp[i]: 凑成目标正整数为i的排列个数为dp[i]
+
+dp[i]（考虑nums[j]）可以由 dp[i - nums[j]]（不考虑nums[j]） 推导出来。
+因为只要得到nums[j]，排列个数dp[i - nums[j]]，就是dp[i]的一部分。
+求装满背包有几种方法，递推公式一般都是dp[i] += dp[i - nums[j]];
+
+因为递推公式dp[i] += dp[i - nums[j]]的缘故，dp[0]要初始化为1，这样递归其他dp[i]的时候才会有数值基础。
+至于dp[0] = 1 有没有意义呢？其实没有意义，仅仅是为了推导递推公式。
+至于非0下标的dp[i]应该初始为多少呢？初始化为0，这样才不会影响dp[i]累加所有的dp[i - nums[j]]。
+```
+
+
 
 [https://programmercarl.com/0377.%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E2%85%A3.html#%E6%80%9D%E8%B7%AF](https://programmercarl.com/0377.组合总和Ⅳ.html#思路)
 
@@ -4341,9 +4330,9 @@ func combinationSum4(nums []int, target int) int {
 ```go
 func coinChange(coins []int, amount int) int {
 	dp := make([]int, amount+1)
-	for j:=1; j<=amount; j++ {
+	for j := 1; j <= amount; j++ { // 遍历背包
 		dp[j] = math.MaxInt32
-		for i:=0; i<len(coins); i++ {
+		for i := 0; i < len(coins); i++ { // 遍历物品
 			if j >= coins[i] {
 				dp[j] = min(dp[j], dp[j-coins[i]]+1)
 			}
@@ -4355,15 +4344,39 @@ func coinChange(coins []int, amount int) int {
 		return dp[amount]
 	}
 }
+
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// 求两个数中的较小者
+func min(a, b int) int {
+	if a > b {
+		return b
+	}
+	return a
+}
 ```
 
 
 
 分析
 
-[https://programmercarl.com/0322.%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2.html#%E6%80%9D%E8%B7%AF](https://programmercarl.com/0322.零钱兑换.html#思路)
-
 ```go
+dp[j]：凑足总额为j所需钱币的最少个数为dp[j]
+
+凑足总额为j - coins[i]的最少个数为dp[j - coins[i]]，那么只需要加上一个钱币coins[i]即dp[j - coins[i]] + 1就是dp[j]（考虑coins[i]），所以dp[j] 要取所有 dp[j - coins[i]] + 1 中最小的。
+递推公式：dp[j] = min(dp[j - coins[i]] + 1, dp[j]);
+
+凑足总金额为0所需钱币的个数一定是0，那么dp[0] = 0
+考虑到递推公式的特性，dp[j]必须初始化为一个最大的数，否则就会在min(dp[j - coins[i]] + 1, dp[j])比较的过程中被初始值覆盖。所以下标非0的元素都是应该是最大值
+
+--------------------------------------------------------------------------------------
 dp[j] 要取所有 dp[j - coins[i]] + 1 中最小的，所以用min()
 这里dp[j]是会不断赋值更新的，要求其中最小的，所以不能是dp[j] = dp[j-coins[i]]+1
 
@@ -4374,6 +4387,91 @@ dp[j] 要取所有 dp[j - coins[i]] + 1 中最小的，所以用min()
 
 本题钱币数量可以无限使用，那么是完全背包。所以遍历的内循环是正序
 ```
+
+
+
+
+
+
+
+## 279. 完全平方数
+
+答案
+
+```go
+func numSquares(n int) int {
+	dp := make([]int, n+1)
+	for j := 1; j <= n; j++ { // 遍历背包
+		dp[j] = math.MaxInt32
+		for i := 1; i*i <= j; i++ {	// 遍历物品
+			if j >= i*i {
+				dp[j] = min(dp[j], dp[j-i*i]+1)
+			}
+		}
+	}
+	return dp[n]
+}
+
+// 求两个数中的较小者
+func min(a, b int) int {
+	if a > b {
+		return b
+	}
+	return a
+}
+```
+
+
+
+分析
+
+```go
+dp[j]：和为j的完全平方数的最少数量为dp[j]
+
+dp[j] 可以由dp[j - i * i]推出， dp[j - i * i] + 1 便可以凑成dp[j]。
+此时我们要选择最小的dp[j]，所以递推公式：dp[j] = min(dp[j - i * i] + 1, dp[j])
+
+dp[0]表示 和为0的完全平方数的最小数量，那么dp[0]一定是0
+从递归公式dp[j] = min(dp[j - i * i] + 1, dp[j]);中可以看出每次dp[j]都要选最小的，所以非0下标的dp[j]一定要初始为最大值，这样dp[j]在递推的时候才不会被初始值覆盖
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 509. 斐波那契数
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
+
 
 
 

@@ -1,5 +1,7 @@
 package functions
 
+import "math"
+
 // 509. 斐波那契数
 func fib(n int) int {
 	if n < 2 {
@@ -186,4 +188,64 @@ func findMaxForm(strs []string, m int, n int) int {
 		}
 	}
 	return dp[m][n]
+}
+
+// 518. 零钱兑换 II
+func change(amount int, coins []int) int {
+	n := len(coins)
+	dp := make([]int, amount+1)
+	dp[0] = 1
+	for i := 0; i < n; i++ { // 遍历物品
+		for j := coins[i]; j <= amount; j++ { // 遍历背包
+			dp[j] += dp[j-coins[i]]
+		}
+	}
+	return dp[amount]
+}
+
+// 377. 组合总和 Ⅳ
+func combinationSum4(nums []int, target int) int {
+	n := len(nums)
+	dp := make([]int, target+1)
+	dp[0] = 1
+	for i := 0; i <= target; i++ { // 遍历背包
+		for j := 0; j < n; j++ { // 遍历物品
+			if i >= nums[j] {
+				dp[i] += dp[i-nums[j]]
+			}
+		}
+	}
+	return dp[target]
+}
+
+// 322. 零钱兑换
+func coinChange(coins []int, amount int) int {
+	dp := make([]int, amount+1)
+	for j := 1; j <= amount; j++ { // 遍历背包
+		dp[j] = math.MaxInt32
+		for i := 0; i < len(coins); i++ { // 遍历物品
+			if j >= coins[i] {
+				dp[j] = min(dp[j], dp[j-coins[i]]+1)
+			}
+		}
+	}
+	if dp[amount] == math.MaxInt32 {
+		return -1
+	} else {
+		return dp[amount]
+	}
+}
+
+// 279. 完全平方数
+func numSquares(n int) int {
+	dp := make([]int, n+1)
+	for j := 1; j <= n; j++ { // 遍历背包
+		dp[j] = math.MaxInt32
+		for i := 1; i*i <= j; i++ { // 遍历物品
+			if j >= i*i {
+				dp[j] = min(dp[j], dp[j-i*i]+1)
+			}
+		}
+	}
+	return dp[n]
 }
