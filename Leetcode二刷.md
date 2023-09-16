@@ -4490,7 +4490,37 @@ dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
 答案
 
 ```go
+func rob(nums []int) int {
+	n := len(nums)
+	if n == 1 {
+		return nums[0]
+	}
+	if n == 2 {
+		return max(nums[0], nums[1])
+	}
+	res1 := robRange(nums, 0, n-1) // 考虑包含首元素，不包含尾元素
+	res2 := robRange(nums, 1, n)   // 考虑包含尾元素，不包含首元素
+	return max(res1, res2)
+}
 
+func robRange(nums []int, start, end int) int {
+	dp := make([]int, len(nums))
+	dp[start] = nums[start]
+	dp[start+1] = max(nums[start], nums[start+1])
+	for i := start + 2; i < end; i++ {
+		dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+	}
+	return dp[end-1]
+}
+
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 ```
 
 
@@ -4498,17 +4528,43 @@ dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
 分析
 
 ```go
+数组成环
 
+虽然是考虑包含首/尾元素，但不一定要选首/尾元素
 ```
 
 
 
-## 509. 斐波那契数
+## 337. 打家劫舍 III
 
 答案
 
 ```go
+func rob(root *TreeNode) int {
+	var search func(node *TreeNode) []int
+	search = func(node *TreeNode) []int {
+		if node == nil {
+			return []int{0, 0}
+		}
+		// 后续遍历
+		left := search(node.Left)
+		right := search(node.Right)
+		sum1 := node.Val + left[0] + right[0]                   // 偷当前结点
+		sum0 := max(left[0], left[1]) + max(right[1], right[0]) // 不偷当前结点，所以可以考虑偷或不偷子节点
+		return []int{sum0, sum1}                                // {不偷，偷}
+	}
+	res := search(root)
+	return max(res[0], res[1])
+}
 
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 ```
 
 
@@ -4516,17 +4572,37 @@ dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
 分析
 
 ```go
+dp数组（dp table）以及下标的含义：下标为0记录不偷该节点所得到的的最大金钱，下标为1记录偷该节点所得到的的最大金钱。
 
+如果是偷当前节点，那么左右孩子就不能偷，val1 = cur->val + left[0] + right[0]
+如果不偷当前节点，那么左右孩子就可以偷，至于到底偷不偷一定是选一个最大的，所以：val2 = max(left[0], left[1]) + max(right[0], right[1])
+left[0]表示左子树不偷左孩子的最大值，left[1]表示左子树偷左孩子的最大值
 ```
 
 
 
-## 509. 斐波那契数
+## 121. 买卖股票的最佳时机
 
 答案
 
 ```go
+func maxProfit(prices []int) int {
+	dp := [2]int{}
+	dp[0] = -prices[0]
+	for i:=1; i<len(prices); i++ {
+		dp[0] = max(dp[0], -prices[i])	// 持有股票所得最多现金
+		dp[1] = max(dp[1], dp[0]+prices[i])	// 不持有股票所得最多现金
+	}
+	return dp[1]
+}
 
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 ```
 
 
@@ -4534,7 +4610,15 @@ dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
 分析
 
 ```go
+dp[i][0] 表示第i天持有股票所得最多现金
+dp[i][1] 表示第i天不持有股票所得最多现金
+“持有”不代表就是当天“买入”，也有可能是昨天就买入了，今天保持持有的状态
 
+dp[i][0] = max(dp[i - 1][0], -prices[i])
+dp[i][1] = max(dp[i - 1][1], prices[i] + dp[i - 1][0])
+
+dp[0][0]表示第0天持有股票，所以dp[0][0] = -prices[0];
+dp[0][1]表示第0天不持有股票，不持有股票那么现金就是0，所以dp[0][1] = 0;
 ```
 
 

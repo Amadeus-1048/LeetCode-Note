@@ -269,3 +269,54 @@ func rob(nums []int) int {
 }
 
 // 213. 打家劫舍 II
+func rob2(nums []int) int {
+	n := len(nums)
+	if n == 1 {
+		return nums[0]
+	}
+	if n == 2 {
+		return max(nums[0], nums[1])
+	}
+	res1 := robRange(nums, 0, n-1) // 考虑包含首元素，不包含尾元素
+	res2 := robRange(nums, 1, n)   // 考虑包含尾元素，不包含首元素
+	return max(res1, res2)
+}
+
+func robRange(nums []int, start, end int) int {
+	dp := make([]int, len(nums))
+	dp[start] = nums[start]
+	dp[start+1] = max(nums[start], nums[start+1])
+	for i := start + 2; i < end; i++ {
+		dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+	}
+	return dp[end-1]
+}
+
+// 337. 打家劫舍 III
+func rob3(root *TreeNode) int {
+	var search func(node *TreeNode) []int
+	search = func(node *TreeNode) []int {
+		if node == nil {
+			return []int{0, 0}
+		}
+		// 后续遍历
+		left := search(node.Left)
+		right := search(node.Right)
+		sum1 := node.Val + left[0] + right[0]                   // 偷当前结点
+		sum0 := max(left[0], left[1]) + max(right[1], right[0]) // 不偷当前结点，所以可以考虑偷或不偷子节点
+		return []int{sum0, sum1}                                // {不偷，偷}
+	}
+	res := search(root)
+	return max(res[0], res[1])
+}
+
+// 121. 买卖股票的最佳时机
+func maxProfit1(prices []int) int {
+	dp := [2]int{}
+	dp[0] = -prices[0]
+	for i := 1; i < len(prices); i++ {
+		dp[0] = max(dp[0], -prices[i])      // 持有股票所得最多现金
+		dp[1] = max(dp[1], dp[0]+prices[i]) // 不持有股票所得最多现金
+	}
+	return dp[1]
+}
