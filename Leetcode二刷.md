@@ -4623,64 +4623,6 @@ dp[0][1]表示第0天不持有股票，不持有股票那么现金就是0，所�
 
 
 
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 509. 斐波那契数
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-
-
-
-
 ## 122. 买卖股票的最佳时机 II
 
 答案
@@ -4689,10 +4631,9 @@ dp[0][1]表示第0天不持有股票，不持有股票那么现金就是0，所�
 func maxProfit(prices []int) int {
 	dp := [2]int{}
 	dp[0] = -prices[0]
-	//dp[1] = -prices[0]
-	for i:=1; i<len(prices); i++ {
-		dp[0] = max(dp[0], dp[1]-prices[i])			// 随想录里这里会用 dp[i%2][0] = ...
-		dp[1] = max(dp[1], dp[0]+prices[i])			// 其实没有必要
+	for i := 1; i < len(prices); i++ {
+		dp[0] = max(dp[0], dp[1]-prices[i]) // 今天持有股票=max(昨天持有，昨天未持有且今天买入）
+		dp[1] = max(dp[1], dp[0]+prices[i]) // 今天不持有股票=max(昨天未持有，昨天持有且今天卖出）
 	}
 	return dp[1]
 }
@@ -4716,29 +4657,71 @@ func max(a, b int) int {
 
 
 
+## 123. 买卖股票的最佳时机 III
+
+答案
+
+```go
+func maxProfit(prices []int) int {
+	dp := [5]int{}
+	dp[1] = -prices[0] // 第一次持有股票，即买入第一天
+	dp[3] = -prices[0] // 第二次持有股票，即买入第一天
+	for i := 1; i < len(prices); i++ {
+		dp[1] = max(dp[1], dp[0]-prices[i]) // 第一次持有股票=max(昨天持有，昨天未持有且今天买入)
+		dp[2] = max(dp[2], dp[1]+prices[i]) // 第一次不持有股票=max(昨天不持有，昨天持有且今天卖出)
+		dp[3] = max(dp[3], dp[2]-prices[i]) // 第二次持有股票=max(昨天持有，昨天未持有且今天买入)
+		dp[4] = max(dp[4], dp[3]+prices[i]) // 第二次不持有股票=max(昨天不持有，昨天持有且今天卖出)
+	}
+	return dp[4]
+}
+
+
+// 求两个数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+
+
+分析
+
+```go
+dp数组以及下标的含义：一天一共就有五个状态，
+0.没有操作 （其实我们也可以不设置这个状态）
+1.第一次持有股票
+2.第一次不持有股票
+3.第二次持有股票
+4.第二次不持有股票
+```
+
+
+
 ## 188. 买卖股票的最佳时机 IV
 
 答案
 
 ```go
 func maxProfit(k int, prices []int) int {
-	if k==0 || len(prices)==0 {
+	if k == 0 || len(prices) == 0 {
 		return 0
 	}
-	n := 2*k+1
+	n := 2*k + 1	// 买k次，卖k次，加上什么操作都没有的0，所以n=2k+1
 	dp := make([]int, n)
-	for i:=1; i<n-1; i+=2 {
-		dp[i] = -prices[0]
+	for i := 1; i < n-1; i += 2 {
+		dp[i] = -prices[0] // 第i(奇数次)持有股票，即买入第一天
 	}
-	for i:=1; i<len(prices); i++ {
-		for j:=0; j<n-1; j+=2 {
-			dp[j+1] = max(dp[j+1], dp[j]-prices[i])
-			dp[j+2] = max(dp[j+2], dp[j+1]+prices[i])
+	for i := 1; i < len(prices); i++ {
+		for j := 0; j < n-1; j += 2 { // 除了0以外，偶数就是卖出，奇数就是买入
+			dp[j+1] = max(dp[j+1], dp[j]-prices[i])   // 持有股票=max(昨天持有，昨天未持有且今天买入)
+			dp[j+2] = max(dp[j+2], dp[j+1]+prices[i]) // 不持有股票=max(昨天不持有，昨天持有且今天卖出)
 		}
 	}
 	return dp[n-1]
 }
-
 
 // 求两个数中的较大者
 func max(a, b int) int {
@@ -4760,6 +4743,60 @@ func max(a, b int) int {
 原因可能是不能在同一天无限买卖，卖之后必须得到第二天
 
 含手续费可以用一维数组，可能是因为虽然卖出有手续费，但是可以同一天无限买卖
+```
+
+
+
+## 309. 买卖股票的最佳时机含冷冻期
+
+答案
+
+```go
+func maxProfit(prices []int) int {
+	n := len(prices)
+	if n < 2 {
+		return 0
+	}
+
+	dp := make([][]int, n)
+	for i := 0; i<n; i++ {
+		dp[i] = make([]int,4)
+	}
+	dp[0][0] = -prices[0]
+
+	for i := 1; i < n; i++ {
+		// 达到买入股票状态：前一天就是持有股票状态、前一天是保持卖出股票的状态且今天买入、前一天是冷冻期且今天买入
+		dp[i][0] = max(dp[i-1][0], max(dp[i-1][1]-prices[i], dp[i-1][3]-prices[i]))
+		// 达到保持卖出股票状态：前一天是保持卖出股票的状态、前一天是冷冻期
+		dp[i][1] = max(dp[i-1][1], dp[i-1][3])
+		// 达到今天就卖出股票状态：昨天一定是持有股票状态且今天卖出
+		dp[i][2] = dp[i-1][0] + prices[i]
+		// 达到冷冻期状态：昨天卖出了股票
+		dp[i][3] = dp[i-1][2]
+	}
+
+	return max(dp[n-1][1], max(dp[n-1][2], dp[n-1][3]))
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+```
+
+
+
+分析
+
+```go
+具体可以区分出如下四个状态：
+	0、状态一：持有股票状态（今天买入股票，或者是之前就买入了股票然后没有操作，一直持有）
+	不持有股票状态，这里就有两种卖出股票状态
+		1、状态二：保持卖出股票的状态（两天前就卖出了股票，度过一天冷冻期。或者是前一天就是卖出股票状态，一直没操作）
+		2、状态三：今天卖出股票
+	3、状态四：今天为冷冻期状态，但冷冻期状态不可持续，只有一天
 ```
 
 
@@ -4900,39 +4937,7 @@ func max(a, b int) int {
 
 
 
-## 3
 
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 3
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
 
 
 

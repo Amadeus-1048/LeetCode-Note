@@ -320,3 +320,74 @@ func maxProfit1(prices []int) int {
 	}
 	return dp[1]
 }
+
+// 122. 买卖股票的最佳时机 II
+func maxProfit2(prices []int) int {
+	dp := [2]int{}
+	dp[0] = -prices[0]
+	for i := 1; i < len(prices); i++ {
+		dp[0] = max(dp[0], dp[1]-prices[i]) // 今天持有股票=max(昨天持有，昨天未持有且今天买入）
+		dp[1] = max(dp[1], dp[0]+prices[i]) // 今天不持有股票=max(昨天未持有，昨天持有且今天卖出）
+	}
+	return dp[1]
+}
+
+// 123. 买卖股票的最佳时机 III
+func maxProfit3(prices []int) int {
+	dp := [5]int{}
+	dp[1] = -prices[0] // 第一次持有股票，即买入第一天
+	dp[3] = -prices[0] // 第二次持有股票，即买入第一天
+	for i := 1; i < len(prices); i++ {
+		dp[1] = max(dp[1], dp[0]-prices[i]) // 第一次持有股票=max(昨天持有，昨天未持有且今天买入)
+		dp[2] = max(dp[2], dp[1]+prices[i]) // 第一次不持有股票=max(昨天不持有，昨天持有且今天卖出)
+		dp[3] = max(dp[3], dp[2]-prices[i]) // 第二次持有股票=max(昨天持有，昨天未持有且今天买入)
+		dp[4] = max(dp[4], dp[3]+prices[i]) // 第二次不持有股票=max(昨天不持有，昨天持有且今天卖出)
+	}
+	return dp[4]
+}
+
+// 188. 买卖股票的最佳时机 IV
+func maxProfit4(k int, prices []int) int {
+	if k == 0 || len(prices) == 0 {
+		return 0
+	}
+	n := 2*k + 1 // 买k次，卖k次，加上什么操作都没有的0，所以n=2k+1
+	dp := make([]int, n)
+	for i := 1; i < n-1; i += 2 {
+		dp[i] = -prices[0] // 第i(奇数次)持有股票，即买入第一天
+	}
+	for i := 1; i < len(prices); i++ {
+		for j := 0; j < n-1; j += 2 { // 除了0以外，偶数就是卖出，奇数就是买入
+			dp[j+1] = max(dp[j+1], dp[j]-prices[i])   // 持有股票=max(昨天持有，昨天未持有且今天买入)
+			dp[j+2] = max(dp[j+2], dp[j+1]+prices[i]) // 不持有股票=max(昨天不持有，昨天持有且今天卖出)
+		}
+	}
+	return dp[n-1]
+}
+
+// 309. 买卖股票的最佳时机含冷冻期
+func maxProfit5(prices []int) int {
+	n := len(prices)
+	if n < 2 {
+		return 0
+	}
+
+	dp := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]int, 4)
+	}
+	dp[0][0] = -prices[0]
+
+	for i := 1; i < n; i++ {
+		// 达到买入股票状态：前一天就是持有股票状态、前一天是保持卖出股票的状态且今天买入、前一天是冷冻期且今天买入
+		dp[i][0] = max(dp[i-1][0], max(dp[i-1][1]-prices[i], dp[i-1][3]-prices[i]))
+		// 达到保持卖出股票状态：前一天是保持卖出股票的状态、前一天是冷冻期
+		dp[i][1] = max(dp[i-1][1], dp[i-1][3])
+		// 达到今天就卖出股票状态：昨天一定是持有股票状态且今天卖出
+		dp[i][2] = dp[i-1][0] + prices[i]
+		// 达到冷冻期状态：昨天卖出了股票
+		dp[i][3] = dp[i-1][2]
+	}
+
+	return max(dp[n-1][1], max(dp[n-1][2], dp[n-1][3]))
+}
