@@ -391,3 +391,116 @@ func maxProfit5(prices []int) int {
 
 	return max(dp[n-1][1], max(dp[n-1][2], dp[n-1][3]))
 }
+
+// 714. 买卖股票的最佳时机含手续费
+func maxProfit6(prices []int, fee int) int {
+	dp := [2]int{}
+	dp[0] = -prices[0]
+	for i := 1; i < len(prices); i++ {
+		dp[0] = max(dp[0], dp[1]-prices[i])     // 买入
+		dp[1] = max(dp[1], dp[0]+prices[i]-fee) // 卖出  区别就是这里多了一个减去手续费的操作
+	}
+	return dp[1]
+}
+
+// 300. 最长递增子序列
+func lengthOfLIS(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	ans := 1
+	dp := make([]int, len(nums)) // dp[i] 为以第 i 个数字结尾的最长上升子序列的长度，nums[i] 必须被选取
+	dp[0] = 1
+	for i := 1; i < len(nums); i++ {
+		dp[i] = 1
+		for j := 0; j < i; j++ {
+			if nums[i] > nums[j] { // if成立时，位置i的最长升序子序列 可以等于 位置j的最长升序子序列 + 1
+				dp[i] = max(dp[i], dp[j]+1) // dp[i] 从 dp[j] 这个状态转移过来
+			}
+		}
+		ans = max(ans, dp[i])
+	}
+	return ans
+}
+
+// 674. 最长连续递增序列
+func findLengthOfLCIS(nums []int) int {
+	n := len(nums)
+	if n < 2 { // 不能漏这一步，否则有样例过不了
+		return 1
+	}
+	dp := make([]int, n)
+	res := 0
+	for i := 0; i < n; i++ {
+		dp[i] = 1 // dp[i]的初始化 : 每一个i，对应的dp[i]（即最长上升子序列）起始大小至少都是1
+	}
+	for i := 0; i < n-1; i++ {
+		if nums[i+1] > nums[i] {
+			dp[i+1] = dp[i] + 1
+		}
+		res = max(res, dp[i+1])
+	}
+	return res
+}
+
+// 718. 最长重复子数组
+
+func findLength(A []int, B []int) int {
+	m, n := len(A), len(B)
+	dp := make([][]int, m+1) // dp[i][j] ：以下标i - 1为结尾的A，和以下标j - 1为结尾的B，最长重复子数组长度为dp[i][j]
+	res := 0
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+	}
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if A[i-1] == B[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			}
+			res = max(res, dp[i][j])
+		}
+
+	}
+	return res
+}
+
+// 1143. 最长公共子序列
+func longestCommonSubsequence(text1 string, text2 string) int {
+	// dp[i][j]：长度为[0, i - 1]的字符串text1与长度为[0, j - 1]的字符串text2的最长公共子序列为dp[i][j]
+	m, n := len(text1), len(text2)
+	dp := make([][]int, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+	}
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if text1[i-1] == text2[j-1] {
+				// 状态转移方程 : 主要就是两大情况： text1[i - 1] 与 text2[j - 1]相同，text1[i - 1] 与 text2[j - 1]不相同
+				// 如果text1[i - 1] 与 text2[j - 1]相同，那么找到了一个公共元素，所以dp[i][j] = dp[i - 1][j - 1] + 1;
+				// 如果text1[i - 1] 与 text2[j - 1]不相同，即：dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+				dp[i][j] = dp[i-1][j-1] + 1
+			} else {
+				dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+			}
+		}
+
+	}
+	return dp[m][n]
+}
+
+// 53. 最大子数组和
+func maxSubArrayDP(nums []int) int {
+	// dp[i]：包括下标i之前的最大连续子序列和为dp[i]
+	n := len(nums)
+	dp := make([]int, n)
+	// dp[i]的初始化	由于dp 状态转移方程依赖dp[0]
+	dp[0] = nums[0]
+	// 初始化最大的和
+	res := nums[0]
+	for i := 1; i < n; i++ {
+		// dp[i]只有两个方向可以推出来：nums[i]加入当前连续子序列和	从头开始计算当前连续子序列和
+		dp[i] = max(dp[i-1]+nums[i], nums[i])
+		res = max(res, dp[i])
+	}
+	return res
+}
