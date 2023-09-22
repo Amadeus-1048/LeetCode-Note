@@ -1,4 +1,4 @@
-# 总结
+# 	总结
 
 ## 数组
 
@@ -1344,17 +1344,17 @@ func reverseLeftWords(s string, n int) string {
 
 ```go
 func preorderTraversal(root *TreeNode) (res []int) {
-    var traversal func(node *TreeNode)
-    traversal = func(node *TreeNode) {
-	if node == nil {
-            return
-	}
-	res = append(res,node.Val)
-	traversal(node.Left)
-	traversal(node.Right)
+  var traversal func(node *TreeNode)
+  traversal = func(node *TreeNode) {
+    if node == nil {
+              return
     }
-    traversal(root)
-    return res
+    res = append(res,node.Val)
+    traversal(node.Left)
+    traversal(node.Right)
+    }
+  traversal(root)
+  return res
 }
 ```
 
@@ -3218,7 +3218,9 @@ func isIP(s string, start int, end int) bool {
 分析
 
 ```
-
+注意：
+0开头的数字不合法
+有的题目不会写在上面
 ```
 
 
@@ -6097,6 +6099,10 @@ OJ（牛客网）输入输出练习 Go实现	https://blog.csdn.net/aron_conli/ar
 OJ在线编程常见输入输出练习场 	https://ac.nowcoder.com/acm/contest/5657#question
 
 GoLang之ACM控制台输入输出	https://blog.csdn.net/weixin_52690231/article/details/125436414
+
+https://blog.csdn.net/weixin_44211968/article/details/124632136
+
+https://zhuanlan.zhihu.com/p/551393704
 
 
 

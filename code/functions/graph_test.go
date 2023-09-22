@@ -17,4 +17,5 @@ func TestDijkstra(t *testing.T) {
 	}
 	dist := dijkstra(gp, 0)
 	fmt.Println(dist)
+
 }
