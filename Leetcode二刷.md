@@ -6189,6 +6189,29 @@ func main() {
 
 
 
+### scan + for
+
+可以替代bufio，来实现读取若干行（不知道具体几行）
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var a, b int
+	for {
+		_, err := fmt.Scanln(&a, &b)
+		if err != nil {
+			break
+		}
+		fmt.Printf("%d\n\n", a+b)
+	}
+}
+```
+
+
+
 
 
 ## bufio
