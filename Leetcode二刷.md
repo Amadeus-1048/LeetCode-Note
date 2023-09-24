@@ -6224,7 +6224,142 @@ func main() {
 
 
 
-### 创建Reader对象
+
+
+
+
+### NewScanner
+
+必须整行读（用 fmt、os、bufio、strconv、strings 实现）
+
+
+
+#### 任意数量求和
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	inputs := bufio.NewScanner(os.Stdin)	// 不用放在循环内部
+	for inputs.Scan() {  //每次读入一行
+		data := strings.Split(inputs.Text(), " ")  //通过空格将他们分割，并存入一个字符串切片
+		var sum int
+		for _, v := range data {
+			val, _ := strconv.Atoi(v)   //将字符串转换为int
+			sum += val
+		}
+		fmt.Println("sum = ", sum)
+		fmt.Println("data = ", data)		// data 是 []string
+		fmt.Println("data[0] = ", data[1])	// data 是 string	
+	}
+}
+```
+
+
+
+#### 任意数量[]int{}
+
+```go
+func main() {
+	input := bufio.NewScanner(os.Stdin)
+	input.Scan()
+	data := strings.Split(input.Text(), " ")	// data 是 []string
+	fmt.Println("data = ", data)
+	nums := []int{}
+	for i:=0; i<len(data); i++ {
+		v, _ := strconv.Atoi(data[i])	// string转int
+		nums = append(nums, v)
+	}
+	fmt.Println("nums = ", nums)		// nums 是 []int
+}
+```
+
+
+
+#### 指定长宽矩阵
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var m, n int
+	fmt.Scanln(&m, &n)
+
+	res := make([][]int, m)
+	for i := range res {
+		res[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			fmt.Scan(&res[i][j])
+		}
+	}
+	fmt.Println(res)	// 每个切片中以“ ”分隔每个元素
+}
+
+/*
+输入：
+2 3
+1 2 3 4 5 6
+
+输出：
+[[1 2 3] [4 5 6]]
+*/
+```
+
+
+
+#### 任意矩阵
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	input := bufio.NewScanner(os.Stdin)
+	input.Scan() //读取一行内容
+    // 因为Atoi，所以要有两个接收符：m, _
+    // 不加[0]就是[]int，加了就是int
+	m, _ := strconv.Atoi(strings.Split(input.Text(), " ")[0])	// 第一行的第一个字符，转换为int
+	n, _ := strconv.Atoi(strings.Split(input.Text(), " ")[1])	// 第一行的第二个字符，转换为int
+	res := make([][]int, m)
+	for i := range res {
+		res[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
+		input.Scan() //读取一行内容
+		for j := 0; j < n; j++ {
+			res[i][j], _ = strconv.Atoi(strings.Split(input.Text(), " ")[j])
+		}
+	}
+}
+
+```
+
+
+
+### Reader
+
+创建Reader对象
 
 ```go
 reader := bufio.NewReader(os.Stdin)
@@ -6232,7 +6367,9 @@ reader := bufio.NewReader(os.Stdin)
 
 
 
-### ReadByte
+
+
+#### ReadByte
 
 ```
 func (b *Reader) ReadByte() (c byte, err error)
@@ -6264,7 +6401,7 @@ func main() {
 
 
 
-### ReadBytes
+#### ReadBytes
 
 ```
 func (b *Reader) ReadBytes(delim byte) (line []byte, err error)
@@ -6302,7 +6439,7 @@ Reader可以接收包含空格内容的字符串，而不进行分割，这是`b
 
 
 
-### ReadString
+#### ReadString
 
 ```
 func (b *Reader) ReadString(delim byte) (line string, err error)
@@ -6337,141 +6474,6 @@ func main() {
 如果设定回车键为delim byte，则遇到回车后结束接收，同时也会接收回车键。
 当以’a’等byte为终止符时，如果没有遇到该符，即使回车也会继续接收。
 如果在按下终止符后没有回车，继续键入内容，则只会接收第一次终止符及其之前的内容，之后的内容自动忽略。
-
-
-
-
-
-### NewScanner
-
-必须整行读（用 fmt、os、bufio、strconv、strings 实现）
-
-
-
-### 任意数量求和
-
-```go
-package main
-
-import (
-	"bufio"
-	"fmt"
-	"os"
-	"strconv"
-	"strings"
-)
-
-func main() {
-	inputs := bufio.NewScanner(os.Stdin)	// 不用放在循环内部
-	for inputs.Scan() {  //每次读入一行
-		data := strings.Split(inputs.Text(), " ")  //通过空格将他们分割，并存入一个字符串切片
-		var sum int
-		for _, v := range data {
-			val, _ := strconv.Atoi(v)   //将字符串转换为int
-			sum += val
-		}
-		fmt.Println("sum = ", sum)
-		fmt.Println("data = ", data)		// data 是 []string
-		fmt.Println("data[0] = ", data[1])	// data 是 string	
-	}
-}
-```
-
-
-
-### 任意数量[]int{}
-
-```go
-func main() {
-	input := bufio.NewScanner(os.Stdin)
-	input.Scan()
-	data := strings.Split(input.Text(), " ")	// data 是 []string
-	fmt.Println("data = ", data)
-	nums := []int{}
-	for i:=0; i<len(data); i++ {
-		v, _ := strconv.Atoi(data[i])	// string转int
-		nums = append(nums, v)
-	}
-	fmt.Println("nums = ", nums)		// nums 是 []int
-}
-```
-
-
-
-
-
-
-
-### 指定长宽矩阵
-
-```go
-package main
-
-import (
-	"fmt"
-)
-
-func main() {
-	var m, n int
-	fmt.Scanln(&m, &n)
-
-	res := make([][]int, m)
-	for i := range res {
-		res[i] = make([]int, n)
-	}
-	for i := 0; i < m; i++ {
-		for j := 0; j < n; j++ {
-			fmt.Scan(&res[i][j])
-		}
-	}
-	fmt.Println(res)	// 每个切片中以“ ”分隔每个元素
-}
-
-/*
-输入：
-2 3
-1 2 3 4 5 6
-
-输出：
-[[1 2 3] [4 5 6]]
-*/
-```
-
-
-
-### 任意矩阵
-
-```go
-package main
-
-import (
-	"bufio"
-	"fmt"
-	"os"
-	"strconv"
-	"strings"
-)
-
-func main() {
-	input := bufio.NewScanner(os.Stdin)
-	input.Scan() //读取一行内容
-    // 因为Atoi，所以要有两个接收符：m, _
-    // 不加[0]就是[]int，加了就是int
-	m, _ := strconv.Atoi(strings.Split(input.Text(), " ")[0])	// 第一行的第一个字符，转换为int
-	n, _ := strconv.Atoi(strings.Split(input.Text(), " ")[1])	// 第一行的第二个字符，转换为int
-	res := make([][]int, m)
-	for i := range res {
-		res[i] = make([]int, n)
-	}
-	for i := 0; i < m; i++ {
-		input.Scan() //读取一行内容
-		for j := 0; j < n; j++ {
-			res[i][j], _ = strconv.Atoi(strings.Split(input.Text(), " ")[j])
-		}
-	}
-}
-
-```
 
 
 
