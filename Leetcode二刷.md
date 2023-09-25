@@ -5640,29 +5640,29 @@ func findKthLargest(nums []int, k int) int {
 		if start >= end {
 			return nums[end]
 		}
-		p := partition(nums, start, end)
-		if p+1 == k {			// 第K大, 即k == p+1, return nums[p]
+		p := quickSortPartition(nums, start, end)
+		if p+1 == k { // 第K大   0 1 2 对应：第一大 第二大 第三大
 			return nums[p]
-		} else if p+1 < k {		// 对p的右边数组进行分治, 即对 [p+1,right]进行分治
+		} else if p+1 < k { // 对p的右边数组进行分治, 即对 [p+1,right]进行分治
 			start = p + 1
-		} else {				// 对p的左边数组进行分治, 即对 [left,p-1]进行分治
+		} else { // 对p的左边数组进行分治, 即对 [left,p-1]进行分治
 			end = p - 1
 		}
 	}
 }
 
-func partition(nums []int, start, end int) int {
+func quickSortPartition(nums []int, start, end int) int {
 	// 从大到小排序
 	pivot := nums[end]
-	for i:=start; i<end; i++ {
-		if nums[i] > pivot {	// 大的放左边
+	for i := start; i < end; i++ {
+		if nums[i] > pivot { // 大的放左边
 			nums[start], nums[i] = nums[i], nums[start]
 			start++
 		}
 	}
-	// for循环完毕, nums[left]左边的值, 均大于nums[left]右边的值
-	nums[start], nums[end] = nums[end], nums[start]	// 此时nums[end]是nums[start]右边最大的值，需要交换一下
-	return start	// 确定了nums[start]的位置
+	// for循环完毕, nums[start]左边的值, 均大于nums[start]右边的值
+	nums[start], nums[end] = nums[end], nums[start] // 此时nums[end]是nums[start]右边最大的值，需要交换一下
+	return start                                    // 确定了nums[start]的位置
 }
 ```
 
