@@ -108,3 +108,29 @@ func generateMatrix(n int) [][]int {
 	}
 	return matrix
 }
+
+// 3. 无重复字符的最长子串
+func lengthOfLongestSubstring(s string) int {
+	ans, left, right := 1, 0, 1 // 滑动窗口
+	hash := make(map[byte]bool)
+	n := len(s)
+	if n <= 1 {
+		return n
+	}
+	hash[s[0]] = true
+	for right < n {
+		if !hash[s[right]] { // 没有遇到重复的字符，则s[right]存入map,计算长度，right推进
+			hash[s[right]] = true
+			ans = max(ans, right-left+1)
+			right++
+		} else { // 遇到重复字符，需要在map中去掉s[left]，left推进
+			for hash[s[right]] { // 不断推进left，直到遇到和s[right]相同的字符
+				delete(hash, s[left])
+				left++
+			}
+			hash[s[right]] = true // 因为上面把s[right]给delete了，需要重新赋值
+			right++
+		}
+	}
+	return ans
+}

@@ -301,6 +301,59 @@ func minSubArrayLen(target int, nums []int) int {
 
 
 
+## 3. 无重复字符的最长子串
+
+答案
+
+```go
+func lengthOfLongestSubstring(s string) int {
+	ans, left, right := 1, 0, 1 // 滑动窗口
+	hash := make(map[byte]bool)
+	n := len(s)
+	if n <= 1 {
+		return n
+	}
+	hash[s[0]] = true
+	for right < n {
+		if !hash[s[right]] { // 没有遇到重复的字符，则s[right]存入map,计算长度，right推进
+			hash[s[right]] = true
+			ans = max(ans, right-left+1)
+			right++
+		} else { // 遇到重复字符，需要在map中去掉s[left]，left推进
+			for hash[s[right]] { // 不断推进left，直到遇到和s[right]相同的字符
+				delete(hash, s[left])
+				left++
+			}
+			hash[s[right]] = true // 因为上面把s[right]给delete了，需要重新赋值
+			right++
+		}
+	}
+	return ans
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+
+
+分析
+
+```go
+滑动窗口 : 不断的调节子序列的起始位置和终止位置，从而得出我们要想的结果
+
+在本题中实现滑动窗口，主要确定如下三点：
+窗口内是什么？
+如何移动窗口的起始位置？
+如何移动窗口的结束位置？
+
+只用一个for循环，那么这个循环的索引，一定是表示滑动窗口的终止位置
+```
+
 
 
 # 链表
@@ -5281,20 +5334,6 @@ func trap(height []int) int {
 每个位置能储存的雨水量为左边最高柱子的高度 和 右边最高柱子的高度中较小的那个 减去该位置的柱子高度
 即: drop[i] = min(maxLeft, maxRight) - height[i]
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
