@@ -31,3 +31,27 @@ func quickSortPartition(nums []int, start, end int) int {
 	nums[start], nums[end] = nums[end], nums[start] // 此时nums[end]是nums[start]右边最大的值，需要交换一下
 	return start                                    // 确定了nums[start]的位置
 }
+
+// 912. 排序数组
+func sortArray(nums []int) []int {
+	var quick func(left, right int)
+	quick = func(left, right int) {
+		// 递归终止条件
+		if left >= right {
+			return
+		}
+		pivot := nums[right] // 左右指针及主元
+		start, end := left, right
+		for i := start; i < end; i++ { // start前面的都是小于pivot的
+			if nums[i] < pivot {
+				nums[start], nums[i] = nums[i], nums[start]
+				start++
+			}
+		}
+		nums[start], nums[end] = nums[end], nums[start] // 确定了start的位置
+		quick(left, start-1)
+		quick(start+1, right)
+	}
+	quick(0, len(nums)-1)
+	return nums
+}

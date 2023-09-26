@@ -5686,6 +5686,32 @@ func findKthLargest(nums []int, k int) int {
 ## 912. 排序数组
 
 ```go
+// 这种在极端情况下会超时，但是一般不会，易于理解
+func sortArray(nums []int) []int {
+	var quick func(left, right int)
+	quick = func(left, right int) {
+		// 递归终止条件
+		if left >= right {
+			return
+		}
+		pivot := nums[right] // 左右指针及主元
+		start, end := left, right	
+		for i := start; i < end; i++ {	// start前面的都是小于pivot的
+			if nums[i] < pivot {
+				nums[start], nums[i] = nums[i], nums[start]
+				start++
+			}
+		}
+		nums[start], nums[end] = nums[end], nums[start]	// 确定了start的位置
+		quick(left, start-1)
+		quick(start+1, right)
+	}
+	quick(0, len(nums)-1)
+	return nums
+}
+
+
+// 这种也会超时......  解决方法：随机选取pivot
 func sortArray(nums []int) []int {
 	var quick func(left, right int)
 	quick = func(left, right int) {
@@ -5704,7 +5730,7 @@ func sortArray(nums []int) []int {
 				i++
 			}
 			// 交换i, j下标元素
-			nums[i], nums[j] = nums[j], nums[i]
+			nums[i], nums[j] = nums[j], nums[i]	// 交换之后，nums[i] < nums[pivot] < nums[j]
 		}
 		// 此时nums[left]还在第一位，需要和小于它的nums[i]，或是i,j重叠处交换一下
 		nums[i], nums[left] = nums[left], nums[i]
