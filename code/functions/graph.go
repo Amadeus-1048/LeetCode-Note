@@ -73,3 +73,37 @@ func numIslands(grid [][]byte) int {
 	}
 	return ans
 }
+
+// 695. 岛屿的最大面积
+func maxAreaOfIsland(grid [][]int) int {
+	ans := 0
+	m, n := len(grid), len(grid[0])
+	var dfs func(i, j int) int
+	dfs = func(i, j int) int {
+		count := 1
+		grid[i][j] = 0 // '1'（陆地）  '0'（水）
+		// 每遍历到一块陆地，就把这块陆地和与之相连的陆地全部变成水
+		if i-1 >= 0 && grid[i-1][j] == 1 {
+			count += dfs(i-1, j)
+		}
+		if i+1 < m && grid[i+1][j] == 1 {
+			count += dfs(i+1, j)
+		}
+		if j-1 >= 0 && grid[i][j-1] == 1 {
+			count += dfs(i, j-1)
+		}
+		if j+1 < n && grid[i][j+1] == 1 {
+			count += dfs(i, j+1)
+		}
+		return count
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if grid[i][j] == 1 {
+				count := dfs(i, j)
+				ans = max(ans, count)
+			}
+		}
+	}
+	return ans
+}
