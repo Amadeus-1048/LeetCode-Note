@@ -41,3 +41,35 @@ func dijkstra(graph [][]int, start int) []int {
 	}
 	return dist
 }
+
+// 200. 岛屿数量
+func numIslands(grid [][]byte) int {
+	ans := 0
+	m, n := len(grid), len(grid[0])
+	var dfs func(i, j int)
+	dfs = func(i, j int) {
+		grid[i][j] = '0' // '1'（陆地）  '0'（水）
+		// 每遍历到一块陆地，就把这块陆地和与之相连的陆地全部变成水
+		if i-1 >= 0 && grid[i-1][j] == '1' {
+			dfs(i-1, j)
+		}
+		if i+1 < m && grid[i+1][j] == '1' {
+			dfs(i+1, j)
+		}
+		if j-1 >= 0 && grid[i][j-1] == '1' {
+			dfs(i, j-1)
+		}
+		if j+1 < n && grid[i][j+1] == '1' {
+			dfs(i, j+1)
+		}
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if grid[i][j] == '1' {
+				ans++
+				dfs(i, j)
+			}
+		}
+	}
+	return ans
+}

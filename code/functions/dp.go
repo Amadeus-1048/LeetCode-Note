@@ -504,3 +504,42 @@ func maxSubArrayDP(nums []int) int {
 	}
 	return res
 }
+
+// 5. 最长回文子串
+func longestPalindrome(s string) string {
+	n := len(s)
+	if n == 1 {
+		return s
+	}
+	start, maxLen := 0, 1
+	// dp[i][j] 表示 s[i..j] 是否是回文串
+	dp := make([][]bool, n)
+	// 初始化：所有长度为 1 的子串都是回文串
+	for i := 0; i < n; i++ {
+		dp[i] = make([]bool, n)
+		dp[i][i] = true
+	}
+	for Len := 2; Len <= n; Len++ { // 先枚举子串长度
+		for i := 0; i < n; i++ { // 枚举左边界，左边界的上限设置可以宽松一些
+			j := i + Len - 1 // 由 L 和 i 可以确定右边界，即 j - i + 1 = L 得
+			if j >= n {      // 如果右边界越界，就可以退出当前循环
+				break
+			}
+			if s[i] != s[j] {
+				dp[i][j] = false
+			} else {
+				if j-i < 2 {
+					dp[i][j] = true // 下标i 与 j相同（同一个字符例如a） 或 相差为1（例如aa），都是回文子串
+				} else {
+					dp[i][j] = dp[i+1][j-1] // 看dp[i + 1][j - 1]是否为true
+				}
+			}
+			// 只要 dp[i][j] == true 成立，就表示子串 s[i..j] 是回文，此时记录回文长度和起始位置
+			if dp[i][j] && j-i+1 > maxLen {
+				maxLen = j - i + 1
+				start = i
+			}
+		}
+	}
+	return s[start : start+maxLen]
+}

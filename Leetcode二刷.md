@@ -356,6 +356,57 @@ func max(a, b int) int {
 
 
 
+## 33. 搜索旋转排序数组
+
+答案
+
+```go
+func searchTwisted(nums []int, target int) int {
+	n := len(nums)
+	if n == 1 {
+		if nums[0] == target {
+			return 0
+		} else {
+			return -1
+		}
+	}
+	left, right, mid := 0, n-1, 0
+	for left <= right {
+		mid = (left + right) / 2 // 二分法
+		if nums[mid] == target { // 判断是否找到target
+			return mid
+		}
+		if nums[0] <= nums[mid] { // 0~mid是有序的	这里必须加=号
+			if nums[0] <= target && target < nums[mid] { // target在有序的0~mid范围内，进行查找
+				right = mid - 1
+			} else { // target不在0~mid范围内，在无序的mid+1~n-1范围内重新查找
+				left = mid + 1
+			}
+		} else { // 0~mid是无序的，mid~n是有序的
+			if nums[mid] < target && target <= nums[n-1] { // target在有序的mid~n-1范围内，进行查找
+				left = mid + 1
+			} else { // target不在mid~n-1范围内，在无序的0~mid-1范围内重新查找
+				right = mid - 1
+			}
+		}
+	}
+	return -1
+}
+```
+
+
+
+分析
+
+```go
+将数组一分为二，其中一定有一个是有序的，另一个可能是有序，也可能是部分有序。
+此时有序部分用二分法查找。无序部分再一分为二，其中一个一定有序，另一个可能有序，可能无序。就这样循环.
+```
+
+
+
+
+
 # 链表
 
 ## 203 移除链表元素
@@ -803,12 +854,6 @@ func detectCycle(head *ListNode) *ListNode {
 
 
 
-
-
-
-
-
-
 ## 23.合并K个升序链表
 
 答案
@@ -860,6 +905,43 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 归并法比暴力法要快非常多
 暴力法：不断的把短链表合并到唯一的长链表中
 归并法：将K个有序链表转换为多个合并两个有序链表的问题
+```
+
+
+
+## 21. 合并两个有序链表
+
+答案
+
+```go
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	dummy := &ListNode{}
+	cur := dummy
+	for list1 != nil && list2 != nil {
+		if list1.Val < list2.Val {
+			cur.Next = list1
+			list1 = list1.Next
+		} else {
+			cur.Next = list2
+			list2 = list2.Next
+		}
+		cur = cur.Next
+	}
+	if list1 == nil {
+		cur.Next = list2
+	} else {
+		cur.Next = list1
+	}
+	return dummy.Next
+}
+```
+
+
+
+分析
+
+```go
+
 ```
 
 
@@ -5252,41 +5334,40 @@ dp[0]应为nums[0]
 ```go
 func longestPalindrome(s string) string {
 	n := len(s)
-	 if n == 1 {
-		 return s
-	 }
-	 start, maxLen := 0, 1
+	if n == 1 {
+		return s
+	}
+	start, maxLen := 0, 1
 	// dp[i][j] 表示 s[i..j] 是否是回文串
 	dp := make([][]bool, n)
 	// 初始化：所有长度为 1 的子串都是回文串
-	for i:=0; i<n; i++ {
+	for i := 0; i < n; i++ {
 		dp[i] = make([]bool, n)
 		dp[i][i] = true
 	}
-	for Len :=2; Len<=n; Len++ {	// 先枚举子串长度
-		for i:=0; i<n; i++ {		// 枚举左边界，左边界的上限设置可以宽松一些
-			j := i+Len-1			// 由 L 和 i 可以确定右边界，即 j - i + 1 = L 得
-			if j >= n {				// 如果右边界越界，就可以退出当前循环
+	for Len := 2; Len <= n; Len++ { // 先枚举子串长度
+		for i := 0; i < n; i++ { // 枚举左边界，左边界的上限设置可以宽松一些
+			j := i + Len - 1 // 由 L 和 i 可以确定右边界，即 j - i + 1 = L 得
+			if j >= n {      // 如果右边界越界，就可以退出当前循环
 				break
 			}
 			if s[i] != s[j] {
 				dp[i][j] = false
 			} else {
-				//if j-i < 3 {	// j-i <= 2   j=i+1 或 j=i+2  在i+1和j-1后，i会>=j
-				if j-i < 2 {	// j-i <= 1   j=i+1  在i+1和j-1后，i会>j，这是没有初始化的值(false)
-					dp[i][j] = true
+				if j-i < 2 {
+					dp[i][j] = true // 下标i 与 j相同（同一个字符例如a） 或 相差为1（例如aa），都是回文子串
 				} else {
-					dp[i][j] = dp[i+1][j-1]
+					dp[i][j] = dp[i+1][j-1]	// 看dp[i + 1][j - 1]是否为true
 				}
 			}
 			// 只要 dp[i][j] == true 成立，就表示子串 s[i..j] 是回文，此时记录回文长度和起始位置
-			if dp[i][j] && j-i+1>maxLen {
-				maxLen = j-i+1
+			if dp[i][j] && j-i+1 > maxLen {
+				maxLen = j - i + 1
 				start = i
 			}
 		}
 	}
-	return s[start:start+maxLen]
+	return s[start : start+maxLen]
 }
 ```
 
@@ -5295,7 +5376,13 @@ func longestPalindrome(s string) string {
 分析
 
 ```go
+布尔类型的dp[i][j]：表示区间范围[i,j] （注意是左闭右闭）的子串是否是回文子串，如果是dp[i][j]为true，否则为false
 
+当s[i]与s[j]不相等，dp[i][j]一定是false
+当s[i]与s[j]相等时，有如下三种情况
+		情况一：下标i 与 j相同，同一个字符例如a，当然是回文子串
+		情况二：下标i 与 j相差为1，例如aa，也是回文子串
+		情况三：下标：i 与 j相差大于1的时候，例如cabac，此时s[i]与s[j]已经相同了，我们看i到j区间是不是回文子串就看aba是不是回文就可以					 了，那么aba的区间就是 i+1 与 j-1区间，这个区间是不是回文就看dp[i + 1][j - 1]是否为true
 ```
 
 
@@ -6142,6 +6229,51 @@ func dijkstra(graph [][]int, start int) []int {
 
 	}
 	return dist
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## 200. 岛屿数量
+
+```go
+func numIslands(grid [][]byte) int {
+	ans := 0
+	m, n := len(grid), len(grid[0])
+	var dfs func(i, j int)
+	dfs = func(i, j int) {
+		grid[i][j] = '0' // '1'（陆地）  '0'（水）
+		// 每遍历到一块陆地，就把这块陆地和与之相连的陆地全部变成水
+		if i-1 >= 0 && grid[i-1][j] == '1' {
+			dfs(i-1, j)
+		}
+		if i+1 < m && grid[i+1][j] == '1' {
+			dfs(i+1, j)
+		}
+		if j-1 >= 0 && grid[i][j-1] == '1' {
+			dfs(i, j-1)
+		}
+		if j+1 < n && grid[i][j+1] == '1' {
+			dfs(i, j+1)
+		}
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if grid[i][j] == '1' {
+				ans++
+				dfs(i, j)
+			}
+		}
+	}
+	return ans
 }
 ```
 

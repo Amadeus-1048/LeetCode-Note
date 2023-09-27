@@ -134,3 +134,36 @@ func lengthOfLongestSubstring(s string) int {
 	}
 	return ans
 }
+
+// 33. 搜索旋转排序数组
+func searchTwisted(nums []int, target int) int {
+	n := len(nums)
+	if n == 1 {
+		if nums[0] == target {
+			return 0
+		} else {
+			return -1
+		}
+	}
+	left, right, mid := 0, n-1, 0
+	for left <= right {
+		mid = (left + right) / 2 // 二分法
+		if nums[mid] == target { // 判断是否找到target
+			return mid
+		}
+		if nums[0] <= nums[mid] { // 0~mid是有序的	这里必须加=号
+			if nums[0] <= target && target < nums[mid] { // target在有序的0~mid范围内，进行查找
+				right = mid - 1
+			} else { // target不在0~mid范围内，在无序的mid+1~n-1范围内重新查找
+				left = mid + 1
+			}
+		} else { // 0~mid是无序的，mid~n是有序的
+			if nums[mid] < target && target <= nums[n-1] { // target在有序的mid~n-1范围内，进行查找
+				left = mid + 1
+			} else { // target不在mid~n-1范围内，在无序的0~mid-1范围内重新查找
+				right = mid - 1
+			}
+		}
+	}
+	return -1
+}
