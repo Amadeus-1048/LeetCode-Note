@@ -405,6 +405,46 @@ func searchTwisted(nums []int, target int) int {
 
 
 
+## 88. 合并两个有序数组
+
+答案
+
+```go
+func merge(nums1 []int, m int, nums2 []int, n int) {
+	i, j := m-1, n-1 // nums1 的初始长度为 m + n
+	tail := m + n - 1	// 从后往前放置元素
+	for i >= 0 || j >= 0 {	// 只要有一个大于等于0，就表示还没合并完
+		if i < 0 {	// nums1全部用完，直接用nums2的
+			nums1[tail] = nums2[j]
+			j--
+		} else if j < 0 {	// nums2全部用完，直接用nums1的
+			nums1[tail] = nums1[i]
+			i--
+		} else if nums1[i] <= nums2[j] {
+			nums1[tail] = nums2[j]
+			j--
+		} else {
+			nums1[tail] = nums1[i]
+			i--
+		}
+		tail--
+	}
+}
+```
+
+
+
+分析
+
+```go
+将数组一分为二，其中一定有一个是有序的，另一个可能是有序，也可能是部分有序。
+此时有序部分用二分法查找。无序部分再一分为二，其中一个一定有序，另一个可能有序，可能无序。就这样循环.
+```
+
+
+
+
+
 
 
 # 链表
