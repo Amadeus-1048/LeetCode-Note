@@ -879,3 +879,38 @@ func convertBST(root *TreeNode) *TreeNode {
 	rightMLeft(root)
 	return root
 }
+
+// 103. 二叉树的锯齿形层序遍历
+func zigzagLevelOrder(root *TreeNode) [][]int {
+	if root == nil {
+		return [][]int{}
+	}
+	queue := []*TreeNode{root}
+	ans := make([][]int, 0)
+	for level := 0; len(queue) > 0; level++ {
+		length := len(queue)
+		tmp := make([]int, 0)
+		for length > 0 {
+			node := queue[0]
+			queue = queue[1:]
+			tmp = append(tmp, node.Val)
+			if node.Left != nil { // append之前要先判断是不是nil
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil { // append之前要先判断是不是nil
+				queue = append(queue, node.Right)
+			}
+			length--
+		}
+		if level%2 == 1 {
+			i, j := 0, len(tmp)-1
+			for i < j {
+				tmp[i], tmp[j] = tmp[j], tmp[i]
+				i++
+				j--
+			}
+		}
+		ans = append(ans, tmp)
+	}
+	return ans
+}
