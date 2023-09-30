@@ -42,3 +42,35 @@ func (this *LRUCache) Put(key int, value int) {
 		delete(this.cache, this.LRUList.Remove(this.LRUList.Back()).(LRUNode).key)
 	}
 }
+
+// 54. 螺旋矩阵
+func spiralOrder(matrix [][]int) []int {
+	if len(matrix) == 0 {
+		return []int{}
+	}
+	m, n := len(matrix), len(matrix[0])
+	ans := make([]int, 0)
+	top, bottom, left, right := 0, m-1, 0, n-1
+	for left <= right && top <= bottom {
+		for i := left; i <= right; i++ { // 左上方到右
+			ans = append(ans, matrix[top][i])
+		}
+		top++
+		for i := top; i <= bottom; i++ { // 右上方到下
+			ans = append(ans, matrix[i][right])
+		}
+		right--
+		// 这里的判断条件必须是&&，不能是||
+		if left <= right && top <= bottom { // 当 left > right 或者 top > bottom 时，不会发生右到左和下到上，否则会重复计数
+			for i := right; i >= left; i-- { // 右下方到左
+				ans = append(ans, matrix[bottom][i])
+			}
+			bottom--
+			for i := bottom; i >= top; i-- { // 左下方到上
+				ans = append(ans, matrix[i][left])
+			}
+			left++
+		}
+	}
+	return ans
+}

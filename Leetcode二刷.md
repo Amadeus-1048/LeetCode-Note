@@ -636,6 +636,45 @@ func reverseBetween(head *ListNode, left int, right int) *ListNode {
 	}
 	return dummy.Next
 }
+------------------------------------------------------------------------
+// 下面这种简单一点
+func reverseBetween(head *ListNode, left, right int) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	pre := dummy
+	// 从虚拟头节点走 left - 1 步，来到 left 节点的前一个节点
+	for i := 0; i < left-1; i++ {
+		pre = pre.Next
+	}
+	// 从 pre 再走 right - left + 1 步，来到 right 节点
+	rightNode := pre
+	for i := left; i < right+1; i++ {
+		rightNode = rightNode.Next
+	}
+	// 切断出一个子链表（截取链表）
+	leftNode := pre.Next
+	cur := rightNode.Next
+	// 切断链接
+	pre.Next = nil
+	rightNode.Next = nil
+	// 同第 206 题，反转链表的子区间
+	reverseLinkedList(leftNode)
+	// 接回到原来的链表中
+	pre.Next = rightNode
+	leftNode.Next = cur
+	return dummy.Next
+}
+
+func reverseLinkedList(head *ListNode) {
+	var pre *ListNode
+	cur := head
+	for cur != nil {
+		next := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = next
+	}
+}
 ```
 
 
