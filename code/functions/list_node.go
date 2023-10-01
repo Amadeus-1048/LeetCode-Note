@@ -177,24 +177,6 @@ func hasCycle(head *ListNode) bool {
 	return false
 }
 
-// 142. 环形链表II
-func detectCycle(head *ListNode) *ListNode {
-	slow, fast := head, head
-	for fast != nil && fast.Next != nil {
-		slow = slow.Next
-		fast = fast.Next.Next // 任意时刻，fast 指针走过的距离都为 slow 指针的 2 倍
-		if slow == fast {     // 找到重合的节点，说明在环中
-			// 当 slow 与 fast 相遇时，head指向链表头部；随后，它和 slow 每次向后移动一个位置。最终，它们会在入环点相遇
-			for slow != head {
-				slow = slow.Next
-				head = head.Next
-			}
-			return head
-		}
-	}
-	return nil
-}
-
 // 21. 合并两个有序链表
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	dummy := &ListNode{}
@@ -215,6 +197,24 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 		cur.Next = list1
 	}
 	return dummy.Next
+}
+
+// 142. 环形链表II
+func detectCycle(head *ListNode) *ListNode {
+	slow, fast := head, head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next // 任意时刻，fast 指针走过的距离都为 slow 指针的 2 倍
+		if slow == fast {     // 找到重合的节点，说明在环中
+			// 当 slow 与 fast 相遇时，head指向链表头部；随后，它和 slow 每次向后移动一个位置。最终，它们会在入环点相遇
+			for slow != head {
+				slow = slow.Next
+				head = head.Next
+			}
+			return head
+		}
+	}
+	return nil
 }
 
 // 92. 反转链表 II
@@ -254,4 +254,24 @@ func reverseLinkedList(head *ListNode) {
 		pre = cur
 		cur = next
 	}
+}
+
+// 23. 合并 K 个升序链表
+func mergeKLists(lists []*ListNode) *ListNode {
+	n := len(lists)
+	if n == 0 {
+		return nil
+	}
+	if n == 1 { // 返回结果
+		return lists[0]
+	}
+	if n%2 == 1 { // K为奇数，那么先合并最后两个列表，将其变为偶数长度的列表
+		lists[n-2] = mergeTwoLists(lists[n-2], lists[n-1])
+		lists, n = lists[:n-1], n-1
+	}
+	mid := n / 2
+	for i := 0; i < mid; i++ { // 后半部分合并到前半部分。
+		lists[i] = mergeTwoLists(lists[i], lists[i+mid])
+	}
+	return mergeKLists(lists[:mid])
 }

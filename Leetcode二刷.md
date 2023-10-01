@@ -957,21 +957,25 @@ func mergeKLists(lists []*ListNode) *ListNode {
     return mergeKLists(lists[:mid])
 }
 
-func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
-    if l1 == nil {
-        return l2
-    }
-    if l2 == nil {
-        return l1
-    }
-
-    if l1.Val < l2.Val {
-        l1.Next = mergeTwoLists(l1.Next, l2)
-        return l1
-    }else{
-        l2.Next = mergeTwoLists(l1, l2.Next)
-        return l2
-    }
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	dummy := &ListNode{}
+	cur := dummy
+	for list1 != nil && list2 != nil {
+		if list1.Val < list2.Val {
+			cur.Next = list1
+			list1 = list1.Next
+		} else {
+			cur.Next = list2
+			list2 = list2.Next
+		}
+		cur = cur.Next
+	}
+	if list1 == nil {
+		cur.Next = list2
+	} else {
+		cur.Next = list1
+	}
+	return dummy.Next
 }
 
 ```
@@ -1540,6 +1544,43 @@ func reverseLeftWords(s string, n int) string {
 	反转整个字符串
 
 最后就可以达到左旋n的目的，而不用定义新的字符串，完全在本串上操作
+```
+
+
+
+
+
+## 415. 字符串相加
+
+答案
+
+```go
+func addStrings(num1 string, num2 string) string {
+	add := 0	// 维护当前是否有进位
+	ans := ""
+	// 从末尾到开头逐位相加
+	for i, j := len(num1)-1, len(num2)-1; i>=0 || j>=0 || add!=0; i, j = i-1, j-1 {
+		var x, y int	// 默认为0，即在指针当前下标处于负数的时候返回 0   等价于对位数较短的数字进行了补零操作
+		if i >= 0 {
+			x = int(num1[i] - '0')
+		}
+		if j >= 0 {
+			y = int(num2[j] - '0')
+		}
+		result := x + y + add
+		ans = strconv.Itoa(result%10) + ans
+		add = result / 10
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+
 ```
 
 
