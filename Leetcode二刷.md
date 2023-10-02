@@ -443,6 +443,41 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 
 
 
+## 42. 接雨水
+
+答案
+
+```go
+func trap(height []int) int {
+	left, right := 0, len(height)-1
+	maxLeft, maxRight := 0, 0
+	ans := 0
+	// 双指针法，左右指针代表着要处理的雨水位置，最后一定会汇合
+	for left <= right { // 注意，这里可能 left==right
+		// 对于位置left而言，它左边最大值一定是maxLeft，右边最大值“大于等于”maxRight
+		if maxLeft < maxRight { // 如果maxLeft < maxRight，那么无论右边将来会不会出现更大的maxRight，都不影响这个结果
+			ans += max(0, maxLeft-height[left])
+			maxLeft = max(maxLeft, height[left])
+			left++
+		} else { // 反之，去处理right下标
+			ans += max(0, maxRight-height[right])
+			maxRight = max(maxRight, height[right])
+			right--
+		}
+	}
+	return ans
+}
+```
+
+
+
+分析
+
+```go
+每个位置能储存的雨水量为左边最高柱子的高度 和 右边最高柱子的高度中较小的那个 减去该位置的柱子高度
+即: drop[i] = min(maxLeft, maxRight) - height[i]
+```
+
 
 
 
@@ -3117,6 +3152,53 @@ func convertBST(root *TreeNode) *TreeNode {
 
 
 
+## 124. 二叉树中的最大路径和
+
+答案
+
+```go
+func maxPathSum(root *TreeNode) int {
+	maxSum := math.MinInt32
+	var maxGain func(node *TreeNode) int
+	maxGain = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		// 递归计算左右子节点的最大贡献值
+		// 只有在最大贡献值大于 0 时，才会选取对应子节点
+		leftGain := max(0, maxGain(node.Left))
+		rightGain := max(0, maxGain(node.Right))
+
+		// 节点的最大路径和取决于该节点的值与该节点的左右子节点的最大贡献值
+		pricePath := node.Val + leftGain + rightGain
+		// 更新答案
+		maxSum = max(maxSum, pricePath)
+		// 返回节点的最大贡献值
+		return node.Val + max(leftGain, rightGain)
+	}
+	maxGain(root)
+	return maxSum
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+```
+
+
+
+分析
+
+```go
+ 叶节点的最大贡献值为   本身
+非叶节点的最大贡献值为   本身 + max(左儿子,右儿子)
+```
+
+
+
 
 
 # 回溯
@@ -5507,29 +5589,44 @@ func longestPalindrome(s string) string {
 
 
 
-## 42. 接雨水
+
+
+## 72. 编辑距离
 
 答案
 
 ```go
-func trap(height []int) int {
-	left, right := 0, len(height)-1
-	maxLeft, maxRight := 0, 0
-	ans := 0
-	// 双指针法，左右指针代表着要处理的雨水位置，最后一定会汇合
-	for left <= right { // 注意，这里可能 left==right
-		// 对于位置left而言，它左边最大值一定是maxLeft，右边最大值“大于等于”maxRight
-		if maxLeft < maxRight { // 如果maxLeft < maxRight，那么无论右边将来会不会出现更大的maxRight，都不影响这个结果
-			ans += max(0, maxLeft-height[left])
-			maxLeft = max(maxLeft, height[left])
-			left++
-		} else { // 反之，去处理right下标
-			ans += max(0, maxRight-height[right])
-			maxRight = max(maxRight, height[right])
-			right--
+func minDistance(word1 string, word2 string) int {
+	// dp[i][j] 表示以下标i-1为结尾的字符串word1，和以下标j-1为结尾的字符串word2，最近编辑距离为dp[i][j]
+	m, n := len(word1), len(word2)
+	dp := make([][]int, m+1)
+
+	// 初始化
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+		dp[i][0] = i // dp[i][0] ：以下标i-1为结尾的字符串word1，和空字符串word2，最近编辑距离为dp[i][0]
+	}
+	for j := 0; j <= n; j++ {
+		dp[0][j] = j // dp[0][j] ：以下标j-1为结尾的字符串word2，和空字符串word1，最近编辑距离为dp[0][j]
+	}
+
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if word1[i-1] == word2[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			} else {
+				dp[i][j] = min(dp[i-1][j-1], min(dp[i-1][j], dp[i][j-1])) + 1
+			}
 		}
 	}
-	return ans
+	return dp[m][n]
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 ```
 
@@ -5538,49 +5635,33 @@ func trap(height []int) int {
 分析
 
 ```go
-每个位置能储存的雨水量为左边最高柱子的高度 和 右边最高柱子的高度中较小的那个 减去该位置的柱子高度
-即: drop[i] = min(maxLeft, maxRight) - height[i]
+dp[i][j] 表示以下标i-1为结尾的字符串word1，和以下标j-1为结尾的字符串word2，最近编辑距离为dp[i][j]。
+
+if (word1[i - 1] == word2[j - 1])
+    不操作
+if (word1[i - 1] != word2[j - 1])
+    增
+    删
+    换
+
+递推公式：
+word1[i-1] == word2[j-1]	
+		说明不用任何编辑，dp[i][j] = dp[i - 1][j - 1]
+word1[i-1] != word2[j-1]
+		操作一：word1删除一个元素，那么就是以下标i - 2为结尾的word1 与 j-1为结尾的word2的最近编辑距离 再加上一个操作。
+				即 dp[i][j] = dp[i-1][j] + 1
+		操作二：word2删除一个元素，那么就是以下标i - 1为结尾的word1 与 j-2为结尾的word2的最近编辑距离 再加上一个操作。
+				即 dp[i][j] = dp[i][j-1] + 1
+				word2添加一个元素，相当于word1删除一个元素，所以没有添加操作
+		操作三：替换元素，word1替换word1[i-1]，使其与word2[j-1]相同，此时不用增删加元素
+				dp[i][j] = dp[i - 1][j - 1] + 1
+		综上，当 word1[i-1] != word2[j-1] 时取最小的，即：dp[i][j] = min({dp[i-1][j-1], dp[i-1][j], dp[i][j-1]}) + 1
+
+初始化：
+		dp[i][0] ：以下标i-1为结尾的字符串word1，和空字符串word2，最近编辑距离为dp[i][0]
+		那么dp[i][0]就应该是i，对word1里的元素全部做删除操作，即：dp[i][0] = i
+		同理dp[0][j] = j	
 ```
-
-
-
-## 3
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-## 3
-
-答案
-
-```go
-
-```
-
-
-
-分析
-
-```go
-
-```
-
-
-
-
 
 
 
@@ -6045,6 +6126,45 @@ func search(nums []int, target int) int {
 ```
 
 
+
+## 56. 合并区间
+
+```go
+func merge(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	res := [][]int{}
+	prev := intervals[0]
+	// 合并区间
+	for i := 1; i < len(intervals); i++ {
+		cur := intervals[i]
+		// 前一个区间的右边界和当前区间的左边界进行比较，判断有无重合
+		if prev[1] < cur[0] { // 没有重合
+			res = append(res, prev) // 前一个区间合并完毕，加入结果集
+			prev = cur
+		} else { // 有重合
+			prev[1] = max(prev[1], cur[1]) // 合并后的区间右边界为较大的那个
+		}
+	}
+	// 当考察完最后一个区间，后面没区间了，遇不到不重合区间，最后的 prev 没推入 res。 要单独补上
+	res = append(res, prev)
+	return res
+}
+
+func max(a, b int) int {
+	if a > b { return a }
+	return b
+}
+```
+
+
+
+分析
+
+```go
+思路是先排序，再合并，遇到不重合再推入 prev
+```
 
 
 

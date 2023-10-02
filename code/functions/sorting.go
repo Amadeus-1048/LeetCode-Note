@@ -1,5 +1,7 @@
 package functions
 
+import "sort"
+
 // 215. 数组中的第K个最大元素
 func findKthLargest(nums []int, k int) int {
 	start, end := 0, len(nums)-1
@@ -54,4 +56,27 @@ func sortArray(nums []int) []int {
 	}
 	quick(0, len(nums)-1)
 	return nums
+}
+
+// 56. 合并区间
+func mergeIntervals(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	res := [][]int{}
+	prev := intervals[0]
+	// 合并区间
+	for i := 1; i < len(intervals); i++ {
+		cur := intervals[i]
+		// 前一个区间的右边界和当前区间的左边界进行比较，判断有无重合
+		if prev[1] < cur[0] { // 没有重合
+			res = append(res, prev) // 前一个区间合并完毕，加入结果集
+			prev = cur
+		} else { // 有重合
+			prev[1] = max(prev[1], cur[1]) // 合并后的区间右边界为较大的那个
+		}
+	}
+	// 当考察完最后一个区间，后面没区间了，遇不到不重合区间，最后的 prev 没推入 res。 要单独补上
+	res = append(res, prev)
+	return res
 }

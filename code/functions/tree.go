@@ -914,3 +914,27 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 	}
 	return ans
 }
+
+// 124. 二叉树中的最大路径和
+func maxPathSum(root *TreeNode) int {
+	maxSum := math.MinInt32
+	var maxGain func(node *TreeNode) int // 以该节点为根节点的子树中寻找以该节点为起点的一条路径，使得该路径上的节点值之和最大
+	maxGain = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		// 递归计算左右子节点的最大贡献值
+		// 只有在最大贡献值大于 0 时，才会选取对应子节点
+		leftGain := max(0, maxGain(node.Left))
+		rightGain := max(0, maxGain(node.Right))
+
+		// 节点的最大路径和取决于该节点的值与该节点的左右子节点的最大贡献值
+		pricePath := node.Val + leftGain + rightGain
+		// 更新答案
+		maxSum = max(maxSum, pricePath)
+		// 返回节点的最大贡献值
+		return node.Val + max(leftGain, rightGain)
+	}
+	maxGain(root)
+	return maxSum
+}
