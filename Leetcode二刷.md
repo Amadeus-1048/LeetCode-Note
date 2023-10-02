@@ -5513,17 +5513,17 @@ func longestPalindrome(s string) string {
 
 ```go
 func trap(height []int) int {
-    left, right := 0, len(height)-1
+	left, right := 0, len(height)-1
 	maxLeft, maxRight := 0, 0
 	ans := 0
 	// 双指针法，左右指针代表着要处理的雨水位置，最后一定会汇合
-	for left <= right {		// 注意，这里可能 left==right
-		// 对于位置left而言，它左边最大值一定是left_max，右边最大值“大于等于”right_max
-		if maxLeft < maxRight {	// 如果left_max<right_max，那么无论右边将来会不会出现更大的right_max，都不影响这个结果
+	for left <= right { // 注意，这里可能 left==right
+		// 对于位置left而言，它左边最大值一定是maxLeft，右边最大值“大于等于”maxRight
+		if maxLeft < maxRight { // 如果maxLeft < maxRight，那么无论右边将来会不会出现更大的maxRight，都不影响这个结果
 			ans += max(0, maxLeft-height[left])
 			maxLeft = max(maxLeft, height[left])
 			left++
-		} else {	// 反之，去处理right下标
+		} else { // 反之，去处理right下标
 			ans += max(0, maxRight-height[right])
 			maxRight = max(maxRight, height[right])
 			right--
