@@ -142,14 +142,14 @@
 
 # 数组
 
-## 704.二分查找
+## [704. 二分查找](https://leetcode.cn/problems/binary-search/)
 
 答案
 
 ```go
 func search(nums []int, target int) int {
 	left := 0
-	right := len(nums)
+	right := len(nums)	// 如果是左闭右闭，那么 right = len -1
 	for left < right {
 		mid := left + (right-left)/2
 		if nums[mid] == target {
@@ -182,7 +182,7 @@ for left < right，因为left在区间成立时不可能等于right
 
 
 
-## 27.移除元素
+## [27. 移除元素](https://leetcode.cn/problems/remove-element/)
 
 答案
 
@@ -217,7 +217,7 @@ func removeElement(nums []int, val int) int {
 
 
 
-## 977.有序数组的平方
+## [977. 有序数组的平方](https://leetcode.cn/problems/squares-of-a-sorted-array/)
 
 答案
 
@@ -226,7 +226,7 @@ func sortedSquares(nums []int) []int {
 	n := len(nums)
 	i, j, k := 0, n-1, n-1
 	ans := make([]int, n)
-	for i <= j {
+	for k >= 0 {
 		left, right := nums[i]*nums[i], nums[j]*nums[j]
 		if left < right {
 			ans[k] = right
@@ -257,7 +257,7 @@ func sortedSquares(nums []int) []int {
 
 
 
-## 209. 长度最小的子数组
+## [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 
 答案
 
@@ -301,7 +301,7 @@ func minSubArrayLen(target int, nums []int) int {
 
 
 
-## 3. 无重复字符的最长子串
+## [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
 
 答案
 
@@ -356,7 +356,7 @@ func max(a, b int) int {
 
 
 
-## 33. 搜索旋转排序数组
+## [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 
 答案
 
@@ -405,7 +405,7 @@ func searchTwisted(nums []int, target int) int {
 
 
 
-## 88. 合并两个有序数组
+## [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/)
 
 答案
 
@@ -443,7 +443,7 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 
 
 
-## 42. 接雨水
+## [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 
 答案
 
@@ -6521,7 +6521,7 @@ func numIslands(grid [][]byte) int {
 
 
 
-## 200. 岛屿面积
+## [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/)
 
 ```go
 func maxAreaOfIsland(grid [][]int) int {
