@@ -484,7 +484,7 @@ func trap(height []int) int {
 
 # 链表
 
-## 203 移除链表元素
+## [203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/)
 
 答案
 
@@ -613,7 +613,7 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 
 
 
-## 206 反转链表
+## [206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)
 
 答案
 
@@ -622,10 +622,10 @@ func reverseList(head *ListNode) *ListNode {
 	cur := head
 	var pre *ListNode	// 不能用pre := &ListNode{}    输出结果会在最后多一个0
 	for cur != nil {
-		tmp := cur.Next
+		next := cur.Next
 		cur.Next = pre
 		pre = cur
-		cur = tmp
+		cur = next
 	}
 	return pre	// 是返回pre，不是cur，因为最后cur是nil
 }
@@ -646,7 +646,7 @@ fmt.Println("p2:", p2==nil)		// p2: true
 
 
 
-## 92. 反转链表 II
+## [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
 
 答案
 
@@ -729,7 +729,7 @@ next 的值和位置都会变化
 
 
 
-## 24. 两两交换链表中的节点
+## [24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/)
 
 答案
 
@@ -771,7 +771,7 @@ pre = head				用变量pre表示head结点（即pre和head同时表示一个结�
 
 
 
-## 19. 删除链表的倒数第N个节点
+## [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
 
 答案
 
@@ -806,7 +806,7 @@ fast和slow同时移动，直到fast指向末尾(NULL)
 
 
 
-## 160. 相交链表
+## [160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
 
 答案
 
@@ -841,9 +841,7 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 
 
 
-
-
-## 25. K 个一组翻转链表
+## [25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)
 
 答案
 
@@ -888,7 +886,7 @@ https://leetcode.cn/problems/reverse-nodes-in-k-group/solution/jian-dan-yi-dong-
 
 
 
-## 141. 环形链表
+## [141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)
 
 答案
 
@@ -924,7 +922,7 @@ for循环的条件为：for fast!=nil && fast.Next!=nil
 
 
 
-## 142. 环形链表 II
+## [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)
 
 答案
 
@@ -966,9 +964,44 @@ func detectCycle(head *ListNode) *ListNode {
 
 
 
+## [21. 合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)
+
+答案
+
+```go
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	dummy := &ListNode{}
+	cur := dummy
+	for list1 != nil && list2 != nil {
+		if list1.Val < list2.Val {
+			cur.Next = list1
+			list1 = list1.Next
+		} else {
+			cur.Next = list2
+			list2 = list2.Next
+		}
+		cur = cur.Next
+	}
+	if list1 == nil {
+		cur.Next = list2
+	} else {
+		cur.Next = list1
+	}
+	return dummy.Next
+}
+```
 
 
-## 23.合并K个升序链表
+
+分析
+
+```go
+
+```
+
+
+
+## [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)
 
 答案
 
@@ -1023,43 +1056,6 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 归并法比暴力法要快非常多
 暴力法：不断的把短链表合并到唯一的长链表中
 归并法：将K个有序链表转换为多个合并两个有序链表的问题
-```
-
-
-
-## 21. 合并两个有序链表
-
-答案
-
-```go
-func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	dummy := &ListNode{}
-	cur := dummy
-	for list1 != nil && list2 != nil {
-		if list1.Val < list2.Val {
-			cur.Next = list1
-			list1 = list1.Next
-		} else {
-			cur.Next = list2
-			list2 = list2.Next
-		}
-		cur = cur.Next
-	}
-	if list1 == nil {
-		cur.Next = list2
-	} else {
-		cur.Next = list1
-	}
-	return dummy.Next
-}
-```
-
-
-
-分析
-
-```go
-
 ```
 
 
