@@ -1064,7 +1064,7 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 
 # 哈希表
 
-## 242.有效的字母异位词
+## [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
 
 答案
 
@@ -1098,7 +1098,7 @@ func isAnagram(s string, t string) bool {
 
 
 
-## 349.两个数组的交集
+## [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
 
 答案
 
@@ -1129,7 +1129,7 @@ func intersection(nums1 []int, nums2 []int) []int {
 
 
 
-## 202. 快乐数
+## [202. 快乐数](https://leetcode.cn/problems/happy-number/)
 
 答案
 
@@ -1162,7 +1162,7 @@ func getSum(n int) int {
 
 
 
-## 1. 两数之和
+## [1. 两数之和](https://leetcode.cn/problems/two-sum/)
 
 答案
 
@@ -1194,7 +1194,7 @@ key来存元素，value来存下标
 
 
 
-## 454. 两数相加II
+## [454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/)
 
 答案
 
@@ -1228,7 +1228,7 @@ func fourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
 
 
 
-## 383. 赎金信
+## [383. 赎金信](https://leetcode.cn/problems/ransom-note/)
 
 答案
 
@@ -1258,7 +1258,7 @@ func canConstruct(ransomNote string, magazine string) bool {
 
 
 
-## 15. 三数之和
+## [15. 三数之和](https://leetcode.cn/problems/3sum/)
 
 答案
 
@@ -1308,7 +1308,7 @@ func threeSum(nums []int) [][]int  {
 
 
 
-## 18. 四数之和
+## [18. 四数之和](https://leetcode.cn/problems/4sum/)
 
 答案
 
