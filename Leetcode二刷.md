@@ -1473,7 +1473,7 @@ func replaceSpace(s string) string {
 
 
 
-## 151.反转字符串中的单词
+## [151. 反转字符串中的单词](https://leetcode.cn/problems/reverse-words-in-a-string/)
 
 答案
 
@@ -1581,7 +1581,7 @@ func reverseLeftWords(s string, n int) string {
 
 
 
-## 415. 字符串相加
+## [415. 字符串相加](https://leetcode.cn/problems/add-strings/)
 
 答案
 
@@ -4205,7 +4205,7 @@ func monotoneIncreasingDigits(N int) int {
 
 # 动态规划
 
-## 509. 斐波那契数
+## [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)
 
 答案
 
@@ -4235,7 +4235,7 @@ func fib(n int) int {
 
 
 
-## 70. 爬楼梯
+## [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
 
 答案
 
@@ -4265,7 +4265,7 @@ dp[i] = dp[i - 1] + dp[i - 2]
 
 
 
-## 746. 使用最小花费爬楼梯
+## [746. 使用最小花费爬楼梯](https://leetcode.cn/problems/min-cost-climbing-stairs/)
 
 答案
 
@@ -4294,7 +4294,7 @@ dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
 
 
 
-## 62. 不同路径
+## [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
 
 答案
 
@@ -4351,7 +4351,7 @@ for (int j = 0; j < n; j++) dp[0][j] = 1;
 
 
 
-## 63. 不同路径 II
+## [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
 
 答案
 
@@ -4397,7 +4397,7 @@ dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
 
 
 
-## 343. 整数拆分
+## [343. 整数拆分](https://leetcode.cn/problems/integer-break/)
 
 答案
 
@@ -6169,6 +6169,121 @@ func max(a, b int) int {
 
 
 # 栈/队列
+
+## [232. 用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/)
+
+```go
+type MyQueue struct {
+    stackIn  []int //输入栈
+    stackOut []int //输出栈
+}
+
+func Constructor() MyQueue {
+    return MyQueue{
+        stackIn:  make([]int, 0),
+        stackOut: make([]int, 0),
+    }
+}
+
+// 往输入栈做push
+func (this *MyQueue) Push(x int) {
+    this.stackIn = append(this.stackIn, x)
+}
+
+// 在输出栈做pop，pop时如果输出栈数据为空，需要将输入栈全部数据导入，如果非空，则可直接使用
+func (this *MyQueue) Pop() int {
+    inLen, outLen := len(this.stackIn), len(this.stackOut)
+    if outLen == 0 {
+        if inLen == 0 {
+            return -1
+        }
+        for i := inLen - 1; i >= 0; i-- {
+            this.stackOut = append(this.stackOut, this.stackIn[i])
+        }
+        this.stackIn = []int{}      //导出后清空
+        outLen = len(this.stackOut) //更新长度值
+    }
+    val := this.stackOut[outLen-1]
+    this.stackOut = this.stackOut[:outLen-1]
+    return val
+}
+
+func (this *MyQueue) Peek() int {
+    val := this.Pop()
+    if val == -1 {
+        return -1
+    }
+    this.stackOut = append(this.stackOut, val)
+    return val
+}
+
+func (this *MyQueue) Empty() bool {
+    return len(this.stackIn) == 0 && len(this.stackOut) == 0
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [225. 用队列实现栈](https://leetcode.cn/problems/implement-stack-using-queues/)
+
+```go
+type MyStack struct {
+    queue []int//创建一个队列
+}
+
+/** Initialize your data structure here. */
+func Constructor() MyStack {
+    return MyStack{   //初始化
+        queue:make([]int,0),
+    }
+}
+
+/** Push element x onto stack. */
+func (this *MyStack) Push(x int)  {
+    //添加元素
+    this.queue=append(this.queue,x)
+}
+
+/** Removes the element on top of the stack and returns that element. */
+func (this *MyStack) Pop() int {
+    n:=len(this.queue)-1//判断长度
+    val:=this.queue[n]
+    this.queue=this.queue[:n]
+    return val
+    
+}
+
+/** Get the top element. */
+func (this *MyStack) Top() int {
+    //利用Pop函数，弹出来的元素重新添加
+    val:=this.Pop()
+    this.queue=append(this.queue,val)
+    return val
+}
+
+/** Returns whether the stack is empty. */
+func (this *MyStack) Empty() bool {
+    return len(this.queue)==0
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
 
 ## 20. 有效的括号
 
