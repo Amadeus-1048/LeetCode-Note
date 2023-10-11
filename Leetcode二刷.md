@@ -1626,7 +1626,7 @@ func addStrings(num1 string, num2 string) string {
 
 答案
 
-### 144. 前序遍历
+### [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
 
 ```go
 func preorderTraversal(root *TreeNode) (res []int) {
@@ -1646,7 +1646,7 @@ func preorderTraversal(root *TreeNode) (res []int) {
 
 
 
-### 94. 中序遍历
+### [94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/)
 
 ```go
 func inorderTraversal(root *TreeNode) (res []int) {
@@ -1666,7 +1666,7 @@ func inorderTraversal(root *TreeNode) (res []int) {
 
 
 
-### 145. 后序遍历
+### [145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/)
 
 ```go
 func postorderTraversal(root *TreeNode) (res []int) {
@@ -1686,7 +1686,7 @@ func postorderTraversal(root *TreeNode) (res []int) {
 
 
 
-## 102. 二叉树的层序遍历
+## [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
 
 答案
 
@@ -1727,7 +1727,7 @@ func levelOrder(root *TreeNode) [][]int {
 
 
 
-## 107. 二叉树的层序遍历II
+## [107. 二叉树的层序遍历 II](https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/)
 
 答案
 
@@ -1754,8 +1754,11 @@ func levelOrderBottom(root *TreeNode) [][]int {
 		}
 		ans = append(ans, tmp) //放入结果集
 	}
-	for i := 0; i < len(ans)/2; i++ {
-		ans[i], ans[len(ans)-i-1] = ans[len(ans)-i-1], ans[i]
+	left, right := 0, len(ans)-1
+	for left < right {
+		ans[left], ans[right] = ans[right], ans[left]
+    left++
+    right--
 	}
 	return ans
 }
