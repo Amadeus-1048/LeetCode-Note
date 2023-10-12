@@ -1774,7 +1774,7 @@ func levelOrderBottom(root *TreeNode) [][]int {
 
 
 
-## 199. 二叉树的右视图
+## [199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)
 
 答案
 
@@ -1817,7 +1817,7 @@ func rightSideView(root *TreeNode) []int {
 
 
 
-## 637. 二叉树的层平均值
+## [637. 二叉树的层平均值](https://leetcode.cn/problems/average-of-levels-in-binary-tree/)
 
 答案
 
@@ -1865,7 +1865,7 @@ ans = append(ans, float64(sum)/float64(length))
 
 
 
-## 429. N 叉树的层序遍历
+## [429. N 叉树的层序遍历](https://leetcode.cn/problems/n-ary-tree-level-order-traversal/)
 
 答案
 
@@ -1908,7 +1908,7 @@ func levelOrder(root *Node) [][]int {
 
 
 
-## 515.在每个树行中找最大值
+## [515. 在每个树行中找最大值](https://leetcode.cn/problems/find-largest-value-in-each-tree-row/)
 
 答案
 
@@ -1920,8 +1920,9 @@ func largestValues(root *TreeNode) []int {
 	}
 	queue := []*TreeNode{root}
 	for len(queue) > 0 {
-		maxNumber := int(math.Inf(-1)) //负无穷   因为节点的值会有负数
+		// maxNumber := int(math.Inf(-1)) //负无穷   因为节点的值会有负数
 		length := len(queue)           //保存当前层的长度，然后处理当前层
+    maxNumber := queue[0].Val		// 不用担心越界，因为上面的for循环已经判断过了
 		for i := 0; i < length; i++ {
 			node := queue[0]
 			queue = queue[1:]
@@ -1956,7 +1957,7 @@ func max(a, b int) int {
 
 
 
-## 116. 填充每个节点的下一个右侧节点指针
+## [116. 填充每个节点的下一个右侧节点指针](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/)
 
 答案
 
@@ -2005,7 +2006,7 @@ func connect(root *PerfectNode) *PerfectNode {
 
 
 
-## 117. 填充每个节点的下一个右侧节点指针 II
+## [117. 填充每个节点的下一个右侧节点指针 II](https://leetcode.cn/problems/populating-next-right-pointers-in-each-node-ii/)
 
 答案
 
@@ -2054,7 +2055,7 @@ func connect(root *PerfectNode) *PerfectNode {
 
 
 
-## 104. 二叉树的最大深度
+## [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
 
 答案
 
@@ -2093,7 +2094,7 @@ func maxDepth(root *TreeNode) int {
 
 
 
-## 111. 二叉树的最小深度
+## [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
 
 答案
 
