@@ -2138,7 +2138,7 @@ func minDepth(root *TreeNode) int {
 
 
 
-## 226. 翻转二叉树
+## [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)
 
 答案
 
@@ -2178,7 +2178,7 @@ func invertTree(root *TreeNode) *TreeNode {
 
 
 
-## 101. 对称二叉树
+## [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
 
 答案
 
@@ -2217,7 +2217,7 @@ func isSymmetric(root *TreeNode) bool {
 
 
 
-## 222. 完全二叉树的节点个数
+## [222. 完全二叉树的节点个数](https://leetcode.cn/problems/count-complete-tree-nodes/)
 
 答案
 
@@ -2256,33 +2256,32 @@ func countNodes(root *TreeNode) int {
 
 
 
-## 103. 二叉树的锯齿形层序遍历
+## [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)
 
 答案
 
 ```go
 func zigzagLevelOrder(root *TreeNode) [][]int {
-	ans := [][]int{}
-	if root == nil {	// 漏掉了
-		return ans
+	if root == nil {
+		return [][]int{}
 	}
 	queue := []*TreeNode{root}
-	length := len(queue)
-	for level:=0; len(queue)>0; level++ {		// 是len(queue)>0   不是 queue != nil，会报错
-		tmp := []int{}
-		length = len(queue)
-		for length > 0 {
-			tmp = append(tmp, queue[0].Val)
-			if queue[0].Left != nil {		// append之前要先判断是不是nil
-				queue = append(queue, queue[0].Left)
-			}
-			if queue[0].Right != nil {		// append之前要先判断是不是nil
-				queue = append(queue, queue[0].Right)
-			}
+	ans := make([][]int, 0)
+	for level := 0; len(queue) > 0; level++ {
+		length := len(queue)
+		tmp := make([]int, 0)
+		for i := 0; i < length; i++ {
+			node := queue[0]
 			queue = queue[1:]
-			length--	// 漏掉了
+			tmp = append(tmp, node.Val)
+			if node.Left != nil { // append之前要先判断是不是nil
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil { // append之前要先判断是不是nil
+				queue = append(queue, node.Right)
+			}
 		}
-		if level % 2 == 1 {			// 用level还可以计算层数，所以不用bool
+		if level%2 == 1 {
 			i, j := 0, len(tmp)-1
 			for i < j {
 				tmp[i], tmp[j] = tmp[j], tmp[i]

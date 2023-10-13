@@ -1,32 +1,35 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
 )
 
+// sql  查找所有连续且仅出现两次的数字
+
 func main() {
-	//fmt.Println("hello world, amadeus")
-	scoreMap := map[string]float64{"A": 4, "B": 3, "C": 2, "D": 1, "F": 0}
-	inputs := bufio.NewScanner(os.Stdin)
-	for inputs.Scan() {
-		var avg float64
-		flag := true
-		data := strings.Split(inputs.Text(), " ")
-		for _, v := range data {
-			score, ok := scoreMap[v]
-			if ok == false {
-				fmt.Println("Unknown")
-				flag = false
-				break
-			}
-			avg += score
+	a, b := 0, 0
+	fmt.Scan(&a, &b)
+	add := 0
+	res := 0
+	count := 1
+	for a > 0 || b > 0 || add > 0 {
+		x := a % 10
+		y := b % 10
+		tmp := x + y + add
+		if tmp == 1 { // tmp=1, x, y, add 中有一个是1
+			add = 0
+
+		} else if tmp == 2 { // tmp=2, x, y, add 中有两个是1，要进位
+			add = 1
+			tmp = 0
+		} else if tmp == 3 { // tmp=3, x, y, add 都是1，要进位
+			add = 1
+			tmp = 1
 		}
-		if flag {
-			avg = avg / float64(len(data))
-			fmt.Printf("%.2f\n", avg) // 保留两位小数
-		}
+		res = res + tmp*count
+		count *= 10
+		a /= 10
+		b /= 10
 	}
+	fmt.Println(res)
 }
