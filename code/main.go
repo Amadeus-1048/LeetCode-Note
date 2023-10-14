@@ -1,35 +1,41 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
-// sql  查找所有连续且仅出现两次的数字
-
 func main() {
-	a, b := 0, 0
-	fmt.Scan(&a, &b)
-	add := 0
+	var s string
+	inputs := bufio.NewScanner(os.Stdin)
+	inputs.Scan()
+	s = inputs.Text()
 	res := 0
-	count := 1
-	for a > 0 || b > 0 || add > 0 {
-		x := a % 10
-		y := b % 10
-		tmp := x + y + add
-		if tmp == 1 { // tmp=1, x, y, add 中有一个是1
-			add = 0
-
-		} else if tmp == 2 { // tmp=2, x, y, add 中有两个是1，要进位
-			add = 1
-			tmp = 0
-		} else if tmp == 3 { // tmp=3, x, y, add 都是1，要进位
-			add = 1
-			tmp = 1
+	length := len(s)
+	if length == 1 {
+		fmt.Println(0)
+		return
+	}
+	locationXiao, locationMi := make([]int, 0), make([]int, 0)
+	for i := 0; i < length-3; i++ {
+		if s[i] == 'x' {
+			if s[i+1] == 'i' && s[i+2] == 'a' && s[i+3] == 'o' {
+				locationXiao = append(locationXiao, i)
+			}
 		}
-		res = res + tmp*count
-		count *= 10
-		a /= 10
-		b /= 10
+	}
+	for i := 0; i < length-1; i++ {
+		if s[i] == 'm' && s[i+1] == 'i' {
+			locationMi = append(locationMi, i)
+		}
+	}
+	for i := 0; i < len(locationXiao); i++ {
+		for j := 0; j < len(locationMi); j++ {
+			if locationXiao[i] < locationMi[j] {
+				res++
+			}
+		}
 	}
 	fmt.Println(res)
 }
