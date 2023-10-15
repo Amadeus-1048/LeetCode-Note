@@ -2305,9 +2305,48 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 
 
 
+## [513. 找树左下角的值](https://leetcode.cn/problems/find-bottom-left-tree-value/)
+
+答案
+
+```go
+func findBottomLeftValue(root *TreeNode) int {
+	ans := 0
+	if root == nil {
+		return ans
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		length := len(queue) //保存当前层的长度，然后处理当前层
+		for i := 0; i < length; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			if i == 0 {	// 记录每一行第一个元素
+				ans = node.Val
+			}
+		}
+	}
+	return ans
+}
+```
 
 
-## 110. 平衡二叉树
+
+分析
+
+```go
+在树的最后一行找到最左边的值
+```
+
+
+
+## [110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
 
 答案
 
@@ -2316,6 +2355,11 @@ func isBalanced(root *TreeNode) bool {
 	if root == nil {
 		return true
 	}
+  
+  // 自顶向下：
+  // return abs(height(root.Left) - height(root.Right)) <= 1 && isBalanced(root.Left) && isBalanced(root.Right)
+  
+  // 自底向上：
 	if !isBalanced(root.Left) || !isBalanced(root.Right) {
 		return false
 	}
@@ -2359,12 +2403,18 @@ func max(a, b int) int {
 二叉树节点的深度：指从根节点到该节点的最长简单路径边的条数。
 二叉树节点的高度：指从该节点到叶子节点的最长简单路径边的条数。
 
-因为求深度可以从上到下去查 所以需要前序遍历（中左右），而高度只能从下到上去查，所以只能后序遍历（左右中）
+自顶向下的递归  复杂度n方
+对于当前遍历到的节点，首先计算左右子树的高度，判断左右子树的高度差是否不超过 1
+再分别递归地遍历左右子节点，并判断左子树和右子树是否平衡
+
+自底向上递归  复杂度n	每个节点的计算高度和判断是否平衡都只需要处理一次
+类似于后序遍历，对于当前遍历到的节点，先递归地判断其左右子树是否平衡，再判断以当前节点为根的子树是否平衡。
+如果一棵子树是平衡的，则求其高度。	如果存在一棵子树不平衡，则整个二叉树一定不平衡。
 ```
 
 
 
-## 257. 二叉树的所有路径
+## [257. 二叉树的所有路径](https://leetcode.cn/problems/binary-tree-paths/)
 
 答案
 
@@ -2401,29 +2451,26 @@ func binaryTreePaths(root *TreeNode) []string {
 
 
 
-## 404. 左叶子之和
+## [404. 左叶子之和](https://leetcode.cn/problems/sum-of-left-leaves/)
 
 答案
 
 ```go
-func binaryTreePaths(root *TreeNode) []string {
-	res := make([]string, 0)
-	var travel func(node *TreeNode, s string)
-	travel = func(node *TreeNode, s string) {
-		if node.Left == nil && node.Right == nil { // 找到了叶子节点
-			v := s + strconv.Itoa(node.Val) // 找到一条路径
-			res = append(res, v)            // 添加到结果集
-			return
+func sumOfLeftLeaves(root *TreeNode) int {
+	res := 0
+	var findLeft func(node *TreeNode)
+	findLeft = func(node *TreeNode) {
+		if node.Left != nil && node.Left.Left == nil && node.Left.Right == nil {
+			res += node.Left.Val
 		}
-		s += strconv.Itoa(node.Val) + "->" // 非叶子节点，后面多加符号
 		if node.Left != nil {
-			travel(node.Left, s)
+			findLeft(node.Left)
 		}
 		if node.Right != nil {
-			travel(node.Right, s)
+			findLeft(node.Right)
 		}
 	}
-	travel(root, "")
+	findLeft(root)
 	return res
 }
 ```
@@ -2439,48 +2486,9 @@ func binaryTreePaths(root *TreeNode) []string {
 
 
 
-## 513. 找树左下角的值
-
-答案
-
-```go
-func findBottomLeftValue(root *TreeNode) int {
-	ans := 0
-	if root == nil {
-		return ans
-	}
-	queue := []*TreeNode{root}
-	for len(queue) > 0 {
-		length := len(queue) //保存当前层的长度，然后处理当前层
-		for i := 0; i < length; i++ {
-			node := queue[0]
-			queue = queue[1:]
-			if node.Left != nil {
-				queue = append(queue, node.Left)
-			}
-			if node.Right != nil {
-				queue = append(queue, node.Right)
-			}
-			if i == 0 {	// 记录每一行第一个元素
-				ans = node.Val
-			}
-		}
-	}
-	return ans
-}
-```
 
 
-
-分析
-
-```go
-在树的最后一行找到最左边的值
-```
-
-
-
-## 112. 路径总和
+## [112. 路径总和](https://leetcode.cn/problems/path-sum/)
 
 答案
 
@@ -2507,7 +2515,7 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 
 
 
-## 113. 路径总和II
+## [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
 
 答案
 
@@ -2547,38 +2555,34 @@ func pathSum(root *TreeNode, targetSum int) [][]int {
 
 
 
-## 106. 从中序与后序遍历序列构造二叉树
+## [654. 最大二叉树](https://leetcode.cn/problems/maximum-binary-tree/)
 
 答案
 
 ```go
-// 106. 从中序与后序遍历序列构造二叉树
-func buildTree(inorder []int, postorder []int) *TreeNode {
-	if len(inorder) < 1 || len(postorder) < 1 {
+func constructMaximumBinaryTree(nums []int) *TreeNode {
+	if len(nums) < 1 {
 		return nil
 	}
-	// 先找到根节点（后续遍历的最后一个就是根节点）
-	nodeValue := postorder[len(postorder)-1]
-	// 从中序遍历中找到一分为二的点，左边为左子树，右边为右子树
-	left := findRootIndex(inorder, nodeValue)
-	// 构造root
+	// 找到最大值
+	index := findMax(nums)
+	// 构造二叉树
 	root := &TreeNode{
-		Val:   nodeValue,
-		Left:  buildTree(inorder[:left], postorder[:left]), // 一棵树的中序遍历和后序遍历的长度相等
-		Right: buildTree(inorder[left+1:], postorder[left:len(postorder)-1]),
+		Val:   nums[index],
+		Left:  constructMaximumBinaryTree(nums[:index]),
+		Right: constructMaximumBinaryTree(nums[index+1:]),
 	}
 	return root
 }
 
-func findRootIndex(inorder []int, target int) (index int) {
-	for i := 0; i < len(inorder); i++ {
-		if target == inorder[i] {
-			return i
+func findMax(nums []int) (index int) {
+	for i := 0; i < len(nums); i++ {
+		if nums[i] > nums[index] {
+			index = i
 		}
 	}
-	return -1
+	return index
 }
-
 ```
 
 
@@ -2586,14 +2590,12 @@ func findRootIndex(inorder []int, target int) (index int) {
 分析
 
 ```go
-如何根据两个顺序构造一个唯一的二叉树：
-以后序数组的最后一个元素为切割点，先切中序数组，根据中序数组，反过来再切后序数组。
-一层一层切下去，每次后序数组最后一个元素就是节点元素。
+
 ```
 
 
 
-## 105. 从前序与中序遍历序列构造二叉树
+## [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
 
 答案
 
@@ -2639,34 +2641,38 @@ func buildTree2(preorder []int, inorder []int) *TreeNode {
 
 
 
-## 654. 最大二叉树
+## [106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 答案
 
 ```go
-func constructMaximumBinaryTree(nums []int) *TreeNode {
-	if len(nums) < 1 {
+// 106. 从中序与后序遍历序列构造二叉树
+func buildTree(inorder []int, postorder []int) *TreeNode {
+	if len(inorder) < 1 || len(postorder) < 1 {
 		return nil
 	}
-	// 找到最大值
-	index := findMax(nums)
-	// 构造二叉树
+	// 先找到根节点（后续遍历的最后一个就是根节点）
+	nodeValue := postorder[len(postorder)-1]
+	// 从中序遍历中找到一分为二的点，左边为左子树，右边为右子树
+	left := findRootIndex(inorder, nodeValue)
+	// 构造root
 	root := &TreeNode{
-		Val:   nums[index],
-		Left:  constructMaximumBinaryTree(nums[:index]),
-		Right: constructMaximumBinaryTree(nums[index+1:]),
+		Val:   nodeValue,
+		Left:  buildTree(inorder[:left], postorder[:left]), // 一棵树的中序遍历和后序遍历的长度相等
+		Right: buildTree(inorder[left+1:], postorder[left:len(postorder)-1]),
 	}
 	return root
 }
 
-func findMax(nums []int) (index int) {
-	for i := 0; i < len(nums); i++ {
-		if nums[i] > nums[index] {
-			index = i
+func findRootIndex(inorder []int, target int) (index int) {
+	for i := 0; i < len(inorder); i++ {
+		if target == inorder[i] {
+			return i
 		}
 	}
-	return index
+	return -1
 }
+
 ```
 
 
@@ -2674,12 +2680,14 @@ func findMax(nums []int) (index int) {
 分析
 
 ```go
-
+如何根据两个顺序构造一个唯一的二叉树：
+以后序数组的最后一个元素为切割点，先切中序数组，根据中序数组，反过来再切后序数组。
+一层一层切下去，每次后序数组最后一个元素就是节点元素。
 ```
 
 
 
-## 617. 合并二叉树
+## [617. 合并二叉树](https://leetcode.cn/problems/merge-two-binary-trees/)
 
 答案
 
