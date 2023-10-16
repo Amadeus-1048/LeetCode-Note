@@ -2716,7 +2716,7 @@ func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
 
 
 
-## 700. 二叉搜索树中的搜索
+## [700. 二叉搜索树中的搜索](https://leetcode.cn/problems/search-in-a-binary-search-tree/)
 
 答案
 
@@ -2760,7 +2760,7 @@ func searchBST(root *TreeNode, val int) *TreeNode {
 
 
 
-## 98. 验证二叉搜索树
+## [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)
 
 答案
 
@@ -2779,7 +2779,6 @@ func isValidBST(root *TreeNode) bool {
 		}
 		pre = node
 		right := check(node.Right)
-
 		return left && right // 分别对左子树和右子树递归判断，如果左子树和右子树都符合则返回true
 	}
 	return check(root)
@@ -2797,11 +2796,12 @@ func isValidBST(root *TreeNode) bool {
 
 
 
-## 530. 二叉搜索树的最小绝对差
+## [530. 二叉搜索树的最小绝对差](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/)
 
 答案
 
 ```go
+// 中序递归-前驱节点
 func getMinimumDifference(root *TreeNode) int {
 	var pre *TreeNode // 用来记录前一个节点
 	minDelta := math.MaxInt64
@@ -2828,6 +2828,36 @@ func min(a, b int) int {
 	}
 	return b
 }
+
+------------------------------------------------------------------------------------------------
+// 中序遍历-数组遍历
+func getMinimumDifference(root *TreeNode) int {
+	// 中序遍历成数组，遍历数组得绝对值差值
+	res := []int{}
+	var travel func(node *TreeNode)
+	travel = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		travel(node.Left)
+		res = append(res, node.Val)
+		travel(node.Right)
+	}
+	// 遍历BST到数组
+	travel(root)
+	if len(res) < 2 {
+		return 0
+	}
+	// 找到最小差值
+	Min := math.MaxInt64
+	for i:=1;i<len(res);i++ {
+		diff := res[i] - res[i-1]
+		if Min > diff {
+			Min = diff
+		}
+	}
+	return Min
+}
 ```
 
 
@@ -2840,7 +2870,7 @@ func min(a, b int) int {
 
 
 
-## 501.二叉搜索树中的众数
+## [501. 二叉搜索树中的众数](https://leetcode.cn/problems/find-mode-in-binary-search-tree/)
 
 答案
 
