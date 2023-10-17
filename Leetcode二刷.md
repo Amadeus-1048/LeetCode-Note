@@ -2716,6 +2716,58 @@ func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
 
 
 
+## [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+答案
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	parent := map[int]*TreeNode{} // 题目给出：所有 Node.val 互不相同，所以可以用int存储
+	visited := map[int]bool{}
+	var dfs func(node *TreeNode)
+	// 从根节点开始遍历整棵二叉树，用哈希表记录每个节点的父节点指针
+	dfs = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		if node.Left != nil {
+			parent[node.Left.Val] = node
+			dfs(node.Left)
+		}
+		if node.Right != nil {
+			parent[node.Right.Val] = node
+			dfs(node.Right)
+		}
+	}
+	dfs(root)
+	// 从 p 节点开始不断往它的祖先移动，并记录已经访问过的祖先节点
+	for p != nil {
+		visited[p.Val] = true
+		p = parent[p.Val]
+	}
+	// 再从 q 节点开始不断往它的祖先移动，如果有祖先已经被访问过，即意味着这是 p 和 q 的深度最深的公共祖先，即 LCA 节点
+	for q != nil {
+		if visited[q.Val] {
+			return q
+		}
+		q = parent[q.Val]
+	}
+	return nil
+}
+```
+
+
+
+分析
+
+```go
+遇到这个题目首先想的是要是能自底向上查找就好了，这样就可以找到公共祖先了
+二叉树回溯的过程就是从低到上，后序遍历（左右中）就是天然的回溯过程，可以根据左右子树的返回值，来处理中节点的逻辑
+如果找到一个节点，发现左子树出现结点p，右子树出现节点q，或者 左子树出现结点q，右子树出现节点p，那么该节点就是节点p和q的最近公共祖先
+```
+
+
+
 ## [700. 二叉搜索树中的搜索](https://leetcode.cn/problems/search-in-a-binary-search-tree/)
 
 答案
@@ -2917,59 +2969,7 @@ func findMode(root *TreeNode) []int {
 
 
 
-## 236. 二叉树的最近公共祖先
-
-答案
-
-```go
-func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	parent := map[int]*TreeNode{} // 题目给出：所有 Node.val 互不相同，所以可以用int存储
-	visited := map[int]bool{}
-	var dfs func(node *TreeNode)
-	// 从根节点开始遍历整棵二叉树，用哈希表记录每个节点的父节点指针
-	dfs = func(node *TreeNode) {
-		if node == nil {
-			return
-		}
-		if node.Left != nil {
-			parent[node.Left.Val] = node
-			dfs(node.Left)
-		}
-		if node.Right != nil {
-			parent[node.Right.Val] = node
-			dfs(node.Right)
-		}
-	}
-	dfs(root)
-	// 从 p 节点开始不断往它的祖先移动，并记录已经访问过的祖先节点
-	for p != nil {
-		visited[p.Val] = true
-		p = parent[p.Val]
-	}
-	// 再从 q 节点开始不断往它的祖先移动，如果有祖先已经被访问过，即意味着这是 p 和 q 的深度最深的公共祖先，即 LCA 节点
-	for q != nil {
-		if visited[q.Val] {
-			return q
-		}
-		q = parent[q.Val]
-	}
-	return nil
-}
-```
-
-
-
-分析
-
-```go
-遇到这个题目首先想的是要是能自底向上查找就好了，这样就可以找到公共祖先了
-二叉树回溯的过程就是从低到上，后序遍历（左右中）就是天然的回溯过程，可以根据左右子树的返回值，来处理中节点的逻辑
-如果找到一个节点，发现左子树出现结点p，右子树出现节点q，或者 左子树出现结点q，右子树出现节点p，那么该节点就是节点p和q的最近公共祖先
-```
-
-
-
-## 235. 二叉搜索树的最近公共祖先
+## [235. 二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)
 
 答案
 
@@ -3004,7 +3004,7 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 
 
 
-## 701. 二叉搜索树中的插入操作
+## [701. 二叉搜索树中的插入操作](https://leetcode.cn/problems/insert-into-a-binary-search-tree/)
 
 答案
 
@@ -3034,7 +3034,7 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 
 
 
-## 450.删除二叉搜索树中的节点
+## [450. 删除二叉搜索树中的节点](https://leetcode.cn/problems/delete-node-in-a-bst/)
 
 答案
 
@@ -3087,7 +3087,7 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 
 
 
-## 669. 修剪二叉搜索树
+## [669. 修剪二叉搜索树](https://leetcode.cn/problems/trim-a-binary-search-tree/)
 
 答案
 
@@ -3121,7 +3121,7 @@ func trimBST(root *TreeNode, low int, high int) *TreeNode {
 
 
 
-## 108. 将有序数组转换为二叉搜索树
+## [108. 将有序数组转换为二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/)
 
 答案
 
@@ -3155,7 +3155,7 @@ func sortedArrayToBST(nums []int) *TreeNode {
 
 
 
-## 538. 把二叉搜索树转换为累加树
+## [538. 把二叉搜索树转换为累加树](https://leetcode.cn/problems/convert-bst-to-greater-tree/)
 
 答案
 
@@ -3189,7 +3189,7 @@ func convertBST(root *TreeNode) *TreeNode {
 
 
 
-## 124. 二叉树中的最大路径和
+## [124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
 
 答案
 
@@ -3211,7 +3211,7 @@ func maxPathSum(root *TreeNode) int {
 		// 更新答案
 		maxSum = max(maxSum, pricePath)
 		// 返回节点的最大贡献值
-		return node.Val + max(leftGain, rightGain)
+		return node.Val + max(leftGain, rightGain)	// 贡献值和答案不同，所以是max(leftGain, rightGain)
 	}
 	maxGain(root)
 	return maxSum
