@@ -35,6 +35,8 @@
 
 - 逆波兰式
 
+- 栈实现队列、队列实现栈
+
   
 
 ## 树
@@ -43,7 +45,7 @@
   - 递归三要素，以及前中后序的递归写法。层次遍历
 - 树的属性
   - 求普通二叉树的属性，一般是后序，一般要通过递归函数的返回值做计算
-  - 求二叉搜索树的属性，一定是中序了，要不白瞎了有序性了
+  - 求二叉搜索树的属性，一定是中了，不然浪费了有序性
 - 树的构造
   - 涉及到二叉树的构造，无论普通二叉树还是二叉搜索树一定前序，都是先构造中节点
 - 二叉搜索树
@@ -3240,7 +3242,7 @@ func max(a, b int) int {
 
 # 回溯
 
-## 77. 组合
+## [77. 组合](https://leetcode.cn/problems/combinations/)
 
 答案
 
@@ -3278,7 +3280,7 @@ func combine(n int, k int) [][]int {
 
 
 
-## 216. 组合总和 III
+## [216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)
 
 答案
 
@@ -3323,7 +3325,7 @@ func combinationSum3(k int, n int) [][]int {
 
 
 
-## 17. 电话号码的字母组合
+## [17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/)
 
 答案
 
