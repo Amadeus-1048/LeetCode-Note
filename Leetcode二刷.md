@@ -3974,7 +3974,7 @@ func isvalid(row, col int, k byte, board [][]byte) bool {
 
 # 贪心
 
-## 455. 分发饼干
+## [455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
 
 答案
 
@@ -4009,7 +4009,7 @@ func findContentChildren(g []int, s []int) int {
 
 
 
-## 376. 摆动序列
+## [376. 摆动序列](https://leetcode.cn/problems/wiggle-subsequence/)
 
 答案
 
@@ -4021,7 +4021,7 @@ func wiggleMaxLength(nums []int) int {
 	}
 	for i := 0; i < len(nums)-1; i++ {
 		curDiff = nums[i+1] - nums[i]
-		// //如果有正有负则更新下标值||或者只有前一个元素为0（针对两个不等元素的序列也视作摆动序列，且摆动长度为2）
+		// 如果有正有负则更新下标值||或者只有前一个元素为0（针对两个不等元素的序列也视作摆动序列，且摆动长度为2）
 		if (curDiff > 0 && preDiff <= 0) || (preDiff >= 0 && curDiff < 0) {
 			preDiff = curDiff
 			count++ // 统计数组的峰值数量	相当于是删除单一坡度上的节点，然后统计长度
@@ -4043,7 +4043,7 @@ func wiggleMaxLength(nums []int) int {
 
 
 
-## 53. 最大子数组和
+## [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)
 
 答案
 
@@ -4055,7 +4055,7 @@ func maxSubArray(nums []int) int {
 	}
 	res, sum := nums[0], nums[0]
 	for i := 1; i < length; i++ {
-		if sum < 0 { // 相当于重置最大子序起始位置，因为遇到负数一定是拉低总和
+		if sum < 0 { // 相当于重置最大子序起始位置，因为sum是负数时继续累加下去也一定是拉低新的总和
 			sum = nums[i]
 		} else {
 			sum += nums[i] // 取区间累计的最大值（相当于不断确定最大子序终止位置）
@@ -4080,7 +4080,7 @@ func maxSubArray(nums []int) int {
 
 
 
-## 122. 买卖股票的最佳时机 II
+## [122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/)
 
 答案
 
@@ -4111,7 +4111,7 @@ func maxProfit(prices []int) int {
 
 
 
-## 55. 跳跃游戏
+## [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
 
 答案
 
@@ -4138,7 +4138,7 @@ func canJump(nums []int) bool {
 
 
 
-## 45. 跳跃游戏 II
+## [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
 
 答案
 
@@ -4174,7 +4174,7 @@ func jump(nums []int) int {
 
 
 
-## 1005. K 次取反后最大化的数组和
+## [1005. K 次取反后最大化的数组和](https://leetcode.cn/problems/maximize-sum-of-array-after-k-negations/)
 
 答案
 
@@ -4214,7 +4214,7 @@ func largestSumAfterKNegations(nums []int, K int) int {
 
 
 
-## 738. 单调递增的数字
+## [738. 单调递增的数字](https://leetcode.cn/problems/monotone-increasing-digits/)
 
 答案
 
