@@ -6623,6 +6623,25 @@ func dijkstra(graph [][]int, start int) []int {
 	}
 	return dist
 }
+
+const INF = 100000
+
+func main() {
+	// 带权值邻接矩阵
+	var gp = [][]int{
+		// a b c d e f g s
+		{0, 1, INF, INF, 5, INF, INF, 7},   // a
+		{1, 0, INF, 1, 3, INF, INF, INF},   // b
+		{2, INF, 0, 1, 1, 9, 6, INF},       // c
+		{INF, 1, INF, 0, 1, INF, 9, INF},   // d
+		{5, 3, 1, INF, 0, INF, INF, INF},   // e
+		{INF, INF, 9, INF, INF, 0, 3, 3},   // f
+		{INF, INF, 6, 9, INF, 3, 0, INF},   // g
+		{7, INF, INF, INF, INF, 3, INF, 0}, // s
+	}
+	dist := dijkstra(gp, 1)
+	fmt.Println(dist)
+}
 ```
 
 
