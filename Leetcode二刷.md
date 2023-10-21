@@ -2842,6 +2842,32 @@ func isValidBST(root *TreeNode) bool {
 	}
 	return check(root)
 }
+
+//二叉搜索树的中序遍历结果一定是递增的，记录中序遍历结果
+func isValidBST(root *TreeNode) bool {
+	var queue []int
+	queue = midDFS(queue, root)
+	
+	// 验证大小顺序
+	for i := 0; i < len(queue)-1; i++ {
+		if queue[i] >= queue[i+1] {
+			return false
+		}
+	}
+	return true
+}
+
+// 中序遍历
+func midDFS(queue []int, root *TreeNode) []int {
+	if root == nil {
+		return queue
+	}
+
+	queue = midDFS(queue, root.Left)
+	queue = append(queue, root.Val)
+	queue = midDFS(queue, root.Right)
+	return queue
+}
 ```
 
 
@@ -6211,6 +6237,46 @@ func max(a, b int) int {
 ```
 
 
+
+## [451. 根据字符出现频率排序](https://leetcode.cn/problems/sort-characters-by-frequency/)
+
+```go
+func merge(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	res := [][]int{}
+	prev := intervals[0]
+	// 合并区间
+	for i := 1; i < len(intervals); i++ {
+		cur := intervals[i]
+		// 前一个区间的右边界和当前区间的左边界进行比较，判断有无重合
+		if prev[1] < cur[0] { // 没有重合
+			res = append(res, prev) // 前一个区间合并完毕，加入结果集
+			prev = cur
+		} else { // 有重合
+			prev[1] = max(prev[1], cur[1]) // 合并后的区间右边界为较大的那个
+		}
+	}
+	// 当考察完最后一个区间，后面没区间了，遇不到不重合区间，最后的 prev 没推入 res。 要单独补上
+	res = append(res, prev)
+	return res
+}
+
+func max(a, b int) int {
+	if a > b { return a }
+	return b
+}
+```
+
+
+
+分析
+
+```go
+如果要求不用map，那就直接直接用数组[]int去记录出现的次数。
+虽然有大小写字母，但一个字母的小写比大写的ASCII数值大了32，还是可以存得下的
+```
 
 
 
