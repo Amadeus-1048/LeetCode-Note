@@ -6813,6 +6813,173 @@ func maxAreaOfIsland(grid [][]int) int {
 
 
 
+## [1971. 寻找图中是否存在路径](https://leetcode.cn/problems/find-if-path-exists-in-graph/)
+
+```go
+// 并查集
+func validPath(n int, edges [][]int, source int, destination int) bool {
+	p := make([]int, n)
+	for i := range p {
+		p[i] = i
+	}
+	var find func(x int) int
+	find = func(x int) int {
+		if p[x] != x {
+			p[x] = find(p[x])
+		}
+		return p[x]
+	}
+	for _, e := range edges {
+		p[find(e[0])] = find(e[1])
+	}
+	return find(source) == find(destination)
+}
+
+作者：ylb
+链接：https://leetcode.cn/problems/find-if-path-exists-in-graph/solutions/2025571/by-lcbin-96dp/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+// DFS
+func validPath(n int, edges [][]int, source int, destination int) bool {
+	vis := make([]bool, n)	// 记录已经访问过的顶点
+	g := make([][]int, n)
+  // 先将 edges 转换成图 g
+	for _, e := range edges {
+		a, b := e[0], e[1]
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
+	}
+	var dfs func(int) bool
+	dfs = func(i int) bool {
+		if i == destination {
+			return true
+		}
+		vis[i] = true
+		for _, j := range g[i] {
+			if !vis[j] && dfs(j) {
+				return true
+			}
+		}
+		return false
+	}
+	return dfs(source)
+}
+
+// BFS		
+func validPath(n int, edges [][]int, source int, destination int) bool {
+    passMap := map[int]int{}	// 存储已经遍历过的点
+    queue := []int{source}		// 存储接下来需要遍历的点
+    for len(queue) > 0{
+        pop := queue[0]
+        queue = queue[1:]
+        if pop == destination{
+            return true
+        }
+        nexts := findNext(edges,pop)	// 找到与当前点相连的其他点
+        for _,v := range nexts{
+            if _,ok:=passMap[v];ok{	// 如果点已经遍历过(在遍历过的集合中) 那就不入队
+                continue
+            }
+            passMap[v] = 1	// 如果点没有被遍历过，当前点入队
+            queue = append(queue,v)
+        }
+    }
+  	// 一直到队列为空（表示从出发点出发 所有与之能够连通的点都遍历过了，没有找到最终的节点）
+    return false
+}
+func findNext(edges [][]int,point int)[]int{
+    res := []int{}
+    for _,v:=range edges{
+      // edges[i] = [ui, vi] 表示顶点 ui 和顶点 vi 之间的双向边
+        if v[0] == point{
+            res = append(res,v[1])
+        }
+        if v[1] == point{
+            res = append(res,v[0])
+        }
+    }
+    return res
+}
+```
+
+
+
+分析
+
+```go
+给一个图、两个点，判断两个点之间是否是连通的，这题一看就知道是经典的广度优先搜索。
+使用广度优先搜索主要是有两点需要用到的：
+	用一个集合来存储已经遍历过的点（不然就会重复遍历）
+	用一个队列来存接下来需要遍历的点 （因为一个点的第二步可以往很多个点走）
+在这道题当中，我们的目的是判断图中的一个点是否能够到达另一个点，那我们就从一个点出发，深度/广度优先的往下走，往下走的过程中
+	要么遍历完从这个点能到达的所有点之后都没有遇到我们的目标点，此时 返回false
+	要么遍历过程中遇到了我们的目标点，此时返回true
+在遍历的过程中我们主要采取这样的做法：
+	出发点进入队列
+	循环判断队列不为空
+		出队列一个点
+		将这个点加入边遍历过的集合中
+		判断这个点是否为终点，如果为终点就直接return true
+		从图中找到与当前点相连的其他点
+			如果点已经遍历过(在遍历过的集合中) 那就不入队。（因为已经被遍历过了，没有到达终点，这个点之后的点也遍历过了）
+			如果点没有被遍历过，当前点入队
+	一直到队列为空（表示从出发点出发 所有与之能够连通的点都遍历过了，没有找到最终的节点） return false
+```
+
+
+
+## [207. 课程表](https://leetcode.cn/problems/course-schedule/)
+
+```go
+func canFinish(numCourses int, prerequisites [][]int) bool {
+	g := make([][]int, numCourses)	// 图
+	indeg := make([]int, numCourses)	// 每个节点的入度
+	for _, p := range prerequisites {
+		a, b := p[0], p[1]	// b -> a
+		g[b] = append(g[b], a)	// b可以到达的节点
+		indeg[a]++	// a的入度+1
+	}
+	q := []int{}	// 存储入度为0的节点
+	for i, x := range indeg {	// 遍历每个节点的入度
+		if x == 0 {
+			q = append(q, i)
+		}
+	}
+	cnt := 0	// 入度为0的节点的数量
+  // 对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到
+	for len(q) > 0 {
+		i := q[0]
+		q = q[1:]
+		cnt++
+		for _, j := range g[i] {	// 看节点i能到达哪些节点
+			indeg[j]--	// 能到达的这个节点的入度-1
+			if indeg[j] == 0 {
+				q = append(q, j)
+			}
+		}
+	}
+	return cnt == numCourses
+}
+```
+
+
+
+分析
+
+```go
+拓扑排序
+  给定一个包含 nnn 个节点的有向图 GGG，我们给出它的节点编号的一种排列，如果满足：
+  对于图 GGG 中的任意一条有向边 (u,v)(u, v)(u,v)，uuu 在排列中都出现在 vvv 的前面。
+  那么称该排列是图 GGG 的「拓扑排序」
+
+考虑拓扑排序中最前面的节点，该节点一定不会有任何入边，也就是它没有任何的先修课程要求。当我们将一个节点加入答案中后，我们就可以移除它的所有出边，代表着它的相邻节点少了一门先修课程的要求。如果某个相邻节点变成了「没有任何入边的节点」，那么就代表着这门课可以开始学习了。按照这样的流程，我们不断地将没有入边的节点加入答案，直到答案中包含所有的节点（得到了一种拓扑排序）或者不存在没有入边的节点（图中包含环）
+
+将课程看作图中的节点，先修课程看作图中的边，那么我们可以将本题转化为判断有向图中是否存在环。
+具体地，我们可以使用拓扑排序的思想，对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到。
+如果所有节点都被遍历到，说明图中不存在环，那么我们就可以完成所有课程的学习；否则，我们就无法完成所有课程的学习。
+```
+
 
 
 # ACM模式
