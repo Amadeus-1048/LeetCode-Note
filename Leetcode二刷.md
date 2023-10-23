@@ -131,7 +131,7 @@
     - 能否能装满背包（或者最多装多少）：dp[j] = max(dp[j], dp[j - nums[i]] + nums[i])
     - 装满背包有几种方法：dp[j] += dp[j - nums[i]]
     - 背包装满最大价值：dp[j] = max(dp[j], dp[j - weight[i]] + value[i])
-    - 装满背包所有物品的最小个数：dp[j] = min(dp[j - coins[i]] + 1, dp[j])
+    - 装满背包所有物品的最小个数：dp[j] = min(dp[j], dp[j - coins[i]] + 1)
   - 遍历顺序
     - 01背包：二维dp数组01背包先遍历物品还是先遍历背包都是可以的，且第二层for循环是从小到大遍历
     - 01背包：一维dp数组01背包只能先遍历物品再遍历背包容量，且第二层for循环是从大到小遍历
@@ -4537,11 +4537,13 @@ dp[i]：分拆数字i，可以得到的最大乘积为dp[i]
 递推公式：dp[i] = max({dp[i], (i - j) * j, dp[i - j] * j})
 
 初始化：dp[2] = 1，从dp[i]的定义来说，拆分数字2，得到的最大乘积是1
+-------------------------------
+数学证明方法：尽量分成3，不然就分2
 ```
 
 
 
-## 96. 不同的二叉搜索树
+## [96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)
 
 答案
 
@@ -4566,6 +4568,9 @@ func numTrees(n int)int{
 分析
 
 ```go
+给定一个有序序列 1⋯n，为了构建出一棵二叉搜索树，我们可以遍历每个数字 i，将该数字作为树根，
+将 1⋯(i−1) 序列作为左子树，将 (i+1)⋯n 序列作为右子树。接着我们可以按照同样的方式递归构建左子树和右子树。
+
 dp[i] ： 1到i为节点组成的二叉搜索树的个数为dp[i]
 
 递推公式：dp[i] += dp[j - 1] * dp[i - j]; ，j-1 为j为头结点左子树节点数量，i-j 为以j为头结点右子树节点数量
@@ -4575,7 +4580,7 @@ dp[0] = 1
 
 
 
-## 416. 分割等和子集
+## [416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/)
 
 答案
 
@@ -4608,7 +4613,7 @@ func canPartition(nums []int) bool {
 
 ```go
 dp[j]表示 背包总容量（所能装的总重量）是j，放进物品后，背的最大重量为dp[j]。
-本题中每一个元素的数值既是重量，也是价值，所以不会有价值超过容量的情况。所以dp[j] <= j
+本题中每一个元素的数值既是容量，也是价值，所以不会有价值超过容量的情况。所以dp[j] <= j
 
 dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);
 
@@ -4618,7 +4623,7 @@ dp[0]一定是0。
 
 
 
-## 1049. 最后一块石头的重量 II
+## [1049. 最后一块石头的重量 II](https://leetcode.cn/problems/last-stone-weight-ii/)
 
 答案
 
@@ -4665,7 +4670,7 @@ dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
 
 
 
-## 494. 目标和
+## [494. 目标和](https://leetcode.cn/problems/target-sum/)
 
 答案
 
