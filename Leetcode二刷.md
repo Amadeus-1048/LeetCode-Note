@@ -4735,7 +4735,7 @@ dp[0] 为 1
 
 
 
-## 474. 一和零
+## [474. 一和零](https://leetcode.cn/problems/ones-and-zeroes/)
 
 答案
 
@@ -4788,7 +4788,7 @@ dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1)
 
 
 
-## 518. 零钱兑换 II
+## [518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/)
 
 答案
 
@@ -4825,7 +4825,7 @@ dp[0] = 1是 递归公式的基础。如果dp[0] = 0 的话，后面所有推导
 
 
 
-## 377. 组合总和 Ⅳ
+## [377. 组合总和 Ⅳ](https://leetcode.cn/problems/combination-sum-iv/)
 
 答案
 
@@ -4944,10 +4944,6 @@ dp[j] 要取所有 dp[j - coins[i]] + 1 中最小的，所以用min()
 
 本题钱币数量可以无限使用，那么是完全背包。所以遍历的内循环是正序
 ```
-
-
-
-
 
 
 
