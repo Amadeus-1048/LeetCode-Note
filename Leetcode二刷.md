@@ -1653,8 +1653,6 @@ func longestCommonPrefix(strs []string) string {
 
 
 
-
-
 # 树
 
 ## 二叉树递归遍历
@@ -1733,7 +1731,7 @@ func levelOrder(root *TreeNode) [][]int {
 	}
 	queue := []*TreeNode{root}
 	for len(queue)>0 {
-        tmp := []int{}
+    tmp := []int{}
 		length := len(queue)	//保存当前层的长度，然后处理当前层
 		for i:=0; i<length; i++ {
 			node := queue[0]
