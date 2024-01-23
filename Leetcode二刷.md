@@ -1731,7 +1731,7 @@ func levelOrder(root *TreeNode) [][]int {
 	}
 	queue := []*TreeNode{root}
 	for len(queue)>0 {
-    tmp := []int{}
+		tmp := []int{}
 		length := len(queue)	//保存当前层的长度，然后处理当前层
 		for i:=0; i<length; i++ {
 			node := queue[0]
@@ -1790,8 +1790,8 @@ func levelOrderBottom(root *TreeNode) [][]int {
 	left, right := 0, len(ans)-1
 	for left < right {
 		ans[left], ans[right] = ans[right], ans[left]
-    left++
-    right--
+		left++
+		right--
 	}
 	return ans
 }
@@ -1955,7 +1955,7 @@ func largestValues(root *TreeNode) []int {
 	for len(queue) > 0 {
 		// maxNumber := int(math.Inf(-1)) //负无穷   因为节点的值会有负数
 		length := len(queue)           //保存当前层的长度，然后处理当前层
-    maxNumber := queue[0].Val		// 不用担心越界，因为上面的for循环已经判断过了
+		maxNumber := queue[0].Val		// 不用担心越界，因为上面的for循环已经判断过了
 		for i := 0; i < length; i++ {
 			node := queue[0]
 			queue = queue[1:]
