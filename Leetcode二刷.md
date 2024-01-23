@@ -501,7 +501,7 @@ func removeElements(head *ListNode, val int) *ListNode {
 	cur := dummy
 	for cur.Next!=nil {
 		if cur.Next.Val == val {
-			cur.Next = cur.Next.Next
+			cur.Next = cur.Next.Next	// 注意：这里不需要将cur移动为下一个节点
 		} else {
 			cur = cur.Next
 		}
@@ -624,7 +624,7 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 ```go
 func reverseList(head *ListNode) *ListNode {
 	cur := head
-	var pre *ListNode	// 不能用pre := &ListNode{}    输出结果会在最后多一个0
+	var pre *ListNode	// 不能用pre := &ListNode{}，因为输出结果会在最后多一个0
 	for cur != nil {
 		next := cur.Next
 		cur.Next = pre
