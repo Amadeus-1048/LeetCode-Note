@@ -2656,7 +2656,7 @@ func buildTree2(preorder []int, inorder []int) *TreeNode {
 	root := &TreeNode{
 		Val:   preorder[0],
 		Left:  buildTree2(preorder[1:left+1], inorder[:left]), // 将先序遍历一分为二，左边为左子树，右边为右子树
-		Right: buildTree2(preorder[left+1:], inorder[left+1:]),
+		Right: buildTree2(preorder[left+1:], inorder[left+1:]), // 一棵树的中序遍历和前序遍历的长度相等
 	}
 	return root
 }
