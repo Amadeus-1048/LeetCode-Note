@@ -3522,7 +3522,7 @@ func combinationSum2(candidates []int, target int) [][]int {
 
 		for i := start; i < len(candidates); i++ {
 			// 前一个树枝，使用了candidates[i - 1]，也就是说同一树层使用过candidates[i - 1]。
-      // 这个判断是用来在集合内有重复元素且解集不包含重复组合的情况下进行去重的
+			// 这个判断是用来在集合内有重复元素且解集不包含重复组合的情况下进行去重的
 			if i > start && candidates[i] == candidates[i-1] {
 				continue
 			}
