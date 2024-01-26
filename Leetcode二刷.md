@@ -3559,7 +3559,7 @@ func partition(s string) [][]string {
 	trace := []string{}
 	var backtrace func(start int)
 	backtrace = func(start int) {
-		if start == len(s) {
+		if start == len(s) {	// 已经切到字符串的结尾位置了
 			tmp := make([]string, len(trace))
 			copy(tmp, trace)
 			res = append(res, tmp)
@@ -3567,7 +3567,7 @@ func partition(s string) [][]string {
 		}
 
 		for i := start; i < len(s); i++ { // 横向遍历：找切割线  切割到字符串的结尾位置
-			if isPartition(s, start, i) { // 是回文子串
+      if isPartition(s, start, i) { // 判断 s[start:i+1] 是否为回文串
 				trace = append(trace, s[start:i+1])
 			} else {
 				continue
@@ -3752,6 +3752,7 @@ func findSubsequences(nums []int) [][]int {
 			res = append(res, tmp)
 			// 注意这里不要加return，因为要取树上的所有节点
 		}
+    // 这个数组放在backtrace中，所以只针对同一数层
 		used := [201]int{} // 使用数组来进行去重操作，题目表明数值范围[-100, 100]
 		for i := start; i < len(nums); i++ {
 			if len(trace) > 0 && nums[i] < trace[len(trace)-1] || used[nums[i]+100] == 1 {
@@ -3788,7 +3789,7 @@ func findSubsequences(nums []int) [][]int {
 func permute(nums []int) [][]int {
 	res := [][]int{}
 	trace := []int{}
-	used := [21]int{}
+	used := [21]int{}	// 这里的used放在backtrace外面，所以是针对整棵树的去重
 	var backtrace func()
 	backtrace = func() {
 		if len(trace) == len(nums) {
