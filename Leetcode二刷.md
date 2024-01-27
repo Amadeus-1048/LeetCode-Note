@@ -4556,8 +4556,8 @@ func numTrees(n int)int{
 	dp[0] = 1
 	for i:=1; i<=n; i++ {
 		for j:=1; j<=i; j++ {
-			// j-1 为 以j为头结点左子树节点数量
-			// i-j 为以j为头结点右子树节点数量
+			// j-1 ： 以j为头结点时，左子树的数量（一共有i个节点，有j-1个小于j的节点）
+			// i-j ： 以j为头结点时，右子树的数量（一共有i个节点，有i-j个大于j的节点）
 			dp[i] += dp[j-1] * dp[i-j]
 		}
 	}
@@ -4947,7 +4947,7 @@ dp[j] 要取所有 dp[j - coins[i]] + 1 中最小的，所以用min()
 
 
 
-## 279. 完全平方数
+## [279. 完全平方数](https://leetcode.cn/problems/perfect-squares/description/)
 
 答案
 
