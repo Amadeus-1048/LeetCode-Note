@@ -5388,7 +5388,7 @@ func max(a, b int) int {
 
 
 
-## 300. 最长递增子序列
+## [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)
 
 答案
 
@@ -5438,7 +5438,7 @@ if (nums[i] > nums[j])
 
 
 
-## 674. 最长连续递增序列
+## [674. 最长连续递增序列](https://leetcode.cn/problems/longest-continuous-increasing-subsequence/description/)
 
 答案
 
@@ -5488,7 +5488,7 @@ dp[i]：以下标i为结尾的连续递增的子序列长度为dp[i]
 
 
 
-## 718. 最长重复子数组
+## [718. 最长重复子数组](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/description/)
 
 答案
 
@@ -5535,7 +5535,7 @@ dp[1][1] = dp[0][0] + 1，只有dp[0][0]初始为0，正好符合递推公式逐
 
 
 
-## 1143. 最长公共子序列
+## [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/description/)
 
 答案
 
@@ -5585,7 +5585,7 @@ dp[i][j]：长度为[0, i - 1]的字符串text1与长度为[0, j - 1]的字符�
 
 
 
-## 53. 最大子数组和
+## [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/)
 
 答案
 
@@ -5631,7 +5631,7 @@ dp[0]应为nums[0]
 
 
 
-## 5. 最长回文子串
+## [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/description/)
 
 答案
 
@@ -5691,9 +5691,7 @@ func longestPalindrome(s string) string {
 
 
 
-
-
-## 72. 编辑距离
+## [72. 编辑距离](https://leetcode.cn/problems/edit-distance/description/)
 
 答案
 
