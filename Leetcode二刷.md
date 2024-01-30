@@ -1657,6 +1657,10 @@ func longestCommonPrefix(strs []string) string {
 
 ## 二叉树递归遍历
 
+![img](https://code-thinking-1253855093.file.myqcloud.com/pics/20200806191109896.png)
+
+
+
 答案
 
 ### [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
@@ -6019,7 +6023,7 @@ func generateMatrix(n int) [][]int {
 
 # 排序
 
-## 215. 数组中的第K个最大元素
+## [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/description/)
 
 ```go
 func findKthLargest(nums []int, k int) int {
@@ -6071,7 +6075,7 @@ func findKthLargest(nums []int, k int) int {
 
 
 
-## 912. 排序数组
+## [912. 排序数组](https://leetcode.cn/problems/sort-an-array/description/)
 
 ```go
 // 这种在极端情况下会超时，但是一般不会，易于理解
@@ -6135,7 +6139,6 @@ func sortArray(nums []int) []int {
 分析
 
 ```go
-思考一下考试时快排怎么做的
 // 此时nums[left]还在第一位，需要和小于它的nums[i]，或是i,j重叠处交换一下
 nums[i], nums[left] = nums[left], nums[i]
 
@@ -6429,7 +6432,7 @@ func (this *MyStack) Empty() bool {
 
 
 
-## 20. 有效的括号
+## [20. 有效的括号](https://leetcode.cn/problems/valid-parentheses/description/)
 
 ```go
 func isValid(s string) bool {
@@ -6461,7 +6464,7 @@ func isValid(s string) bool {
 
 
 
-## 1047. 删除字符串中的所有相邻重复项
+## [1047. 删除字符串中的所有相邻重复项](https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string/description/)
 
 ```go
 func removeDuplicates(s string) string {
@@ -6490,7 +6493,7 @@ func removeDuplicates(s string) string {
 
 
 
-## 150. 逆波兰表达式求值
+## [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/description/)
 
 ```go
 func evalRPN(tokens []string) int {
