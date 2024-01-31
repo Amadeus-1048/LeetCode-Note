@@ -5880,7 +5880,9 @@ func addStrings(num1 string, num2 string) string {
 
 
 
-## 54. 螺旋矩阵
+## [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/description/)
+
+第一种解法：
 
 ```go
 func spiralOrder(matrix [][]int) []int {
@@ -5919,7 +5921,7 @@ func spiralOrder(matrix [][]int) []int {
 
 
 
-根据59改的
+第二种解法，根据59改的：
 
 ```go
 func spiralOrder(matrix [][]int) []int {
@@ -5939,6 +5941,7 @@ func spiralOrder(matrix [][]int) []int {
 		}
     right--
     // 这里的判断条件必须是&&，不能是||
+    // 这里可以是=，因为已经对top和right进行了处理，所以left可能等于right，top可能等于bottom，即有两行或两列
 		if left <= right && top <= bottom {// 当 left > right 或者 top > bottom 时，不会发生右到左和下到上，否则会重复计数
 			for i:=right; i>=left; i-- {		// 右下方到左
 				ans = append(ans, matrix[bottom][i])
@@ -5964,11 +5967,7 @@ func spiralOrder(matrix [][]int) []int {
 
 
 
-
-
-
-
-## 59. 螺旋矩阵II
+## [59. 螺旋矩阵II](https://leetcode.cn/problems/spiral-matrix-ii/description/)
 
 ```go
 func generateMatrix(n int) [][]int {
@@ -5980,7 +5979,7 @@ func generateMatrix(n int) [][]int {
 	for i := 0; i < n; i++ {
 		matrix[i] = make([]int, n)
 	}
-	for num <= tar { //
+	for num <= tar {	// 从1～n^2遍历
 		for i := left; i <= right; i++ {	// 左上到右
 			matrix[top][i] = num
 			num++
@@ -6014,8 +6013,6 @@ func generateMatrix(n int) [][]int {
 ```go
 按照相同的原则，每条边左闭右开或左闭右闭
 ```
-
-
 
 
 
@@ -6531,14 +6528,14 @@ func evalRPN(tokens []string) int {
 
 
 
-## 239. 滑动窗口最大值
+## [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/description/)
 
 ```go
 // push:当前元素e入队时，相对于前面的元素来说，e最后进入窗口，e一定是最后离开窗口，
-//那么前面比e小的元素，不可能成为最大值，因此比e小的元素可以“压缩”掉
+// 那么前面比e小的元素，不可能成为最大值，因此比e小的元素可以“压缩”掉
 
 // pop:在元素入队时，是按照下标i入队的，因此队列中剩余的元素，其下标一定是升序的。
-//窗口大小不变，最先被排除出窗口的，一直是下标最小的元素，设为r。元素r在队列中要么是头元素，要么不存在。
+// 窗口大小不变，最先被排除出窗口的，一直是下标最小的元素，设为r。元素r在队列中要么是头元素，要么不存在。
 
 // 封装单调队列的方式解题
 type MyQueue struct {

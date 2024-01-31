@@ -63,42 +63,12 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
 func getMostGold(nodes *TreeNode) []int {
-	res := make([]int, 0)
-	maxSum := 0
-	tmpSum := 0
-	tmpSlice := make([]int, 0)
-	// 回溯
-	var backtrace func(node *TreeNode)
-	backtrace = func(node *TreeNode) {
-		tmpSum += node.Val
-		tmpSlice = append(tmpSlice, node.Val)
-		// 找到叶子节点
-		if node.Left == nil && node.Right == nil {
-			if tmpSum > maxSum {
-				fmt.Println("res before copy = ", res)
-				fmt.Println("tmpSlice = ", tmpSlice)
-				maxSum = tmpSum
-				res = make([]int, len(tmpSlice)) // 目标切片必须分配过空间且足够承载复制的元素个数
-				copy(res, tmpSlice)
-				fmt.Println("res after copy = ", res)
-			}
-			return
-		}
-		// 没有找到叶子节点
-		if node.Left != nil {
-			backtrace(node.Left)
-			tmpSlice = tmpSlice[:len(tmpSlice)-1]
-			tmpSum -= node.Left.Val
-		}
-		if node.Right != nil {
-			backtrace(node.Right)
-			tmpSlice = tmpSlice[:len(tmpSlice)-1]
-			tmpSum -= node.Right.Val
-		}
 
-	}
-
-	backtrace(nodes)
-	return res
 }
