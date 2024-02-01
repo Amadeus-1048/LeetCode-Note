@@ -1066,6 +1066,60 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 
 
 
+## [143. 重排链表](https://leetcode.cn/problems/reorder-list/)
+
+答案
+
+```go
+func reorderList(head *ListNode)  {
+	if head == nil || head.Next == nil {
+		return
+	}
+	slow, fast := head, head.Next
+
+	// 先通过快慢指针找到链表中点
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+
+	// 将链表划分为左右两部分
+	cur := slow.Next
+	slow.Next = nil
+	var pre *ListNode
+
+	// 反转右半部分的链表
+	for cur != nil {
+		next := cur.Next
+		cur.Next = pre
+		pre = cur
+    cur = next
+	}
+
+	// 将左右两个链接依次连接
+	cur = head
+	for pre != nil {
+		next := pre.Next
+		pre.Next = cur.Next
+		cur.Next = pre
+		cur = pre.Next
+    pre = next
+	}
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+
+
 # 哈希表
 
 ## [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
