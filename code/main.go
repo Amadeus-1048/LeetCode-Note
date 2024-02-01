@@ -63,12 +63,6 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
-
-func getMostGold(nodes *TreeNode) []int {
+func getMostGold(nodes *TreeNode) {
 
 }
