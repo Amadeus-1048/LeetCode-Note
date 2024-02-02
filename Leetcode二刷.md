@@ -6281,7 +6281,7 @@ func search(nums []int, target int) int {
 
 
 
-## 56. 合并区间
+## [56. 合并区间](https://leetcode.cn/problems/merge-intervals/description/)
 
 ```go
 func merge(intervals [][]int) [][]int {
@@ -6294,7 +6294,7 @@ func merge(intervals [][]int) [][]int {
 	for i := 1; i < len(intervals); i++ {
 		cur := intervals[i]
 		// 前一个区间的右边界和当前区间的左边界进行比较，判断有无重合
-		if prev[1] < cur[0] { // 没有重合
+		if prev[1] < cur[0] { // 没有重合，说明之后遍历的区间的左边界都会大于这个prev的右边界，不用再考虑这个prev了
 			res = append(res, prev) // 前一个区间合并完毕，加入结果集
 			prev = cur
 		} else { // 有重合
