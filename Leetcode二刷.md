@@ -3333,7 +3333,7 @@ func maxPathSum(root *TreeNode) int {
 		pricePath := node.Val + leftGain + rightGain
 		// 更新答案
 		maxSum = max(maxSum, pricePath)
-		// 返回节点的最大贡献值
+		// 返回节点的最大贡献值   贡献值指的是半边的路径总和
 		return node.Val + max(leftGain, rightGain)	// 贡献值和答案不同，所以是max(leftGain, rightGain)
 	}
 	maxGain(root)
