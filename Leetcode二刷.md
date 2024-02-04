@@ -5762,10 +5762,10 @@ func minDistance(word1 string, word2 string) int {
 	// 初始化
 	for i := 0; i <= m; i++ {
 		dp[i] = make([]int, n+1)
-		dp[i][0] = i // dp[i][0] ：以下标i-1为结尾的字符串word1，和空字符串word2，最近编辑距离为dp[i][0]
+		dp[i][0] = i // dp[i][0] ：以下标i-1为结尾的字符串word1，和空字符串word2，最近编辑距离dp[i][0]为i
 	}
 	for j := 0; j <= n; j++ {
-		dp[0][j] = j // dp[0][j] ：以下标j-1为结尾的字符串word2，和空字符串word1，最近编辑距离为dp[0][j]
+		dp[0][j] = j // dp[0][j] ：以下标j-1为结尾的字符串word2，和空字符串word1，最近编辑距离dp[0][j]为j
 	}
 
 	for i := 1; i <= m; i++ {
