@@ -5608,9 +5608,9 @@ func longestCommonSubsequence(text1 string, text2 string) int {
 	for i:=1; i<=m; i++ {
 		for j:=1; j<=n; j++ {
 			if text1[i-1] == text2[j-1] {
-				// 状态转移方程 : 主要就是两大情况： text1[i - 1] 与 text2[j - 1]相同，text1[i - 1] 与 text2[j - 1]不相同
-				// 如果text1[i - 1] 与 text2[j - 1]相同，那么找到了一个公共元素，所以dp[i][j] = dp[i - 1][j - 1] + 1;
-				// 如果text1[i - 1] 与 text2[j - 1]不相同，即：dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+				// 状态转移方程 : 主要就是两大情况： text1[i - 1] 与 text2[j - 1]相同，或者不相同
+				// 如果text1[i - 1] 与 text2[j - 1]相同，即找到了一个公共元素，所以dp[i][j] = dp[i - 1][j - 1] + 1;
+				// 如果text1[i - 1] 与 text2[j - 1]不相同，那么：dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
 				dp[i][j] = dp[i-1][j-1] + 1
 			} else {
 				dp[i][j] = max(dp[i-1][j], dp[i][j-1])
@@ -5634,9 +5634,9 @@ func max(a, b int) int {
 分析
 
 ```go
-dp[i][j]：长度为[0, i - 1]的字符串text1与长度为[0, j - 1]的字符串text2的最长公共子序列为dp[i][j]
+dp[i][j]：下标为[0, i - 1]的字符串text1与下标为[0, j - 1]的字符串text2的最长公共子序列为dp[i][j]
 
-如果text1[i - 1] 与 text2[j - 1]相同，那么找到了一个公共元素，所以dp[i][j] = dp[i - 1][j - 1] + 1
+如果text1[i - 1] 与 text2[j - 1]相同，即找到了一个公共元素，所以dp[i][j] = dp[i - 1][j - 1] + 1
 如果text1[i - 1] 与 text2[j - 1]不相同，那就看看text1[0, i - 2]与text2[0, j - 1]的最长公共子序列 和 text1[0, i - 1]与text2[0, j - 2]的最长公共子序列，取最大的，即：dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
 
 ```
