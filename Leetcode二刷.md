@@ -5637,7 +5637,7 @@ func max(a, b int) int {
 dp[i][j]：下标为[0, i - 1]的字符串text1与下标为[0, j - 1]的字符串text2的最长公共子序列为dp[i][j]
 
 如果text1[i - 1] 与 text2[j - 1]相同，即找到了一个公共元素，所以dp[i][j] = dp[i - 1][j - 1] + 1
-如果text1[i - 1] 与 text2[j - 1]不相同，那就看看text1[0, i - 2]与text2[0, j - 1]的最长公共子序列 和 text1[0, i - 1]与text2[0, j - 2]的最长公共子序列，取最大的，即：dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+如果text1[i - 1] 与 text2[j - 1]不相同，那就在text1[0, i - 2]与text2[0, j - 1]的最长公共子序列 和 text1[0, i - 1]与text2[0, j - 2]的最长公共子序列中取最大的，即：dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
 
 ```
 
