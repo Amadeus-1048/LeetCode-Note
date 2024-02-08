@@ -3673,15 +3673,15 @@ func restoreIpAddresses(s string) []string {
 	backtrace = func(start int) {
 		if start == len(s) && len(path) == 4 {
 			tmpString := path[0] + "." + path[1] + "." + path[2] + "." + path[3]
-			fmt.Println("tmpString:", tmpString)
+			// fmt.Println("tmpString:", tmpString)
 			res = append(res, tmpString)
 		}
 		for i := start; i < len(s); i++ {
 			path = append(path, s[start:i+1])
-			fmt.Println("path:", path)
-			if i-start+1 <= 3 && len(path) <= 4 && isIP(s, start, i) {
+			// fmt.Println("path:", path)
+			if i-start+1 <= 3 && len(path) <= 4 && isIP(s, start, i) { 
 				backtrace(i + 1)
-			} else {
+			} else {	// 剪枝
 				path = path[:len(path)-1] // 因为下面是return，所以要提前回溯
 				return	// 直接返回 
 			}
@@ -3698,7 +3698,7 @@ func isIP(s string, start int, end int) bool {
 	if err != nil { // 遇到非数字字符不合法
 		return false
 	}
-	if end-start+1 > 1 && s[start] == '0' { // 0开头的数字不合法
+	if end-start+1 > 1 && s[start] == '0' { // 0开头的两位、三位数字不合法
 		return false
 	}
 	if check > 255 { // 大于255了不合法
