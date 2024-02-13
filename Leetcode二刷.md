@@ -6234,7 +6234,7 @@ nums[i], nums[left] = nums[left], nums[i]
 
 
 
-## 33. 搜索旋转排序数组
+## [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 
 ```go
 func search(nums []int, target int) int {
