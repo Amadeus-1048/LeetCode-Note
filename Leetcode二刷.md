@@ -6696,7 +6696,7 @@ func maxSlidingWindow(nums []int, k int) []int {
 
 
 
-## 347. 前 K 个高频元素
+## [347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/)
 
 ```go
 func topKFrequent(nums []int, k int) []int {
