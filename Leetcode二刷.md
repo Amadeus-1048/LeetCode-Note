@@ -6731,7 +6731,7 @@ func topKFrequent(nums []int, k int) []int {
 
 
 
-## 71. 简化路径
+## [71. 简化路径](https://leetcode.cn/problems/simplify-path/)
 
 ```go
 func simplifyPath(path string) string {
@@ -6757,6 +6757,11 @@ func simplifyPath(path string) string {
 分析
 
 ```go
+s := strings.Split("/1/2", "/")
+fmt.Println("length is :", len(s))
+length is : 3， 元素分别为:"", "1", "2"
+
+
 将给定的字符串 path 根据 / 分割成一个由若干字符串组成的列表，记为 names。
 根据题目中规定的「规范路径的下述格式」，names 中包含的字符串只能为以下几种：
 	空字符串。例如当出现多个连续的 /，就会分割出空字符串；
