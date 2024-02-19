@@ -1206,7 +1206,7 @@ func intersection(nums1 []int, nums2 []int) []int {
 	}
 	res := make([]int, 0)
 	for _, v := range nums2 {
-		if count, ok := m[v]; ok && count>0 {
+		if count, ok := m[v]; ok && count>0 {	// 必须判断count>0
 			res = append(res, v)
 			m[v]--	// 避免交集中出现重复的数字
 		}
@@ -1750,10 +1750,6 @@ func longestCommonPrefix(strs []string) string {
 ## 二叉树递归遍历
 
 ![img](https://code-thinking-1253855093.file.myqcloud.com/pics/20200806191109896.png)
-
-
-
-答案
 
 ### [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
 
