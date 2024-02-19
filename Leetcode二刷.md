@@ -8,6 +8,11 @@
   - 双指针法（快慢指针法）：通过**一个快指针和一个慢指针**在一个for循环下完成两个for循环的工作
 - 滑动窗口
   - 滑动窗口的精妙之处在于根据当前子序列和大小的情况，**不断调节子序列的起始位置**。从而将O(n^2^)的暴力解法降为O(n)
+  - 实现滑动窗口，主要确定如下三点：
+    窗口内是什么？
+    如何移动窗口的起始位置？
+    如何移动窗口的结束位置？
+  - 只用一个for循环，那么这个**循环的索引**一定是表示**滑动窗口的终止位置**
 - 模拟
   - **循环不变量原则**
 
@@ -234,7 +239,7 @@ func removeElement(nums []int, val int) int {
 ```go
 func sortedSquares(nums []int) []int {
 	n := len(nums)
-	i, j, k := 0, n-1, n-1
+	i, j, k := 0, n-1, n-1	// i、j分别指向原数组的起、止位置，k指向新数组的最后
 	ans := make([]int, n)
 	for k >= 0 {
 		left, right := nums[i]*nums[i], nums[j]*nums[j]
@@ -495,7 +500,7 @@ func trap(height []int) int {
 
 ```go
 func mySqrt(x int) int {
-	res := 0 // x 平方根的整数部分 ans 是满足 k^2 ≤x 的最大 k 值
+	res := 0 // x 平方根的整数部分 ans 是满足 k^2 ≤ x 的最大 k 值
 	sqrt := 0
 	left, right := 0, x
 	if x <= 1 {
@@ -766,10 +771,6 @@ next 的值和位置都会变化
 
 
 
-
-
-
-
 ## [24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/)
 
 答案
@@ -778,13 +779,13 @@ next 的值和位置都会变化
 func swapPairs(head *ListNode) *ListNode {
 	dummy := &ListNode{}
 	dummy.Next = head
-	pre := dummy
+	cur := dummy
 	for head != nil && head.Next != nil {
-		pre.Next = head.Next
+		cur.Next = head.Next
 		next := head.Next.Next
 		head.Next.Next = head
 		head.Next = next
-		pre = head
+		cur = head
 		head = next
 	}
 	return dummy.Next
@@ -877,7 +878,7 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 ```go
 双指针
 如果有相交，那么相交时两个指针走的步数相等，重合在相交点
-如果没有，两个指针会走完两轮，同时指向null，此时相等，退出循环
+如果没有，两个指针会走完两轮，同时指向nil，此时相等，退出循环
 ```
 
 
@@ -1112,7 +1113,7 @@ func reorderList(head *ListNode)  {
 	if head == nil || head.Next == nil {
 		return
 	}
-	slow, fast := head, head.Next
+	slow, fast := head, head
 
 	// 先通过快慢指针找到链表中点
 	for fast != nil && fast.Next != nil {
