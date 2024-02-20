@@ -5861,11 +5861,114 @@ word1[i-1] != word2[j-1]
 
 ## 146. LRU 缓存
 
+手搓答案
+
+```go
+// 哈希表 + 双向链表
+// 双向链表按照被使用的顺序存储了这些键值对，靠近头部的键值对是最近使用的，而靠近尾部的键值对是最久未使用的。
+// 哈希表即为普通的哈希映射（HashMap），通过缓存数据的键映射到其在双向链表中的位置。
+// 首先使用哈希表进行定位，找出缓存项在双向链表中的位置，随后将其移动到双向链表的头部，即可在 O(1) 的时间内完成 get 或者 put 操作
+
+// 在双向链表的实现中，使用一个伪头部（dummy head）和伪尾部（dummy tail）标记界限
+// 这样在添加节点和删除节点的时候就不需要检查相邻的节点是否存在
+
+
+type LRUCache struct {
+    size int
+    capacity int
+    cache map[int]*DLinkedNode
+    head, tail *DLinkedNode
+}
+
+type DLinkedNode struct {
+    key, value int
+    prev, next *DLinkedNode
+}
+
+func initDLinkedNode(key, value int) *DLinkedNode {
+    return &DLinkedNode{
+        key: key,
+        value: value,
+    }
+}
+
+func Constructor(capacity int) LRUCache {
+    l := LRUCache{
+        cache: map[int]*DLinkedNode{},
+        head: initDLinkedNode(0, 0),
+        tail: initDLinkedNode(0, 0),
+        capacity: capacity,
+    }
+    l.head.next = l.tail
+    l.tail.prev = l.head
+    return l
+}
+
+func (this *LRUCache) Get(key int) int {
+    if _, ok := this.cache[key]; !ok {	// 首先判断 key 是否存在
+        return -1
+    }
+    node := this.cache[key]
+    this.moveToHead(node)	// key 对应的节点是最近被使用的节点， 将其移动到双向链表的头部
+    return node.value
+}
+
+
+func (this *LRUCache) Put(key int, value int)  {
+    if _, ok := this.cache[key]; !ok {	// 首先判断 key 是否存在
+        node := initDLinkedNode(key, value)	// 使用 key 和 value 创建一个新的节点
+        this.cache[key] = node	// 将 key 和该节点添加进哈希表中
+        this.addToHead(node)	// 在双向链表的头部添加该节点
+        this.size++
+        if this.size > this.capacity {	// 判断双向链表的节点数是否超出容量
+            removed := this.removeTail()	// 删除双向链表的尾部节点
+            delete(this.cache, removed.key)	// 删除哈希表中对应的项
+            this.size--
+        }
+    } else {
+        node := this.cache[key]
+        node.value = value	// 将对应的节点的值更新为 value
+        this.moveToHead(node)	// 将该节点移到双向链表的头部
+    }
+}
+
+func (this *LRUCache) addToHead(node *DLinkedNode) {
+    node.prev = this.head
+    node.next = this.head.next
+    this.head.next.prev = node
+    this.head.next = node
+}
+
+func (this *LRUCache) removeNode(node *DLinkedNode) {
+    node.prev.next = node.next
+    node.next.prev = node.prev
+}
+
+func (this *LRUCache) moveToHead(node *DLinkedNode) {
+    this.removeNode(node)
+    this.addToHead(node)
+}
+
+func (this *LRUCache) removeTail() *DLinkedNode {
+    node := this.tail.prev
+    this.removeNode(node)
+    return node
+}
+
+作者：力扣官方题解
+链接：https://leetcode.cn/problems/lru-cache/solutions/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+```
+
+
+
 List包答案
 
 ```go
 type LRUNode struct {
-	key, value int
+	key int
+  value int
 }
 
 type LRUCache struct {
@@ -6510,6 +6613,12 @@ func (this *MyStack) Empty() bool {
 
 
 分析
+
+![](https://assets.leetcode-cn.com/solution-static/225/225_fig1.gif)
+
+
+
+![](https://assets.leetcode-cn.com/solution-static/225/225_fig2.gif)
 
 ```go
 
