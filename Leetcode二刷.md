@@ -1778,7 +1778,9 @@ func longestCommonPrefix(strs []string) string {
 
 ```go
 纵向扫描
-从前往后遍历所有字符串的每一列，比较相同列上的字符是否相同，如果相同则继续对下一列进行比较，如果不相同则当前列不再属于公共前缀，当前列之前的部分为最长公共前缀
+从前往后遍历所有字符串的每一列，比较相同列上的字符是否相同
+如果相同则继续对下一列进行比较，
+如果不相同则当前列不再属于公共前缀，当前列之前的部分为最长公共前缀
 ```
 
 
@@ -1993,9 +1995,9 @@ func averageOfLevels(root *TreeNode) []float64 {
 		return ans
 	}
 	queue := []*TreeNode{root}
-	//tmp := []int{}
 	sum := 0
 	for len(queue)>0 {
+    //tmp := []int{}
 		length := len(queue)	//保存当前层的长度，然后处理当前层
 		for i:=0; i<length; i++ {
 			node := queue[0]
@@ -2010,7 +2012,6 @@ func averageOfLevels(root *TreeNode) []float64 {
 			sum += node.Val
 		}
 		ans = append(ans, float64(sum)/float64(length))	//放入结果集
-		//tmp = []int{}	//清空层的数据
 		sum = 0
 	}
 	return ans
@@ -2024,8 +2025,6 @@ func averageOfLevels(root *TreeNode) []float64 {
 ```go
 求平均数，结果用float64表示
 被除数和除数都得先强制转换为float64类型才可以，否则会报错
-
-ans = append(ans, float64(sum)/float64(length))
 ```
 
 
@@ -2086,7 +2085,7 @@ func largestValues(root *TreeNode) []int {
 	queue := []*TreeNode{root}
 	for len(queue) > 0 {
 		// maxNumber := int(math.Inf(-1)) //负无穷   因为节点的值会有负数
-		length := len(queue)           //保存当前层的长度，然后处理当前层
+		length := len(queue)           // 保存当前层的长度，然后处理当前层
 		maxNumber := queue[0].Val		// 不用担心越界，因为上面的for循环已经判断过了
 		for i := 0; i < length; i++ {
 			node := queue[0]
@@ -2099,7 +2098,7 @@ func largestValues(root *TreeNode) []int {
 			}
 			maxNumber = max(maxNumber, node.Val)
 		}
-		ans = append(ans, maxNumber) //放入结果集
+		ans = append(ans, maxNumber) // 放入结果集
 	}
 	return ans
 }
@@ -2140,7 +2139,7 @@ func connect(root *PerfectNode) *PerfectNode {
 	}
 	queue := []*PerfectNode{root}
 	for len(queue) > 0 {
-		length := len(queue) //保存当前层的长度，然后处理当前层
+		length := len(queue) // 保存当前层的长度，然后处理当前层
 		pre := queue[0]      // 不用担心越界，因为上面的for循环已经判断过了
 		for i := 0; i < length; i++ {
 			node := queue[0]
@@ -2189,7 +2188,7 @@ func connect(root *PerfectNode) *PerfectNode {
 	}
 	queue := []*PerfectNode{root}
 	for len(queue) > 0 {
-		length := len(queue) //保存当前层的长度，然后处理当前层
+		length := len(queue) // 保存当前层的长度，然后处理当前层
 		pre := queue[0]      // 不用担心越界，因为上面的for循环已经判断过了
 		for i := 0; i < length; i++ {
 			node := queue[0]
@@ -2232,7 +2231,7 @@ func maxDepth(root *TreeNode) int {
 	}
 	queue := []*TreeNode{root}
 	for len(queue) > 0 {
-		length := len(queue) //保存当前层的长度，然后处理当前层
+		length := len(queue) // 保存当前层的长度，然后处理当前层
 		for i := 0; i < length; i++ {
 			node := queue[0]
 			queue = queue[1:]
