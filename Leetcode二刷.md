@@ -3,7 +3,7 @@
 ## 数组
 
 - 二分法
-  - **循环不变量原则**，只有在循环中坚持对区间的定义，才能清楚的把握循环中的各种细节
+  - **循环不变量原则**，在循环中坚持对区间的定义
 - 双指针法
   - 双指针法（快慢指针法）：通过**一个快指针和一个慢指针**在一个for循环下完成两个for循环的工作
 - 滑动窗口
@@ -12,7 +12,7 @@
     窗口内是什么？
     如何移动窗口的起始位置？
     如何移动窗口的结束位置？
-  - 只用一个for循环，那么这个**循环的索引**一定是表示**滑动窗口的终止位置**
+  - 只用一个for循环，那么**循环的索引**一定是表示**滑动窗口的终止位置**
 - 模拟
   - **循环不变量原则**
 
@@ -1155,6 +1155,44 @@ func reorderList(head *ListNode)  {
 ```
 
 
+
+## [82. 删除排序链表中的重复元素 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/)
+
+答案
+
+```go
+func deleteDuplicates(head *ListNode) *ListNode {
+    if head == nil {
+        return head
+    }
+    dummy := &ListNode{Next: head}
+    pre := dummy
+    cur := head
+    for cur != nil && cur.Next != nil {
+        next := cur.Next
+        if cur.Val == next.Val {
+            // 避免1 1 1 2 3 的情况， for循环可以去掉所有的1  
+            for next.Next != nil && next.Val == next.Next.Val {
+                next = next.Next
+            }
+            pre.Next = next.Next
+            cur = next.Next
+        } else {
+            pre = cur
+            cur = cur.Next
+        }
+    }
+    return dummy.Next
+}
+```
+
+
+
+分析
+
+```go
+
+```
 
 
 
