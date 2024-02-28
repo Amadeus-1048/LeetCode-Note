@@ -30,7 +30,7 @@
 ## 哈希表
 
 - 数组作为哈希表
-  - 数组就是简单的哈希表，但是数组的大小是受限的。题目包含小写字母，那么使用数组来做哈希最合适不过
+  - 数组就是简单的哈希表，但是数组的大小是受限的。如果题目包含小写字母，那么使用数组来做哈希最合适不过
 - 双指针法
 
 
@@ -262,9 +262,7 @@ func sortedSquares(nums []int) []int {
 
 ```go
 数组平方的最大值就在数组的两端，不是最左边就是最右边，不可能是中间。
-
 此时可以考虑双指针法了，i指向起始位置，j指向终止位置
-
 定义一个新数组result，和A数组一样的大小，让k指向result数组终止位置
 ```
 
@@ -281,14 +279,11 @@ func minSubArrayLen(target int, nums []int) int {
 	i, sum := 0, 0
 	length := len(nums)
 	res := length + 1
-	for j := 0; j < length; j++ {
+	for j := 0; j < length; j++ {	// 调节子序列的终止位置
 		sum += nums[j]
 		for sum >= target {
-			tmp := j - i + 1
-			if tmp < res {
-				res = tmp
-			}
-			sum -= nums[i]
+			res = min(res, j-i+1)	// 比较并更新答案
+			sum -= nums[i]	// 调节子序列的起始位置
 			i++
 		}
 	}
@@ -296,6 +291,13 @@ func minSubArrayLen(target int, nums []int) int {
 		return 0
 	}
 	return res
+}
+
+func min(a, b int) int {
+  if a < b {
+    return a
+  }
+  return b
 }
 ```
 
@@ -329,7 +331,7 @@ func lengthOfLongestSubstring(s string) int {
 		return n
 	}
 	hash[s[0]] = true
-	for right < n {
+	for right < n {	// 调节滑动窗口的终止位置
 		if !hash[s[right]] { // 没有遇到重复的字符，则s[right]存入map,计算长度，right推进
 			hash[s[right]] = true
 			ans = max(ans, right-left+1)
@@ -339,7 +341,7 @@ func lengthOfLongestSubstring(s string) int {
 				delete(hash, s[left])
 				left++
 			}
-			hash[s[right]] = true // 因为上面把s[right]给delete了，需要重新赋值
+			hash[s[right]] = true // 因为上面把s[right]给delete了，需要重新放到map里
 			right++
 		}
 	}
@@ -500,13 +502,13 @@ func trap(height []int) int {
 
 ```go
 func mySqrt(x int) int {
-	res := 0 // x 平方根的整数部分 ans 是满足 k^2 ≤ x 的最大 k 值
+	res := 0 // x 平方根的整数部分 res 是满足 k^2 ≤ x 的最大 k 值
 	sqrt := 0
 	left, right := 0, x
 	if x <= 1 {
 		return x
 	} else {
-		for left <= right { // 对 k 进行二分查找
+		for left <= right { // 进行二分查找
 			sqrt = left + (right-left)/2
 			if sqrt*sqrt <= x { // 比较中间元素的平方与 x 的大小关系
 				res = sqrt
@@ -673,7 +675,7 @@ func reverseList(head *ListNode) *ListNode {
 		pre = cur
 		cur = next
 	}
-	return pre	// 是返回pre，不是cur，因为最后cur是nil
+	return pre	// 是返回pre，不是cur，因为最后cur是nil。想不起来的话可以考虑只有一个节点的情况。
 }
 ```
 
@@ -779,7 +781,7 @@ next 的值和位置都会变化
 func swapPairs(head *ListNode) *ListNode {
 	dummy := &ListNode{}
 	dummy.Next = head
-	cur := dummy
+	cur := dummy	// 初始时，cur指向虚拟头结点
 	for head != nil && head.Next != nil {
 		cur.Next = head.Next
 		next := head.Next.Next
@@ -1501,8 +1503,8 @@ func fourSum(nums []int, target int) [][]int {
 
 四数之和这道题目 target是任意值
 
-对于15.三数之和双指针法就是将原本暴力O(n^3)的解法，降为O(n^2)的解法
-四数之和的双指针解法就是将原本暴力O(n^4)的解法，降为O(n^3)的解法
+对于15.三数之和，双指针法就是将原本暴力O(n^3)的解法，降为O(n^2)的解法
+对于18.四数之和，双指针法就是将原本暴力O(n^4)的解法，降为O(n^3)的解法
 ```
 
 
@@ -1543,7 +1545,7 @@ func reverseString(s []byte)  {
 func reverseStr(s string, k int) string {
 	ss := []byte(s)
 	length := len(ss)
-	for i:=0; i<length; i+=2*k {
+	for i:=0; i<length; i+=2*k {	// 每计数至 2k 个字符，就反转这 2k 字符中的前 k 个字符
 		if i+k <= length {
 			reverse(ss[i:i+k])
 		} else {
@@ -1732,9 +1734,9 @@ func addStrings(num1 string, num2 string) string {
 		if j >= 0 {
 			y = int(num2[j] - '0')
 		}
-		result := x + y + add
-		ans = strconv.Itoa(result%10) + ans
-		add = result / 10
+		tmp := x + y + add
+		ans = strconv.Itoa(tmp%10) + ans
+		add = tmp / 10
 	}
 	return ans
 }
