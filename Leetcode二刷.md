@@ -2573,7 +2573,7 @@ func max(a, b int) int {
 
 自底向上递归  复杂度n	每个节点的计算高度和判断是否平衡都只需要处理一次
 类似于后序遍历，对于当前遍历到的节点，先递归地判断其左右子树是否平衡，再判断以当前节点为根的子树是否平衡。
-如果一棵子树是平衡的，则求其高度。	如果存在一棵子树不平衡，则整个二叉树一定不平衡。
+如果两棵子树是平衡的，则求其高度。	如果存在一棵子树不平衡，则整个二叉树一定不平衡。
 
 怎么理解递归   先不思考细节，要思考递归函数的功能是什么
 ```
@@ -2595,10 +2595,10 @@ func binaryTreePaths(root *TreeNode) []string {
 			return
 		}
 		s += strconv.Itoa(node.Val) + "->" // 非叶子节点，后面多加符号
-		if node.Left != nil {
+		if node.Left != nil {	// 要额外判断是否为空
 			travel(node.Left, s)
 		}
-		if node.Right != nil {
+		if node.Right != nil {	// 要额外判断是否为空
 			travel(node.Right, s)
 		}
 	}
@@ -2665,8 +2665,9 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 	}
 	targetSum -= root.Val
 	if root.Left == nil && root.Right == nil && targetSum == 0 { // 遇到叶子节点，并且计数为0
-		return true
+		return true	
 	}
+  // 找到一个即可，所以不用回溯
 	return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
 }
 ```
@@ -2676,7 +2677,7 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 分析
 
 ```go
-
+根节点到叶子节点的路径
 ```
 
 
@@ -3174,10 +3175,10 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 	if root.Val >= p.Val && root.Val <= q.Val { // 当前节点的值在给定值的中间（或者等于），即为最深的祖先
 		return root
 	}
-	if root.Val > p.Val && root.Val > q.Val { // 当前节点的值大于给定的值，则说明满足条件的在左边
+	if root.Val > p.Val && root.Val > q.Val { // 当前节点的值大于给定的值，则说明满足条件的点在左子树
 		return lowestCommonAncestor(root.Left, p, q)
 	}
-	if root.Val < p.Val && root.Val < q.Val { // 当前节点的值小于各点的值，则说明满足条件的在右边
+	if root.Val < p.Val && root.Val < q.Val { // 当前节点的值小于各点的值，则说明满足条件的点在右子树
 		return lowestCommonAncestor(root.Right, p, q)
 	}
 	return root
@@ -3189,9 +3190,9 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 分析
 
 ```go
-因为是有序树，所有 如果 中间节点是 q 和 p 的公共祖先，那么 中节点的数组 一定是在 [p, q]区间的
+因为是有序树，所有 如果 中间节点是 p 和 q 的公共祖先，那么 中节点的数组 一定是在[p, q]区间的
 
-当我们从上向下去递归遍历，第一次遇到 cur节点是数值在[p, q]区间中，那么cur就是 p和q的最近公共祖先
+当我们从上向下去递归遍历，第一次遇到cur节点是数值在[p, q]区间中，那么cur就是p和q的最近公共祖先
 ```
 
 
@@ -3590,14 +3591,14 @@ func combinationSum(candidates []int, target int) [][]int {
 			res = append(res, tmp)
 			return
 		}
-		if sum > target {
+		if sum > target {	// 本题没有组合数量要求，仅仅是总和的限制，所以递归没有层数的限制，只要选取的元素总和超过target，就返回
 			return
 		}
-
+		// start用来控制for循环的起始位置
 		for i:=start; i<len(candidates); i++ {
 			trace = append(trace, candidates[i])
 			sum += candidates[i]
-			backtrace(i, sum)
+			backtrace(i, sum) // 本题元素为可重复选取的，所以关键点:不用i+1了，表示可以重复读取当前的数
 			trace = trace[:len(trace)-1]
 			sum -= candidates[i]
 		}
@@ -4708,7 +4709,8 @@ func numTrees(n int)int{
 
 dp[i] ： 1到i为节点组成的二叉搜索树的个数为dp[i]
 
-递推公式：dp[i] += dp[j - 1] * dp[i - j]; ，j-1 为j为头结点左子树节点数量，i-j 为以j为头结点右子树节点数量
+递推公式：dp[i] += dp[j - 1] * dp[i - j]
+j-1 为j为头结点左子树节点数量，i-j 为以j为头结点右子树节点数量
 
 dp[0] = 1
 ```
@@ -6503,32 +6505,29 @@ func max(a, b int) int {
 ## [451. 根据字符出现频率排序](https://leetcode.cn/problems/sort-characters-by-frequency/)
 
 ```go
-func merge(intervals [][]int) [][]int {
-	sort.Slice(intervals, func(i, j int) bool {
-		return intervals[i][0] < intervals[j][0]
-	})
-	res := [][]int{}
-	prev := intervals[0]
-	// 合并区间
-	for i := 1; i < len(intervals); i++ {
-		cur := intervals[i]
-		// 前一个区间的右边界和当前区间的左边界进行比较，判断有无重合
-		if prev[1] < cur[0] { // 没有重合
-			res = append(res, prev) // 前一个区间合并完毕，加入结果集
-			prev = cur
-		} else { // 有重合
-			prev[1] = max(prev[1], cur[1]) // 合并后的区间右边界为较大的那个
-		}
-	}
-	// 当考察完最后一个区间，后面没区间了，遇不到不重合区间，最后的 prev 没推入 res。 要单独补上
-	res = append(res, prev)
-	return res
+func frequencySort(s string) string {
+    countMap := map[byte]int{}
+    for i := range s {
+        countMap[s[i]]++
+    }
+
+    type pair struct {
+        ch  byte
+        count int
+    }
+    pairs := make([]pair, 0, len(countMap))
+    for k, v := range countMap {
+        pairs = append(pairs, pair{k, v})
+    }
+    sort.Slice(pairs, func(i, j int) bool { return pairs[i].count > pairs[j].count })
+
+    ans := make([]byte, 0, len(s))
+    for _, p := range pairs {
+        ans = append(ans, bytes.Repeat([]byte{p.ch}, p.count)...)
+    }
+    return string(ans)
 }
 
-func max(a, b int) int {
-	if a > b { return a }
-	return b
-}
 ```
 
 
