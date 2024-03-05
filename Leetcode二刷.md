@@ -532,6 +532,181 @@ func mySqrt(x int) int {
 
 
 
+## [283. 移动零](https://leetcode.cn/problems/move-zeroes/)
+
+答案
+
+```go
+func moveZeroes(nums []int) {
+    left, right, n := 0, 0, len(nums)
+    for right < n {
+        if nums[right] != 0 {
+            nums[left], nums[right] = nums[right], nums[left]
+            left++
+        }
+        right++
+    }
+}
+```
+
+
+
+分析
+
+```go
+左指针指向当前已经处理好的序列的尾部
+右指针指向待处理序列的头部
+
+右指针不断向右移动，每次右指针指向非零数，则将左右指针对应的数交换，同时左指针右移
+```
+
+
+
+## [283. 移动零](https://leetcode.cn/problems/move-zeroes/)
+
+答案
+
+```go
+func maxArea(height []int) int {
+  left, right := 0, len(height)-1	// 左右指针分别指向数组的左右两端
+  ans := 0
+  for left < right {
+    area := min(height[left], height[right])*(right-left)
+    ans = max(ans, area)
+    if height[left] < height[right] {
+      left++
+    } else {
+      right--
+    }
+  }
+  return ans
+}
+
+func min(a, b int) int {
+  if a < b {
+    return a
+  }
+  return b
+}
+
+func max(a, b int) int {
+  if a > b {
+    return a
+  }
+  return b
+}
+```
+
+
+
+分析
+
+```go
+容纳的水量 = 两个指针指向的数字中较小值 ∗ 指针之间的距离
+
+如果我们移动数字较大的那个指针，那么前者「两个指针指向的数字中较小值」不会增加，后者「指针之间的距离」会减小，那么这个乘积会减小。
+因此，我们移动数字较大的那个指针是不合理的。因此，我们移动 数字较小的那个指针。
+
+每次将 对应的数字较小的那个指针 往 另一个指针 的方向移动一个位置，就表示我们认为 这个指针不可能再作为容器的边界了
+```
+
+
+
+## [438. 找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)
+
+答案
+
+```go
+func findAnagrams(s, p string) (ans []int) {
+    sLen, pLen := len(s), len(p)
+    if sLen < pLen {
+        return
+    }
+
+    var sCount, pCount [26]int	
+  	// 在字符串 s 中构造一个长度为与字符串 p 的长度相同的滑动窗口
+    for i, _ := range p {
+        sCount[s[i]-'a']++
+        pCount[p[i]-'a']++
+    }
+    if sCount == pCount {	// 窗口中每种字母的数量与字符串 p 中每种字母的数量相同
+        ans = append(ans, 0)
+    }
+
+    for i, ch := range s[:sLen-pLen] {	// 虽然是从0开始遍历，但0其实已经处理过了，所以实际是从1开始
+        sCount[ch-'a']--
+        sCount[s[i+pLen]-'a']++
+        if sCount == pCount {
+            ans = append(ans, i+1)
+        }
+    }
+    return
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
+
+答案
+
+```go
+func minWindow(s string, t string) string {
+	var res string
+	count := math.MaxInt32
+	hashMap := make(map[byte]int)
+	l, r := 0, 0
+	for i := 0; i < len(t); i++ {
+		hashMap[t[i]]++	// 哈希表记录t数组中字符出现的次数
+	}
+	for r < len(s) {
+		hashMap[s[r]]--
+		for check(hashMap) {
+			if r-l+1 < count {
+				count = r - l + 1
+				res = s[l : r+1]
+			}
+			hashMap[s[l]]++	// l向右移动，字符出现的次数要恢复
+			l++
+		}
+		r++
+	}
+	return res
+}
+
+// true 表示窗口内已完全覆盖t字符串
+func check(hashMap map[byte]int) bool {
+	for _, v := range hashMap {
+		if v > 0 {
+			return false
+		}
+	}
+	return true
+}
+```
+
+
+
+分析
+
+```go
+只要hashMap有值 >0，说明窗口内尚未覆盖t字符串所有字母，窗口需要扩大，r指针需要右移
+
+只要hashMap的值都 <=0，说明窗口内已完全覆盖t字符串，窗口内的字符串可能就是答案，但窗口存在可缩小的可能性，开始尝试l右移缩小窗口
+```
+
+
+
+
+
 # 链表
 
 ## [203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/)
@@ -1505,6 +1680,126 @@ func fourSum(nums []int, target int) [][]int {
 
 对于15.三数之和，双指针法就是将原本暴力O(n^3)的解法，降为O(n^2)的解法
 对于18.四数之和，双指针法就是将原本暴力O(n^4)的解法，降为O(n^3)的解法
+```
+
+
+
+## [49. 字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
+
+答案
+
+```go
+func groupAnagrams(strs []string) [][]string {
+    m := map[[26]int][]string{}
+    for _, str := range strs {
+        count := [26]int{}
+        for _, b := range str {
+            count[b-'a']++
+        }
+        m[count] = append(m[count], str)	// 必须用append，否则会直接覆盖掉
+    }
+  	ans := make([][]string, 0)	// 不能是len(m)，因为会使出现多余的""字符串
+    for _, v := range m {
+        ans = append(ans, v)
+    }
+    return ans
+}
+```
+
+
+
+分析
+
+```go
+由于互为字母异位词的两个字符串包含的字母相同，因此两个字符串中的相同字母出现的次数一定是相同的
+故可以将每个字母出现的次数作为哈希表的键
+```
+
+
+
+## [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)
+
+答案
+
+```go
+func longestConsecutive(nums []int) int {
+    numSet := map[int]bool{}	// 存储数组中的数，顺便去重
+    for _, num := range nums {
+        numSet[num] = true
+    }
+    ans := 0
+    for num := range numSet {
+        if !numSet[num-1] {	// 要枚举的数 x 一定是在数组中不存在前驱数 x−1 的
+            currentNum := num
+            count := 1
+            for numSet[currentNum+1] {
+                currentNum++
+                count++
+            }
+            if ans < count {
+                ans = count
+            }
+        }
+    }
+    return ans
+}
+```
+
+
+
+分析
+
+```go
+用一个哈希表存储数组中的数，这样查看一个数是否存在即能优化至 O(1) 的时间复杂度
+
+通过查找前驱数 x−1 可以让时间复杂度优化为O(n)
+```
+
+
+
+## [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/)
+
+答案
+
+```go
+// 枚举
+func subarraySum(nums []int, k int) int {
+    count := 0
+    for end := 0; end < len(nums); end++ {
+        sum := 0
+        for start := end; start >= 0; start-- {
+            sum += nums[start]
+            if sum == k {
+                count++
+            }
+        }
+    }
+    return count
+}
+
+// 前缀和
+func subarraySum(nums []int, k int) int {
+    ans, pre := 0, 0	// pre为 [0..i] 里所有数的和
+    m := map[int]int{}	// 哈希表m，和为key，出现次数为value
+    m[0] = 1
+    for i := 0; i < len(nums); i++ {
+        pre += nums[i]
+        if _, ok := m[pre - k]; ok { // 找到和为 k 的子串
+            ans += m[pre - k]
+        }
+        m[pre] += 1
+    }
+    return ans
+}
+```
+
+
+
+分析
+
+```go
+通过遍历数组，计算每个位置的前缀和，并使用一个哈希表来存储每个前缀和出现的次数。
+在遍历的过程中，检查是否存在pre-k的前缀和，如果存在，说明从某个位置到当前位置的连续子数组的和为k，我们将对应的次数累加到结果中。
 ```
 
 
