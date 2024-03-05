@@ -562,7 +562,7 @@ func moveZeroes(nums []int) {
 
 
 
-## [283. 移动零](https://leetcode.cn/problems/move-zeroes/)
+## [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
 
 答案
 
@@ -701,6 +701,113 @@ func check(hashMap map[byte]int) bool {
 只要hashMap有值 >0，说明窗口内尚未覆盖t字符串所有字母，窗口需要扩大，r指针需要右移
 
 只要hashMap的值都 <=0，说明窗口内已完全覆盖t字符串，窗口内的字符串可能就是答案，但窗口存在可缩小的可能性，开始尝试l右移缩小窗口
+```
+
+
+
+## [189. 轮转数组](https://leetcode.cn/problems/rotate-array/)
+
+答案
+
+```go
+func reverse(a []int) {
+    for i, j := 0, len(a)-1; i < j; i,j=i+1,j-1 {
+        a[i], a[j] = a[j], a[i]
+    }
+}
+
+func rotate(nums []int, k int) {
+    k %= len(nums)	// k 可能 大于 len(nums)
+    reverse(nums)
+    reverse(nums[:k])
+    reverse(nums[k:])
+}
+
+```
+
+
+
+分析
+
+```go
+先将所有元素翻转，这样尾部的 k mod n 个元素就被移至数组头部，
+然后我们再翻转 [0,k mod n−1] 区间的元素  和  [k mod n,n−1] 区间的元素即能得到最后的答案
+
+```
+
+
+
+## [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)
+
+答案
+
+```go
+func productExceptSelf(nums []int) []int {
+    length := len(nums)
+    answer := make([]int, length)
+
+    // answer[i] 表示索引 i 左侧所有元素的乘积
+    // 因为索引为 '0' 的元素左侧没有元素， 所以 answer[0] = 1
+    answer[0] = 1
+    for i := 1; i < length; i++ {
+        answer[i] = nums[i-1] * answer[i-1]
+    }
+
+    // R 为右侧所有元素的乘积
+    // 刚开始右边没有元素，所以 R = 1
+    R := 1
+    for i := length - 1; i >= 0; i-- {
+        // 对于索引 i，左边的乘积为 answer[i]，右边的乘积为 R
+        answer[i] = answer[i] * R
+        // R 需要包含右边所有的乘积，所以计算下一个结果时需要将当前值乘到 R 上
+        R *= nums[i]
+    }
+    return answer
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [41. 缺失的第一个正数](https://leetcode.cn/problems/first-missing-positive/)
+
+答案
+
+```go
+func firstMissingPositive(nums []int) int {
+    n := len(nums)
+    for i := 0; i < n; i++ {
+      	// 对于遍历到的数 x=nums[i]，如果 x∈[1,N]，我们就知道 x 应当出现在数组中的 x−1 的位置
+        for nums[i] > 0 && nums[i] <= n && nums[nums[i]-1] != nums[i] {
+            nums[nums[i]-1], nums[i] = nums[i], nums[nums[i]-1]
+        }
+    }
+    for i := 0; i < n; i++ {
+        if nums[i] != i + 1 {
+            return i + 1
+        }
+    }
+    return n + 1
+}
+```
+
+
+
+分析
+
+```go
+将给定的数组「恢复」成下面的形式：
+如果数组中包含 x∈[1,N]，那么恢复后，数组的第 x−1 个元素为 x。
+
+在恢复后，数组应当有 [1, 2, ..., N] 的形式，但其中有若干个位置上的数是错误的，每一个错误的位置就代表了一个缺失的正数。
+以题目中的示例二 [3, 4, -1, 1] 为例，恢复后的数组应当为 [1, -1, 3, 4]，我们就可以知道缺失的数为 2。
 ```
 
 
@@ -1369,6 +1476,119 @@ func deleteDuplicates(head *ListNode) *ListNode {
 
 ```go
 
+```
+
+
+
+## [234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/)
+
+答案
+
+```go
+func reverseList(head *ListNode) *ListNode {
+    var prev, cur *ListNode = nil, head
+    for cur != nil {
+        nextTmp := cur.Next
+        cur.Next = prev
+        prev = cur
+        cur = nextTmp
+    }
+    return prev
+}
+
+func endOfFirstHalf(head *ListNode) *ListNode {
+    fast := head
+    slow := head
+    for fast.Next != nil && fast.Next.Next != nil {
+        fast = fast.Next.Next
+        slow = slow.Next
+    }
+    return slow
+}
+
+func isPalindrome(head *ListNode) bool {
+    if head == nil {
+        return true
+    }
+
+    // 找到前半部分链表的尾节点并反转后半部分链表
+    firstHalfEnd := endOfFirstHalf(head)
+    secondHalfStart := reverseList(firstHalfEnd.Next)
+
+    // 判断是否回文
+    p1 := head
+    p2 := secondHalfStart
+    result := true
+    for result && p2 != nil {
+        if p1.Val != p2.Val {
+            result = false
+        }
+        p1 = p1.Next
+        p2 = p2.Next
+    }
+
+    // 还原链表并返回结果
+    firstHalfEnd.Next = reverseList(secondHalfStart)
+    return result
+}
+```
+
+
+
+分析
+
+```go
+找到前半部分链表的尾节点。
+反转后半部分链表。
+判断是否回文。
+恢复链表。
+返回结果。
+```
+
+
+
+## [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
+
+答案
+
+```go
+func addTwoNumbers(l1, l2 *ListNode)  *ListNode {
+    var tail *ListNode
+    carry := 0
+  	var head *ListNode
+    for l1 != nil || l2 != nil {
+        n1, n2 := 0, 0
+        if l1 != nil {
+            n1 = l1.Val
+            l1 = l1.Next
+        }
+        if l2 != nil {
+            n2 = l2.Val
+            l2 = l2.Next
+        }
+        sum := n1 + n2 + carry
+        sum, carry = sum%10, sum/10
+        if head == nil {
+            head = &ListNode{Val: sum}
+            tail = head
+        } else {
+            tail.Next = &ListNode{Val: sum}
+            tail = tail.Next
+        }
+    }
+    if carry > 0 {
+        tail.Next = &ListNode{Val: carry}
+    }
+    return head
+}
+```
+
+
+
+分析
+
+```go
+同时遍历两个链表，逐位计算它们的和，并与当前位置的进位值相加s
 ```
 
 
@@ -6544,6 +6764,97 @@ func generateMatrix(n int) [][]int {
 ```
 
 
+
+## [73. 矩阵置零](https://leetcode.cn/problems/set-matrix-zeroes/)
+
+```go
+// 使用标记数组
+func setZeroes(matrix [][]int) {
+    row := make([]bool, len(matrix))
+    col := make([]bool, len(matrix[0]))
+    for i, r := range matrix {
+        for j, v := range r {
+            if v == 0 {
+                row[i] = true
+                col[j] = true
+            }
+        }
+    }
+    for i, r := range matrix {
+        for j := range r {
+            if row[i] || col[j] {
+                r[j] = 0
+            }
+        }
+    }
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [48. 旋转图像](https://leetcode.cn/problems/rotate-image/)
+
+```go
+func rotate(matrix [][]int) {
+    n := len(matrix)
+    // 水平翻转
+    for i := 0; i < n/2; i++ {
+        matrix[i], matrix[n-1-i] = matrix[n-1-i], matrix[i]
+    }
+    // 主对角线翻转
+    for i := 0; i < n; i++ {
+        for j := 0; j < i; j++ {
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+        }
+    }
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [48. 旋转图像](https://leetcode.cn/problems/rotate-image/)
+
+```go
+func searchMatrix(matrix [][]int, target int) bool {
+    m, n := len(matrix), len(matrix[0])
+    x, y := 0, n-1	// 从矩阵 matrix 的右上角 (0,n−1) 进行搜索
+    for x < m && y >= 0 {
+        if matrix[x][y] == target {	// 搜索完成
+            return true
+        }
+        if matrix[x][y] > target {	
+            y--	// 所有位于第 y 列的元素都是严格大于 target 的，因此我们可以将它们全部忽略
+        } else {
+            x++	// 所有位于第 x 行的元素都是严格小于 target 的，因此我们可以将它们全部忽略
+        }
+    }
+    return false
+}
+```
+
+
+
+分析
+
+```go
+
+```
 
 
 
