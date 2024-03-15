@@ -1593,6 +1593,47 @@ func addTwoNumbers(l1, l2 *ListNode)  *ListNode {
 
 
 
+## [138. 随机链表的复制](https://leetcode.cn/problems/copy-list-with-random-pointer/)
+
+答案
+
+```go
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
+
+func copyRandomList(head *Node) *Node {
+	cachedNode := map[*Node]*Node{}	// 哈希表记录每一个节点对应新节点的创建情况
+	var deepCopy func(node *Node) *Node
+	deepCopy = func(node *Node) *Node {
+		if node == nil {
+			return nil
+		}
+		if n, has := cachedNode[node]; has {	// 如果已经创建过，直接从哈希表中取出并返回
+			return n
+		}
+		newNode := &Node{Val: node.Val}
+		cachedNode[node] = newNode
+		newNode.Next = deepCopy(node.Next)	// 递归地创建「当前节点的后继节点」
+		newNode.Random = deepCopy(node.Random)	// 递归地创建「当前节点的随机指针指向的节点」
+		return newNode
+	}
+	return deepCopy(head)
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
 # 哈希表
 
 ## [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
@@ -3946,6 +3987,52 @@ func max(a, b int) int {
 非叶节点的最大贡献值为   本身 + max(左儿子,右儿子)
 
 注意贡献值与0要做比较
+```
+
+
+
+## [543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/)
+
+答案
+
+```go
+func diameterOfBinaryTree(root *TreeNode) int {
+    ans := 0
+    var traversal func(node *TreeNode) int
+    traversal = func(node * TreeNode) int {
+        if node == nil {
+            return 0
+        }
+        left := traversal(node.Left)
+        right := traversal(node.Right)
+        ans = max(ans, left + right + 1)
+        return max(left, right) + 1
+    }
+    traversal(root)
+    return ans-1
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+```
+
+
+
+分析
+
+```go
+一条路径的长度为该路径经过的节点数减一，所以求直径（路径长度的最大值）等效于求路径经过节点数的最大值减一
+任意一条路径均可以被看作由某个节点为起点，从其左儿子和右儿子向下遍历的路径拼接得到
+
+所以算法流程为：
+定义一个递归函数，函数返回该节点为根的子树的深度。
+先递归调用左儿子和右儿子求得它们为根的子树的深度 L 和 R ，
+则该节点为根的子树的深度即为max(L, R) + 1，
+该节点的直径为 L + R + 1
 ```
 
 
