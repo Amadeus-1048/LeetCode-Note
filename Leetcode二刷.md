@@ -3948,7 +3948,7 @@ func convertBST(root *TreeNode) *TreeNode {
 
 ```go
 func maxPathSum(root *TreeNode) int {
-	maxSum := math.MinInt32
+	maxSum := root.Val
 	var maxGain func(node *TreeNode) int
 	maxGain = func(node *TreeNode) int {
 		if node == nil {
@@ -4036,6 +4036,135 @@ func max(a, b int) int {
 ```
 
 
+
+## [230. 二叉搜索树中第K小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-bst/)
+
+答案
+
+```go
+func kthSmallest(root *TreeNode, k int) int {
+    stack := []*TreeNode{}
+    for {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
+        }
+        stack, root = stack[:len(stack)-1], stack[len(stack)-1]
+        k--
+        if k == 0 {
+            return root.Val
+        }
+        root = root.Right
+    }
+}
+```
+
+
+
+分析
+
+```go
+使用迭代方法，这样可以在找到答案后停止，不需要遍历整棵树
+
+迭代遍历的图解：
+https://leetcode.cn/problems/binary-tree-inorder-traversal/solutions/412886/er-cha-shu-de-zhong-xu-bian-li-by-leetcode-solutio/
+```
+
+
+
+## [543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/)
+
+答案
+
+```go
+// 前序遍历
+func flatten(root *TreeNode)  {
+    list := preorderTraversal(root)
+    for i := 1; i < len(list); i++ {
+        prev, curr := list[i-1], list[i]
+        prev.Left, prev.Right = nil, curr
+    }
+}
+
+func preorderTraversal(root *TreeNode) []*TreeNode {
+    list := []*TreeNode{}
+    if root != nil {
+        list = append(list, root)
+        list = append(list, preorderTraversal(root.Left)...)
+        list = append(list, preorderTraversal(root.Right)...)
+    }
+    return list
+}
+
+
+// 变形的后序遍历，遍历顺序是右子树->左子树->根节点
+func flatten(root *TreeNode)  {
+  var pre *TreeNode
+  var traversal func(node *TreeNode)
+  traversal = func(node *TreeNode) {
+    if node == nil {
+      return
+    }
+    traversal(node.Right)
+    traversal(node.Left)
+    node.Right = pre
+    node.Left = nil
+    pre = node
+  }
+  traversal(root)
+}
+```
+
+
+
+分析
+
+```go
+解法2参考：
+https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/solutions/17274/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--26/?envType=study-plan-v2&envId=top-100-liked
+```
+
+
+
+## [437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/)
+
+答案
+
+```go
+// 以节点 p 为起点向下且满足路径总和为 val 的路径数目
+func rootSum(root *TreeNode, targetSum int) int {
+  	res := 0
+    if root == nil {
+        return res
+    }
+    val := root.Val
+    if val == targetSum {
+        res++
+    }
+    res += rootSum(root.Left, targetSum-val)
+    res += rootSum(root.Right, targetSum-val)
+    return res
+}
+
+func pathSum(root *TreeNode, targetSum int) int {
+    if root == nil {
+        return 0
+    }
+    res := rootSum(root, targetSum)	// 以root为起点向下
+    res += pathSum(root.Left, targetSum)	// 以root.Left及其子树为起点向下
+    res += pathSum(root.Right, targetSum)	// 以root.Right及其子树为起点向下
+    return res
+}
+
+```
+
+
+
+分析
+
+```go
+
+```
 
 
 
@@ -7944,6 +8073,82 @@ func canFinish(numCourses int, prerequisites [][]int) bool {
 具体地，我们可以使用拓扑排序的思想，对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到。
 如果所有节点都被遍历到，说明图中不存在环，那么我们就可以完成所有课程的学习；否则，我们就无法完成所有课程的学习。
 ```
+
+
+
+
+
+## [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/)
+
+```go
+// 广度优先搜索，一层一层扩展
+func orangesRotting(grid [][]int) int {
+	if grid == nil || len(grid) == 0 {
+		return 0
+	}
+	//按照上右下左方向进行扩展
+	dx := []int{-1, 0, 1, 0}
+	dy := []int{0, 1, 0, -1}
+	//行列值
+	row := len(grid)
+	col := len(grid[0])
+	res := 0 //腐烂完成的时间
+	queue := make([]int, 0)
+	//首先找到一开始就是腐烂的橘子，将其作为一层
+	for i := 0; i < row; i++ {
+		for j := 0; j < col; j++ {
+			if grid[i][j] == 2 {
+				//存入映射关系（优秀的方式）
+				queue = append(queue, i*col+j)
+			}
+		}
+	}
+	//bfs搜索
+	for len(queue) != 0 {
+		res++                 //每搜完一层，则时间加一分钟
+		cursize := len(queue) //保存当前层的长度
+		for i := 0; i < cursize; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			r, c := node/col, node%col
+			for k := 0; k < 4; k++ {
+				nr := r + dx[k]
+				nc := c + dy[k]
+				if nr >= 0 && nr < row && nc >= 0 && nc < col && grid[nr][nc] == 1 {
+					grid[nr][nc] = 2                 //将新鲜橘子腐烂
+					queue = append(queue, nr*col+nc) //将腐烂橘子入队
+				}
+			}
+		}
+	}
+	//判断还有没有新鲜橘子，有就返回-1
+	for i := 0; i < row; i++ {
+		for j := 0; j < col; j++ {
+			if grid[i][j] == 1 {
+				return -1
+			}
+		}
+	}
+	//因为res在计算层的时候，把最开始的腐烂橘子也记为一层，
+	//所以结果为res-1
+	//存在一个特殊情况，及[[0]]，此时，res就为0，所以不需要-1
+	if res == 0 {
+		return res
+	} else {
+		return res - 1
+	}
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
 
 
 
