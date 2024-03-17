@@ -4896,6 +4896,103 @@ func isvalid(row, col int, k byte, board [][]byte) bool {
 
 
 
+## [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
+
+答案
+
+```go
+func generateParenthesis(n int) []string {
+    res := make([]string, 0)
+    var dfs func(left, right int,  path string)
+    dfs = func(left, right int,  path string) {
+        if left == n && right == n {
+            res = append(res, path)
+            return
+        }
+        if left < n {
+            dfs(left+1, right, path+"(")	// path+"(" 这样就不用手动回溯
+        }
+        if right < left {
+            dfs(left, right+1, path+")")
+        }
+    }
+    dfs(0, 0, "")
+    return res
+}
+```
+
+
+
+分析
+
+```
+https://leetcode.cn/problems/generate-parentheses/solutions/938191/shen-du-you-xian-bian-li-zui-jian-jie-yi-ypti/?envType=study-plan-v2&envId=top-100-liked
+
+一个合法的括号序列需要满足两个条件：
+1、左右括号数量相等
+2、任意前缀中左括号数量 >= 右括号数量 （也就是说每一个右括号总能找到相匹配的左括号）
+
+使用深度优先搜索，将搜索顺序定义为枚举序列的每一位填什么
+```
+
+
+
+## [79. 单词搜索](https://leetcode.cn/problems/word-search/)
+
+答案
+
+```go
+type pair struct{ x, y int }
+
+var directions = []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+
+func exist(board [][]byte, word string) bool {
+	h, w := len(board), len(board[0])
+	vis := make([][]bool, h)
+	for i := range vis {
+		vis[i] = make([]bool, w)
+	}
+	var dfs func(i, j, k int) bool
+	dfs = func(i, j, k int) bool {
+		if board[i][j] != word[k] { // 剪枝：当前字符不匹配
+			return false
+		}
+		if k == len(word)-1 { // 单词存在于网格中
+			return true
+		}
+		vis[i][j] = true
+		for _, dir := range directions {
+			if newI, newJ := i+dir.x, j+dir.y; 0 <= newI && newI < h && 0 <= newJ && newJ < w && !vis[newI][newJ] {
+				if dfs(newI, newJ, k+1) {
+                    vis[i][j] = false	// 回溯时还原已访问的单元格
+					return true
+				}
+			}
+		}
+        vis[i][j] = false	// 回溯时还原已访问的单元格
+		return false
+	}
+	for i, row := range board {
+		for j := range row {
+			if dfs(i, j, 0) {
+				return true
+			}
+		}
+	}
+	return false
+}
+```
+
+
+
+分析
+
+```
+
+```
+
+
+
 # 贪心
 
 ## [455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
@@ -7363,6 +7460,119 @@ func frequencySort(s string) string {
 
 
 
+## [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
+
+```go
+func searchInsert(nums []int, target int) int {
+    n := len(nums)
+    left, right := 0, n
+    ans := n
+    for left < right {
+        mid := (right - left)/2 + left
+        if target <= nums[mid] {
+            ans = mid
+            right = mid
+        } else {
+            left = mid + 1
+        }
+    }
+    return ans
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+```go
+// 这道题也可以用35题的函数来做
+func searchRange(nums []int, target int) []int {
+    leftmost := sort.SearchInts(nums, target)
+    if leftmost == len(nums) || nums[leftmost] != target {
+        return []int{-1, -1}
+    }
+    rightmost := sort.SearchInts(nums, target + 1) - 1
+    return []int{leftmost, rightmost}
+}
+```
+
+
+
+分析
+
+```go
+其实我们要找的就是数组中「第一个等于 target 的位置」和「第一个大于 target 的位置减一」
+
+SearchInts 在排序的整数切片中搜索 x 并返回 Search 指定的索引。 
+如果 x 不存在，则返回值是插入 x 的索引（它可能是 len(a)）。 切片必须按升序排序。
+```
+
+
+
+## [74. 搜索二维矩阵](https://leetcode.cn/problems/search-a-2d-matrix/)
+
+```go
+func searchMatrix(matrix [][]int, target int) bool {
+	m, n := len(matrix), len(matrix[0])
+	i := sort.Search(m*n, func(i int) bool {
+		return matrix[i/n][i%n] >= target
+	})
+	return i < m*n && matrix[i/n][i%n] == target
+}
+```
+
+
+
+分析
+
+```go
+方法名
+sort.Search()
+
+使用模板
+index := sort.Search(n int,f func(i int) bool) int
+
+主要功能
+该函数使用二分查找的方法，会从[0, n)中取出一个值index，index为[0, n)中最小的使函数f(index)为True的值，并且f(index+1)也为True。
+如果无法找到该index值，则该方法为返回n。
+
+常用场景
+该方法一般用于从一个已经排序的数组中找到某个值所对应的索引。
+或者从字符串数组中，找到满足某个条件的最小索引值，比如etcd中的键值范围查询就用到了该方法。
+                                        
+具体例子
+func main() {
+    a := []int{1,2,3,4,5}
+    d := sort.Search(len(a), func(i int) bool { return a[i]>=3})
+    fmt.Println(d)
+}
+执行结果：2
+```
+
+
+
+## [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
+
+```go
+
+```
+
+
+
+分析
+
+```go
+
+```
+
 
 
 # 栈/队列
@@ -8073,8 +8283,6 @@ func canFinish(numCourses int, prerequisites [][]int) bool {
 具体地，我们可以使用拓扑排序的思想，对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到。
 如果所有节点都被遍历到，说明图中不存在环，那么我们就可以完成所有课程的学习；否则，我们就无法完成所有课程的学习。
 ```
-
-
 
 
 
