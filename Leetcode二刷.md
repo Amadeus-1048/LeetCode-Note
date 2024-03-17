@@ -5272,6 +5272,45 @@ func monotoneIncreasingDigits(N int) int {
 
 
 
+## [738. 单调递增的数字](https://leetcode.cn/problems/monotone-increasing-digits/)
+
+答案
+
+```go
+func partitionLabels(s string) (partition []int) {
+    lastPos := [26]int{}
+    for i, c := range s {
+        lastPos[c-'a'] = i
+    }
+    start, end := 0, 0
+    for i, c := range s {
+        if lastPos[c-'a'] > end {
+            end = lastPos[c-'a']
+        }
+        if i == end {
+            partition = append(partition, end-start+1)
+            start = end + 1
+        }
+    }
+    return
+}
+```
+
+
+
+分析
+
+```go
+在得到每个字母最后一次出现的下标位置之后，可以使用贪心的方法将字符串划分为尽可能多的片段，具体做法如下。
+
+从左到右遍历字符串，遍历的同时维护当前片段的开始下标 start 和结束下标 end，初始时 start=end=0。
+对于每个访问到的字母 c，得到当前字母的最后一次出现的下标位置 endc，则当前片段的结束下标一定不会小于 endc
+当访问到下标 end 时，当前片段访问结束，当前片段的下标范围是 [start,end]，长度为 end−start+1，将当前片段的长度添加到返回值，然后令 start=end+1，继续寻找下一个片段。
+重复上述过程，直到遍历完字符串。
+```
+
+
+
 # 动态规划
 
 ## [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)
@@ -6728,6 +6767,81 @@ word1[i-1] != word2[j-1]
 
 
 
+## [139. 单词拆分](https://leetcode.cn/problems/word-break/)
+
+答案
+
+```go
+func wordBreak(s string, wordDict []string) bool {
+    wordDictSet := make(map[string]bool)
+    for _, w := range wordDict {
+        wordDictSet[w] = true
+    }
+    dp := make([]bool, len(s) + 1)
+    dp[0] = true
+    for i := 1; i <= len(s); i++ {	// 遍历 dp[i] 能否由 dp[j] 与 wordDictSet[s[j:i]] 组成
+        for j := 0; j < i; j++ {
+            if dp[j] && wordDictSet[s[j:i]] {
+                dp[i] = true
+                break
+            }
+        }
+    }
+    return dp[len(s)]
+}
+```
+
+
+
+分析
+
+```go
+dp[i]表示字符串 s 前 i 个字符组成的字符串 s[0..i−1] 是否能被空格拆分成若干个字典中出现的单词
+```
+
+
+
+## [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/)
+
+答案
+
+```go
+func maxProduct(nums []int) int {
+    maxF, minF, ans := nums[0], nums[0], nums[0]
+    for i := 1; i < len(nums); i++ {
+        mx, mn := maxF, minF
+        maxF = max(mx * nums[i], max(nums[i], mn * nums[i]))
+        minF = min(mn * nums[i], min(nums[i], mx * nums[i]))
+        ans = max(maxF, ans)
+    }
+    return ans
+}
+
+func max(x, y int) int {
+    if x > y {
+        return x
+    }
+    return y
+}
+
+func min(x, y int) int {
+    if x < y {
+        return x
+    }
+    return y
+}
+```
+
+
+
+分析
+
+```go
+表示以第 i 个元素结尾的乘积最大子数组的乘积
+```
+
+
+
 # 设计/模拟
 
 ## 146. LRU 缓存
@@ -7562,12 +7676,25 @@ func main() {
 ## [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 
 ```go
-
+func findMin(nums []int) int {
+    low, high := 0, len(nums) - 1
+    for low < high {
+        mid := low + (high - low) / 2
+        if nums[mid] < nums[high] {
+            high = mid
+        } else {
+            low = mid + 1
+        }
+    }
+    return nums[low]
+}
 ```
 
 
 
 分析
+
+<img src="https://assets.leetcode-cn.com/solution-static/153/1.png" style="zoom: 50%;" />
 
 ```go
 
@@ -7949,6 +8076,207 @@ length is : 3， 元素分别为:"", "1", "2"
 	一个点 .；
 	两个点 ..；
 	只包含英文字母、数字或 _ 的目录名
+```
+
+
+
+## [155. 最小栈](https://leetcode.cn/problems/min-stack/)
+
+```go
+type MinStack struct {
+    stack []int
+    minStack []int
+}
+
+func Constructor() MinStack {
+    return MinStack{
+        stack: []int{},
+        minStack: []int{math.MaxInt64},
+    }
+}
+
+func (this *MinStack) Push(x int)  {
+    this.stack = append(this.stack, x)	// 一个新的元素入栈
+    top := this.minStack[len(this.minStack)-1]	// 获取当前辅助栈的栈顶存储的最小值
+    this.minStack = append(this.minStack, min(x, top))	// 与当前元素比较得出最小值，将这个最小值插入辅助栈中
+}
+
+func (this *MinStack) Pop()  {
+    this.stack = this.stack[:len(this.stack)-1]	// 一个元素出栈
+    this.minStack = this.minStack[:len(this.minStack)-1]	// 把辅助栈的栈顶元素也一并弹出
+}
+
+func (this *MinStack) Top() int {
+    return this.stack[len(this.stack)-1]
+}
+
+func (this *MinStack) GetMin() int {
+    return this.minStack[len(this.minStack)-1]
+}
+
+func min(x, y int) int {
+    if x < y {
+        return x
+    }
+    return y
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [394. 字符串解码](https://leetcode.cn/problems/decode-string/)
+
+```go
+func decodeString(s string) string {
+    stk := []string{}
+    ptr := 0
+    for ptr < len(s) {
+        cur := s[ptr]
+        if cur >= '0' && cur <= '9' {	// 如果当前的字符为数位，解析出一个数字（连续的多个数位）并进栈
+            digits := getDigits(s, &ptr)
+            stk = append(stk, digits)
+        } else if (cur >= 'a' && cur <= 'z' || cur >= 'A' && cur <= 'Z') || cur == '[' {	// 如果当前的字符为字母或者左括号，直接进栈
+            stk = append(stk, string(cur))
+            ptr++
+        } else {	// 如果当前的字符为右括号，开始出栈，一直到左括号出栈
+            ptr++
+            sub := []string{}
+            for stk[len(stk)-1] != "[" {
+                sub = append(sub, stk[len(stk)-1])
+                stk = stk[:len(stk)-1]
+            }
+            for i := 0; i < len(sub)/2; i++ {	// 出栈序列反转后拼接成一个字符串
+                sub[i], sub[len(sub)-i-1] = sub[len(sub)-i-1], sub[i]
+            }
+            stk = stk[:len(stk)-1]	// 左括号 '[' 出栈 
+            repTime, _ := strconv.Atoi(stk[len(stk)-1])	// 取出栈顶的数字，即这个字符串应该出现的次数
+            stk = stk[:len(stk)-1]	
+            t := strings.Repeat(getString(sub), repTime)	// 根据这个次数和字符串构造出新的字符串并进栈
+            stk = append(stk, t)
+        }
+    }
+    return getString(stk)
+}
+
+func getDigits(s string, ptr *int) string {
+    ret := ""
+    for ; s[*ptr] >= '0' && s[*ptr] <= '9'; *ptr++ {
+        ret += string(s[*ptr])
+    }
+    return ret
+}
+
+func getString(v []string) string {
+    ret := ""
+    for _, s := range v {
+        ret += s
+    }
+    return ret
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
+## [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)
+
+```go
+func dailyTemperatures(temperatures []int) []int {
+    length := len(temperatures)
+    ans := make([]int, length)
+    stack := []int{}
+    for i := 0; i < length; i++ {
+        temperature := temperatures[i]
+        // 如果栈为空，则直接将 i 进栈
+        // 如果栈不为空，则比较栈顶元素对应的温度和当前温度，当前温度更大则移除栈顶
+        for len(stack) > 0 && temperature > temperatures[stack[len(stack)-1]] {
+            prevIndex := stack[len(stack)-1]
+            stack = stack[:len(stack)-1]
+            ans[prevIndex] = i - prevIndex
+        }
+        // 重复上述操作直到栈为空或者栈顶元素对应的温度小于等于当前温度，然后将 i 进栈
+        stack = append(stack, i)	
+    }
+    return ans
+}
+```
+
+
+
+分析
+
+```go
+判别是否需要使用单调栈，如果需要找到左边或者右边第一个比当前位置的数大或者小，则可以考虑使用单调栈；单调栈的题目如矩形米面积等等
+“在一维数组中找第一个满足某种条件的数”的场景就是典型的单调栈应用场景。
+
+维护一个存储下标的单调栈，从栈底到栈顶的下标对应的温度列表中的温度依次递减。一个下标在单调栈里，则表示尚未找到下一次温度更高的下标。
+```
+
+
+
+## [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
+
+```go
+func largestRectangleArea(heights []int) int {
+    n := len(heights)
+    left, right := make([]int, n), make([]int, n)
+    for i := 0; i < n; i++ {
+        right[i] = n
+    }
+    mono_stack := []int{}
+    for i := 0; i < n; i++ {
+        for len(mono_stack) > 0 && heights[mono_stack[len(mono_stack)-1]] >= heights[i] {
+            right[mono_stack[len(mono_stack)-1]] = i
+            mono_stack = mono_stack[:len(mono_stack)-1]
+        }
+        if len(mono_stack) == 0 {
+            left[i] = -1
+        } else {
+            left[i] = mono_stack[len(mono_stack)-1]
+        }
+        mono_stack = append(mono_stack, i)
+    }
+    ans := 0
+    for i := 0; i < n; i++ {
+        ans = max(ans, (right[i] - left[i] - 1) * heights[i])
+    }
+    return ans
+}
+
+func max(x, y int) int {
+    if x > y {
+        return x
+    }
+    return y
+}
+```
+
+
+
+分析
+
+```go
+首先单调栈的经典应用场景是，在一维数组中，对每一个数字，找到前/后面第一个比自己大/小的元素。
+
+该题的思路是：
+对数组中的每个元素，若假定以它为高，能够展开的宽度越宽，那么以它为高的矩形面积就越大。
+因此，思路就是找到每个元素左边第一个比它矮的矩形和右边第一个比它矮的矩形，在这中间的就是最大宽度
+最后对每个元素遍历一遍找到最大值即可。
 ```
 
 
