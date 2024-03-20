@@ -8714,6 +8714,78 @@ func singleNumber(nums []int) int {
 
 
 
+## [169. 多数元素](https://leetcode.cn/problems/majority-element/)
+
+```go
+func majorityElement(nums []int) int {
+	res, count := 0, 0
+	for _, num := range nums {
+		if count == 0 {
+			res = num	// 找到一个新的众数，维护它
+			count = 1
+		} else {
+			if res == num {		// 新的数等于众数
+				count++
+			} else {			// 新的数不等于众数
+				count--
+			}
+		}
+	}
+	return res
+}
+```
+
+
+
+分析
+
+```go
+摩尔投票法
+	如果我们把多数元素记为 +1，把其他数记为 −1，将它们全部加起来，显然和大于 0
+```
+
+
+
+## [75. 颜色分类](https://leetcode.cn/problems/sort-colors/)
+
+```go
+func sortColors(nums []int) {
+    p0, p1 := 0, 0	// p0交换0，p1交换1
+    for i, c := range nums {
+        if c == 0 {	// 找到了 0
+            nums[i], nums[p0] = nums[p0], nums[i]
+            if p0 < p1 {	// 此时p0的后面一定是1，为了防止这个1被交换到后面，需要再交换一次
+                nums[i], nums[p1] = nums[p1], nums[i]	// nums[i] 的值为 1，将这个 1 放到「头部」的末端
+            }
+            p0++
+            p1++
+        } else if c == 1 {	// 找到了 1
+            nums[i], nums[p1] = nums[p1], nums[i]
+            p1++
+        }
+    }
+}
+```
+
+
+
+分析
+
+```go
+思路一
+统计出数组中 0,1,2 的个数，再根据它们的数量，重写整个数组
+缺点是两次遍历
+
+思路二
+单指针。在第一次遍历中，我们将数组中所有的 0 交换到数组的头部。在第二次遍历中，我们将数组中所有的 1 交换到头部的 0 之后。此时，所有的 2 都出现在数组的尾部，这样我们就完成了排序。
+缺点是两次遍历
+
+思路三
+双指针。使用两个指针分别用来交换 0 和 1。
+```
+
+
+
 # ACM模式
 
 OJ（牛客网）输入输出练习 Go实现	https://blog.csdn.net/aron_conli/article/details/113462234
