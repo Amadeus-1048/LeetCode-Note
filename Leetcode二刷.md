@@ -5343,6 +5343,35 @@ func fib(n int) int {
 
 
 
+## [118. 杨辉三角](https://leetcode.cn/problems/pascals-triangle/)
+
+答案
+
+```go
+func generate(numRows int) [][]int {
+    ans := make([][]int, numRows)
+    for i := range ans {
+        ans[i] = make([]int, i+1)
+        ans[i][0] = 1
+        ans[i][i] = 1
+        for j := 1; j < i; j++ {
+            ans[i][j] = ans[i-1][j-1] + ans[i-1][j]
+        }
+    }
+    return ans
+}
+```
+
+
+
+分析
+
+```go
+
+```
+
+
+
 ## [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
 
 答案
@@ -6429,7 +6458,7 @@ func max(a, b int) int {
 分析
 
 ```go
-dp[i]表示i之前包括i的以nums[i]结尾的最长递增子序列的长度
+dp[i] 为以第 i 个数字结尾的最长上升子序列的长度，nums[i] 必须被选取
 
 位置i的最长升序子序列等于j从0到i-1各个位置的最长升序子序列 + 1 的最大值
 if (nums[i] > nums[j]) 
@@ -6796,7 +6825,7 @@ func wordBreak(s string, wordDict []string) bool {
 分析
 
 ```go
-dp[i]表示字符串 s 前 i 个字符组成的字符串 s[0..i−1] 是否能被空格拆分成若干个字典中出现的单词
+dp[i]表示字符串s前 i 个字符组成的字符串 s[0..i−1] 是否能被空格拆分成若干个字典中出现的单词
 ```
 
 
