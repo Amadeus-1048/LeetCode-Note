@@ -8786,6 +8786,117 @@ func sortColors(nums []int) {
 
 
 
+## [31. 下一个排列](https://leetcode.cn/problems/next-permutation/)
+
+```go
+func nextPermutation(nums []int) {
+	if len(nums) <= 1 {
+		return
+	}
+
+	i, j, k := len(nums)-2, len(nums)-1, len(nums)-1
+
+	// 从后向前 查找第一个相邻升序的元素对 (i,j)，满足 A[i]<A[j],此时 [j,end) 必然是降序 eg: 123654  i=2, j=3
+	for i >= 0 && nums[i] >= nums[j] {
+		i--
+		j--
+	}
+
+	if i >= 0 { // 不是最后一个排列
+        // 在 [j,end) 从后向前 查找第一个满足 A[i] < A[k] eg: 123654 i=2, j=3, k=5
+		for nums[i] >= nums[k] {
+			k--
+		}
+		// 将一个 尽可能小的「大数」 与前面的「小数」进行交换  eg: 123654 => 124653 
+		nums[i], nums[k] = nums[k], nums[i]  
+	}
+
+	// 将「大数」换到前面后，需要将「大数」后面的所有数 重置为升序	 eg: 124653 => 124356
+	for i, j := j, len(nums)-1; i < j; i, j = i+1, j-1 {
+		nums[i], nums[j] = nums[j], nums[i]
+	}
+}
+```
+
+
+
+分析
+
+```go
+我们希望下一个数 比当前数大，这样才满足 “下一个排列” 的定义。
+因此只需要 将后面的「大数」与前面的「小数」交换，就能得到一个更大的数。比如 123456，将 5 和 6 交换就能得到一个更大的数 123465。
+
+我们还希望下一个数 增加的幅度尽可能的小，这样才满足“下一个排列与当前排列紧邻“的要求。
+为了满足这个要求，我们需要：在 尽可能靠右的低位 进行交换，需要 从后向前 查找
+将一个 尽可能小的「大数」 与前面的「小数」交换。比如 123465，下一个排列应该把 5 和 4 交换而不是把 6 和 4 交换
+将「大数」换到前面后，需要将「大数」后面的所有数 重置为升序，升序排列就是最小的排列。以 123465 为例：首先按照上一步，交换 5 和 4，得到 123564；然后需要将 5 之后的数重置为升序，得到 123546。显然 123546 比 123564 更小，123546 就是 123465 的下一个排列
+```
+
+
+
+## [287. 寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/)
+
+```go
+// 二分法
+func findDuplicate(nums []int) int {
+	lo, hi := 1, len(nums)-1
+	for lo < hi {
+		mid := (hi - lo) / 2 + lo	// 重复数要么落在[1, mid]，要么落在[mid + 1, n]
+		count := 0	// 遍历原数组，统计 <= mid 的元素个数，记为 count
+		for i := 0; i < len(nums); i++ {
+			if nums[i] <= mid {
+				count++
+			}
+		}
+		if count > mid {	// 说明有超过 mid 个数落在[1, mid]，但该区间只有 mid 个“坑”，说明重复的数落在[1, mid]
+			hi = mid
+		} else {	// 说明重复数落在[mid + 1, n]
+			lo = mid + 1
+		}
+	}
+	return lo
+}
+
+// 快慢指针
+func findDuplicate(nums []int) int {
+	slow, fast := 0, 0
+	for {
+		slow = nums[slow]
+		fast = nums[nums[fast]]
+		if slow == fast {	// 快慢指针重叠，fast重置为头指针并开始和slow指针一起前进
+			fast = 0
+			for {
+				if slow == fast {
+					return slow
+				}
+				slow = nums[slow]
+				fast = nums[fast]
+			}
+		}
+	}
+}
+```
+
+
+
+分析
+
+```go
+二分法
+对值域二分。重复数落在 [1, n] ，可以对 [1, n] 这个值域二分查找。
+对重复数所在的区间继续二分，直到区间闭合，重复数就找到了
+
+快慢指针法
+题目说数组必存在重复数，所以 nums 数组肯定可以抽象为有环链表。
+有环链表，重复数就是入环口
+```
+
+![](https://pic.leetcode-cn.com/a393fd88e07b576de4d603fcccd47539e6648273a7f6626760b95ec28d2343b7-%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20200526201809.png)
+
+
+
+
+
 # ACM模式
 
 OJ（牛客网）输入输出练习 Go实现	https://blog.csdn.net/aron_conli/article/details/113462234
