@@ -7474,7 +7474,7 @@ func topKFrequent(nums []int, k int) []int {
 		        1       2
 		     3     4  5   6
 	*/
-	heapify := func(heapCnt [][2]int, start, heapSize int) {
+	heapify := func(heapCnt [][2]int, start, heapSize int) {	// start 为根节点索引
 		for start < heapSize {
 			pos, left, right := start, 2*start+1, 2*start+2	
 			if left < heapSize && heapCnt[left][1] < heapCnt[pos][1] {	// 比较count与其左子节点，并找出最小的元素
@@ -7483,7 +7483,7 @@ func topKFrequent(nums []int, k int) []int {
 			if right < heapSize && heapCnt[right][1] < heapCnt[pos][1] {// 比较count与其右子节点，并找出最小的元素
 				pos = right
 			}
-			if pos == start {	// 如果最小的元素不是父节点
+			if pos == start {	// 如果最小的元素是根节点，则不用继续堆化了
 				break
 			}
 			heapCnt[pos], heapCnt[start] = heapCnt[start], heapCnt[pos]	// 进行交换
@@ -7545,10 +7545,80 @@ www.leetcode.cn/problems/top-k-frequent-elements/solutions/1524980/by-zhaobulw-t
 
 
 
-## [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/)
+## [295. 数据流的中位数](https://leetcode.cn/problems/find-median-from-data-stream/)
 
 ```go
+type MinHeap []int
 
+func (hp MinHeap) Len() int           { return len(hp) }              // 返回堆中元素的数量
+func (hp MinHeap) Less(i, j int) bool { return hp[i] < hp[j] }        // 比较两个元素的大小
+func (hp MinHeap) Swap(i, j int)      { hp[i], hp[j] = hp[j], hp[i] } // 交换两个元素的位置
+
+func (hp *MinHeap) Push(x interface{}) { // 添加元素到堆中
+	*hp = append(*hp, x.(int))	// 使用了类型断言
+}
+
+func (hp *MinHeap) Pop() interface{} { // 从堆中移除并返回最顶部的元素
+	n := len(*hp)
+	x := (*hp)[n-1]
+	*hp = (*hp)[:n-1]
+	return x
+}
+
+type MaxHeap []int
+
+func (hp MaxHeap) Len() int           { return len(hp) }
+func (hp MaxHeap) Less(i, j int) bool { return hp[i] > hp[j] }
+func (hp MaxHeap) Swap(i, j int)      { hp[i], hp[j] = hp[j], hp[i] }
+
+func (hp *MaxHeap) Push(x interface{}) {
+	*hp = append(*hp, x.(int))	// 使用了类型断言
+}
+
+func (hp *MaxHeap) Pop() interface{} {
+	n := len(*hp)
+	x := (*hp)[n-1]
+	*hp = (*hp)[:n-1]
+	return x
+}
+
+type MedianFinder struct {
+	// 最小堆用于存储数据流的较大一半的元素
+	minhp *MinHeap
+	// 最大堆用于存储数据流的较小一半的元素
+	maxhp *MaxHeap
+}
+
+func Constructor() MedianFinder {
+	return MedianFinder{&MinHeap{}, &MaxHeap{}}
+}
+
+func (this *MedianFinder) AddNum(num int) {
+	// 首先判断最小堆是否为空。如果为空，直接将元素添加到最小堆
+	if this.minhp.Len() == 0 {
+		heap.Push(this.minhp, num)
+		return
+	}
+	// 如果最小堆不为空，根据两个堆的元素数量关系，决定元素应添加到哪个堆。目的是保持两个堆中的元素数量差不超过1
+    // 如果最小堆的元素更多，新元素会被加到最小堆，然后将最小堆的最小元素移动到最大堆中
+    // 如果两个堆的元素数量相同，新元素会被加到最大堆，然后将最大堆的最大元素移动到最小堆中
+	if this.minhp.Len() > this.maxhp.Len() {
+		heap.Push(this.minhp, num)	// 放入右侧的最小堆 
+		heap.Push(this.maxhp, heap.Pop(this.minhp).(int))	// 最小堆给最大堆一个数
+	} else {
+		//一样多
+		heap.Push(this.maxhp, num)	// 放入左侧的最大堆 
+		heap.Push(this.minhp, heap.Pop(this.maxhp).(int))	// 最大堆给最小堆一个数
+	}
+}
+
+func (this *MedianFinder) FindMedian() float64 {
+	if this.minhp.Len() > this.maxhp.Len() {	// 右边的最小堆比左边的最大堆数量多，中位数是元素数量较多的最小堆的堆顶
+		return float64((*this.minhp)[0])
+	} else {	// 如果两个堆的元素数量相同，中位数是两个堆顶元素的平均值
+		return float64((*this.minhp)[0]+(*this.maxhp)[0]) / 2
+	}
+}
 ```
 
 
@@ -7556,7 +7626,15 @@ www.leetcode.cn/problems/top-k-frequent-elements/solutions/1524980/by-zhaobulw-t
 分析
 
 ```go
+一句话题解：左边大顶堆，右边小顶堆，小的加左边，大的加右边，平衡俩堆数，新加就弹出，堆顶给对家，奇数取多的，偶数取除2.
 
+利用了heap包  "container/heap"
+
+
+func (hp *MaxHeap) Push(x interface{}) {
+	*hp = append(*hp, x.(int))	// 使用了类型断言
+}
+类型断言用于检查运行时的类型是否符合预期，并提取该类型的值。在这个例子中，x.(int)是一个类型断言，它检查x是否为int类型，并在是的情况下提取int值。
 ```
 
 
