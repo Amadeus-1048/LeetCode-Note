@@ -4072,7 +4072,7 @@ https://leetcode.cn/problems/binary-tree-inorder-traversal/solutions/412886/er-c
 
 
 
-## [543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/)
+## [114. 二叉树展开为链表](https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/)
 
 答案
 
