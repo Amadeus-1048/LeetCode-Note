@@ -790,7 +790,7 @@ func firstMissingPositive(nums []int) int {
     n := len(nums)
     for i := 0; i < n; i++ {
       	// 对于遍历到的数 x=nums[i]，如果 x∈[1,N]，我们就知道 x 应当出现在数组中的 x−1 的位置
-        for nums[i] > 0 && nums[i] <= n && nums[nums[i]-1] != nums[i] {
+        for nums[i] >= 1 && nums[i] <= n && nums[nums[i]-1] != nums[i] {
             nums[nums[i]-1], nums[i] = nums[i], nums[nums[i]-1]
         }
     }
@@ -808,6 +808,8 @@ func firstMissingPositive(nums []int) int {
 分析
 
 ```go
+让数值在1 ~~ len(nums)区间内的数放在nums[i] - 1位置上，最后从左向右找出第一个nums[i] != i+1的数
+
 将给定的数组「恢复」成下面的形式：
 如果数组中包含 x∈[1,N]，那么恢复后，数组的第 x−1 个元素为 x。
 
@@ -9399,7 +9401,8 @@ func main() {
 }
 ```
 
-与`Scan`的区别：如果设置接收2个参数，`Scan`在输入一个参数后进行回车，会继续等待第二个参数的键入；而`Scanln`直接认定输入了一个参数就截止了，只会接收一个参数并产生`error（unexpected newline）`，且`n = 1`。
+与`Scan`的区别：如果设置接收2个参数，`Scan`在输入一个参数后进行回车，会继续等待第二个参数的键入；
+而`Scanln`直接认定输入了一个参数就截止了，只会接收一个参数并产生`error（unexpected newline）`，且`n = 1`。
 
 说通俗写，就是`Scanln`认定回车标志着==阻塞接收参数==，而`Scan`认定回车只是一个==分隔符（或空白）==而已。
 
@@ -9407,7 +9410,7 @@ func main() {
 
 ### scan + for
 
-可以替代bufio，来实现读取若干行（不知道具体几行）
+可以替代bufio，来实现读取若干行（不知道具体几行），但每行的数量要求是固定的
 
 ```go
 package main
