@@ -9350,6 +9350,8 @@ n, err := fmt.Scan(&a1, &a2)
 
 ### Scanf
 
+较少使用
+
 ```go
 func Scanf(format string, a ...interface{}) (n int, err error)
 ```
