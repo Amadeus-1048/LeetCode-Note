@@ -538,9 +538,11 @@ func mySqrt(x int) int {
 
 ```go
 func moveZeroes(nums []int) {
+    // 左指针指向当前已经处理好的序列的尾部
+    // 右指针指向待处理序列的头部（也就是每一轮遍历到哪里）
     left, right, n := 0, 0, len(nums)
     for right < n {
-        if nums[right] != 0 {
+        if nums[right] != 0 {	// 每次右指针指向非零数，则将左右指针对应的数交换
             nums[left], nums[right] = nums[right], nums[left]
             left++
         }
@@ -554,9 +556,10 @@ func moveZeroes(nums []int) {
 分析
 
 ```go
+白话：每轮遍历右指针都向后移动一位，如果遇到了非0数，则将其放到前面的左指针处
+
 左指针指向当前已经处理好的序列的尾部
 右指针指向待处理序列的头部
-
 右指针不断向右移动，每次右指针指向非零数，则将左右指针对应的数交换，同时左指针右移
 ```
 
@@ -568,32 +571,34 @@ func moveZeroes(nums []int) {
 
 ```go
 func maxArea(height []int) int {
-  left, right := 0, len(height)-1	// 左右指针分别指向数组的左右两端
-  ans := 0
-  for left < right {
-    area := min(height[left], height[right])*(right-left)
-    ans = max(ans, area)
-    if height[left] < height[right] {
-      left++
-    } else {
-      right--
-    }
-  }
-  return ans
+	left, right := 0, len(height)-1 // 左右指针分别指向数组的左右两端
+	ans := 0
+	for left < right {
+        // 容纳的水量 = 两个指针指向的数字中较小值 ∗ 指针之间的距离
+		area := min(height[left], height[right]) * (right - left)
+		ans = max(ans, area)
+        // 指针之间的距离一定会开始逐渐减小，要想找到更大的答案，必须要找到更大的较小值，所以必须移动值较小的指针
+		if height[left] < height[right] {
+			left++
+		} else {
+			right--
+		}
+	}
+	return ans
 }
 
 func min(a, b int) int {
-  if a < b {
-    return a
-  }
-  return b
+	if a < b {
+		return a
+	}
+	return b
 }
 
 func max(a, b int) int {
-  if a > b {
-    return a
-  }
-  return b
+	if a > b {
+		return a
+	}
+	return b
 }
 ```
 
@@ -634,8 +639,8 @@ func findAnagrams(s, p string) (ans []int) {
     }
 
     for i, ch := range s[:sLen-pLen] {	// 虽然是从0开始遍历，但0其实已经处理过了，所以实际是从1开始
-        sCount[ch-'a']--
-        sCount[s[i+pLen]-'a']++
+        sCount[ch-'a']--	// 第i位字母的数量减少1，ch=s[i]
+        sCount[s[i+pLen]-'a']++	// 第si+pLen位字母的数量增加1
         if sCount == pCount {
             ans = append(ans, i+1)
         }
@@ -1951,8 +1956,8 @@ func fourSum(nums []int, target int) [][]int {
 
 ```go
 func groupAnagrams(strs []string) [][]string {
-    m := map[[26]int][]string{}
-    for _, str := range strs {
+    m := map[[26]int][]string{}	// key是长度为26的数组，value是字符串切片
+    for _, str := range strs {	// 统计每个字符串的字母出现次数
         count := [26]int{}
         for _, b := range str {
             count[b-'a']++
@@ -1989,7 +1994,7 @@ func longestConsecutive(nums []int) int {
         numSet[num] = true
     }
     ans := 0
-    for num := range numSet {
+    for num := range numSet {	// 注意遍历map时顺序是随机的，所以要在下面加if判断
         if !numSet[num-1] {	// 要枚举的数 x 一定是在数组中不存在前驱数 x−1 的
             currentNum := num
             count := 1
