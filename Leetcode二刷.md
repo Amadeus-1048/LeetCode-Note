@@ -9308,6 +9308,30 @@ func findDuplicate(nums []int) int {
 
 
 
+## 约瑟夫环
+
+代码
+
+```go
+int cir(int n,int m)
+{
+	int p=0;
+	for(int i=2;i<=n;i++)
+	{
+		p=(p+m)%i;
+	}
+	return p+1;
+}
+```
+
+
+
+分析
+
+https://blog.csdn.net/u011500062/article/details/72855826
+
+
+
 
 
 # ACM模式
