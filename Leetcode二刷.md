@@ -2350,6 +2350,29 @@ func longestCommonPrefix(strs []string) string {
 
 
 
+## KMP算法
+
+答案
+
+```go
+
+```
+
+
+
+分析
+
+https://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html
+
+```go
+已知空格与D不匹配时，前面六个字符"ABCDAB"是匹配的。查表可知，最后一个匹配字符B对应的"部分匹配值"为2，因此按照下面的公式算出向后移动的位数：
+移动位数 = 已匹配的字符数 - 对应的部分匹配值
+```
+
+
+
+
+
 # 树
 
 ## 二叉树递归遍历
@@ -4439,7 +4462,7 @@ func partition(s string) [][]string {
 		}
 
 		for i := start; i < len(s); i++ { // 横向遍历：找切割线  切割到字符串的结尾位置
-      if isPartition(s, start, i) { // 判断 s[start:i+1] 是否为回文串
+      		if isPartition(s, start, i) { // 判断 s[start:i+1] 是否为回文串
 				trace = append(trace, s[start:i+1])
 			} else {
 				continue
@@ -9329,6 +9352,10 @@ int cir(int n,int m)
 分析
 
 https://blog.csdn.net/u011500062/article/details/72855826
+
+```
+f(N,M) = (f(N−1,M)+M) % N
+```
 
 
 
