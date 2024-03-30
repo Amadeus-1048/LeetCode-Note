@@ -9502,7 +9502,7 @@ func main() {
 
 ### NewScanner
 
-必须整行读（用 fmt、os、bufio、strconv、strings 实现）
+必须整行读
 
 
 
