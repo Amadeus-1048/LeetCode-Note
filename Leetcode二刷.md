@@ -538,7 +538,7 @@ func mySqrt(x int) int {
 
 ```go
 func moveZeroes(nums []int) {
-    // 左指针指向当前已经处理好的序列的尾部
+    // 左指针指向当前已经处理好的序列的尾部+1
     // 右指针指向待处理序列的头部（也就是每一轮遍历到哪里）
     left, right, n := 0, 0, len(nums)
     for right < n {
@@ -558,7 +558,7 @@ func moveZeroes(nums []int) {
 ```go
 白话：每轮遍历右指针都向后移动一位，如果遇到了非0数，则将其放到前面的左指针处
 
-左指针指向当前已经处理好的序列的尾部
+左指针指向当前已经处理好的序列的尾部+1
 右指针指向待处理序列的头部
 右指针不断向右移动，每次右指针指向非零数，则将左右指针对应的数交换，同时左指针右移
 ```
@@ -2048,7 +2048,7 @@ func subarraySum(nums []int, k int) int {
 // 前缀和
 func subarraySum(nums []int, k int) int {
     ans, pre := 0, 0	// pre为 [0..i] 里所有数的和
-    m := map[int]int{}	// 哈希表m，和为key，出现次数为value
+    m := make(map[int]int)	// 哈希表m，和为key，出现次数为value
     m[0] = 1
     for i := 0; i < len(nums); i++ {
         pre += nums[i]
