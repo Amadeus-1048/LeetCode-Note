@@ -9359,6 +9359,95 @@ f(N,M) = (f(N−1,M)+M) % N
 
 
 
+# 并发编程
+
+## 按顺序打印
+
+### 方法1
+
+代码
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+const (
+	MAX     = 20 // 打印多少值
+	GoCount = 4  // 几个协程
+)
+
+func main() {
+	fmt.Println(solution(MAX, GoCount))
+}
+
+func solution(max, goCount int) *[]int {
+	lock := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	result := make([]int, 0, max)
+
+	count := 1
+	wg.Add(goCount)
+	for i := 0; i < goCount; i++ {
+		go func(i int) {
+			for {
+				lock.Lock()
+				now := count
+				if now > max {
+					lock.Unlock()
+					wg.Done()
+					return
+				}
+				if now%goCount == i {
+					//fmt.Println(now)
+					result = append(result, now)
+					count++
+				}
+				lock.Unlock()
+			}
+		}(i)
+	}
+	wg.Wait()
+	return &result
+}
+
+```
+
+
+
+分析
+
+```
+这种方法有锁的争抢
+lock：使用sync.Mutex互斥锁，以保护共享资源count和result，避免并发访问时出现数据竞态。
+wg：使用sync.WaitGroup来同步所有goroutine，确保它们都完成任务后再继续执行。
+```
+
+
+
+### 方法2
+
+代码
+
+```go
+
+```
+
+
+
+分析
+
+```
+这种方法有锁的争抢
+lock：使用sync.Mutex互斥锁，以保护共享资源count和result，避免并发访问时出现数据竞态。
+wg：使用sync.WaitGroup来同步所有goroutine，确保它们都完成任务后再继续执行。
+```
+
+
+
 
 
 # ACM模式
