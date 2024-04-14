@@ -9421,11 +9421,12 @@ func solution(max, goCount int) *[]int {
 分析
 
 ```
-这种方法没有锁的争抢
-
-每个 goroutine 使用两个 WaitGroup 对象来同步：
-	selfWg 用于等待当前 goroutine 的执行，
-	nextWg 用于通知下一个 goroutine 可以开始执行。
+这种方法有锁的争抢
+lock：使用sync.Mutex互斥锁，以保护共享资源count和result，避免并发访问时出现数据竞态。
+wg：使用sync.WaitGroup来同步所有goroutine，确保它们都完成任务后再继续执行。
+	
+性能测试基于go test bench
+3         390073667 ns/op
 ```
 
 
@@ -9498,9 +9499,14 @@ func solution2(max, goCount int) *[]int {
 分析
 
 ```
-这种方法有锁的争抢
-lock：使用sync.Mutex互斥锁，以保护共享资源count和result，避免并发访问时出现数据竞态。
-wg：使用sync.WaitGroup来同步所有goroutine，确保它们都完成任务后再继续执行。
+这种方法没有锁的争抢
+
+每个 goroutine 使用两个 WaitGroup 对象来同步：
+	selfWg 用于等待当前 goroutine 的执行，
+	nextWg 用于通知下一个 goroutine 可以开始执行。
+	
+性能测试基于go test bench
+36          31884292 ns/op
 ```
 
 
