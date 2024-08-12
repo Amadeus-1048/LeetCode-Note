@@ -3469,12 +3469,12 @@ func buildTree2(preorder []int, inorder []int) *TreeNode {
     }
     // 先找到根节点（先序遍历的第一个就是根节点）
     // 从中序遍历中找到一分为二的点，左边为左子树，右边为右子树
-    left := findRootIndex(inorder, preorder[0])
+    mid := findRootIndex(inorder, preorder[0])
     // 构造root
     root := &TreeNode{
         Val:   preorder[0],
-        Left:  buildTree2(preorder[1:left+1], inorder[:left]), // 将先序遍历一分为二，左边为左子树，右边为右子树
-        Right: buildTree2(preorder[left+1:], inorder[left+1:]), // 一棵树的中序遍历和前序遍历的长度相等
+        Left:  buildTree2(preorder[1:mid+1], inorder[:mid]), // 将先序遍历一分为二，左边为左子树，右边为右子树
+        Right: buildTree2(preorder[mid+1:], inorder[mid+1:]), // 一棵树的中序遍历和前序遍历的长度相等
     }
     return root
 }
@@ -3507,12 +3507,12 @@ func buildTree(inorder []int, postorder []int) *TreeNode {
     // 先找到根节点（后续遍历的最后一个就是根节点）
     nodeValue := postorder[len(postorder)-1]
     // 从中序遍历中找到一分为二的点，左边为左子树，右边为右子树
-    left := findRootIndex(inorder, nodeValue)
+    mid := findRootIndex(inorder, nodeValue)
     // 构造root
     root := &TreeNode{
         Val:   nodeValue,
-        Left:  buildTree(inorder[:left], postorder[:left]), // 一棵树的中序遍历和后序遍历的长度相等
-        Right: buildTree(inorder[left+1:], postorder[left:len(postorder)-1]),
+        Left:  buildTree(inorder[:mid], postorder[:mid]), // 一棵树的中序遍历和后序遍历的长度相等
+        Right: buildTree(inorder[mid+1:], postorder[mid:len(postorder)-1]),
     }
     return root
 }
@@ -3799,8 +3799,8 @@ func getMinimumDifference(root *TreeNode) int {
         return 0
     }
     // 找到最小差值
-    Min := math.MaxInt64
-    for i:=1;i<len(res);i++ {
+    Min := res[1] - res[0]
+    for i:=2;i<len(res);i++ {
         diff := res[i] - res[i-1]
         if Min > diff {
             Min = diff
@@ -4125,7 +4125,7 @@ func convertBST(root *TreeNode) *TreeNode {
 ```go
 func maxPathSum(root *TreeNode) int {
     maxSum := root.Val
-    var maxGain func(node *TreeNode) int
+    var maxGain func(node *TreeNode) int    // 计算包含该节点的最大贡献值
     maxGain = func(node *TreeNode) int {
         if node == nil {
             return 0
