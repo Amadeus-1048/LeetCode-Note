@@ -4178,15 +4178,15 @@ func max(a, b int) int {
 ```go
 func diameterOfBinaryTree(root *TreeNode) int {
     ans := 0
-    var traversal func(node *TreeNode) int
+    var traversal func(node *TreeNode) int  // 获取以node为根的树的深度
     traversal = func(node * TreeNode) int {
         if node == nil {
             return 0
         }
-        left := traversal(node.Left)
-        right := traversal(node.Right)
-        ans = max(ans, left + right + 1)
-        return max(left, right) + 1
+        left := traversal(node.Left)    // 左儿子为根的子树的深度
+        right := traversal(node.Right)  // 右儿子为根的子树的深度
+        ans = max(ans, left + right + 1)    // 计算直径
+        return max(left, right) + 1 // 返回最大的深度+1
     }
     traversal(root)
     return ans-1
@@ -4318,7 +4318,7 @@ https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/solutions/17274/
 ```go
 // 以节点 p 为起点向下且满足路径总和为 val 的路径数目
 func rootSum(root *TreeNode, targetSum int) int {
-      res := 0
+    res := 0
     if root == nil {
         return res
     }
@@ -4573,7 +4573,7 @@ func combinationSum2(candidates []int, target int) [][]int {
     var backtrace func(start, sum int)
     backtrace = func(start, sum int) {
         if sum == target {
-            tmp := make([]int, len(trace))
+            tmp := make([]int, len(trace))  // 注意长度设置
             copy(tmp, trace)
             res = append(res, tmp)
             return
@@ -4590,7 +4590,7 @@ func combinationSum2(candidates []int, target int) [][]int {
             }
             trace = append(trace, candidates[i])
             sum += candidates[i]
-            backtrace(i+1, sum) // 和39.组合总和的区别1，这里是i+1，每个数字在每个组合中只能使用一次
+            backtrace(i+1, sum) // 和39.组合总和的区别，这里是i+1，每个数字在每个组合中只能使用一次
             trace = trace[:len(trace)-1]
             sum -= candidates[i]
         }
@@ -4622,14 +4622,14 @@ func partition(s string) [][]string {
     var backtrace func(start int)
     backtrace = func(start int) {
         if start == len(s) {    // 已经切到字符串的结尾位置了
-            tmp := make([]string, len(trace))
+            tmp := make([]string, len(trace))   // 注意长度
             copy(tmp, trace)
             res = append(res, tmp)
             return
         }
 
         for i := start; i < len(s); i++ { // 横向遍历：找切割线  切割到字符串的结尾位置
-              if isPartition(s, start, i) { // 判断 s[start:i+1] 是否为回文串
+            if isPartition(s, start, i) { // 判断 s[start:i+1] 是否为回文串
                 trace = append(trace, s[start:i+1])
             } else {
                 continue
@@ -4824,7 +4824,7 @@ func findSubsequences(nums []int) [][]int {
             res = append(res, tmp)
             // 注意这里不要加return，因为要取树上的所有节点
         }
-    // 这个数组放在backtrace中，所以只针对同一数层
+        // used数组放在backtrace中，所以只针对同一树层
         used := [201]int{} // 使用数组来进行去重操作，题目表明数值范围[-100, 100]
         for i := start; i < len(nums); i++ {
             if len(trace) > 0 && nums[i] < trace[len(trace)-1] || used[nums[i]+100] == 1 {
@@ -4966,8 +4966,6 @@ func solveNQueens(n int) [][]string {
     chessboard := make([][]string, n)
     for i := 0; i < n; i++ {
         chessboard[i] = make([]string, n)
-    }
-    for i := 0; i < n; i++ {
         for j := 0; j < n; j++ {
             chessboard[i][j] = "."
         }
