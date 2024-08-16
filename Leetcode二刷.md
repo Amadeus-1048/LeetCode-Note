@@ -5839,9 +5839,9 @@ func minPathSum(grid [][]int) int {
             if i == 0 && j == 0 {    // 当左边和上边都是矩阵边界时
                 continue
             } else if i == 0 {    // 当只有上边是矩阵边界
-                grid[i][j] += grid[i][j-1]
+                grid[0][j] += grid[0][j-1]
             } else if j == 0 {    // 当只有左边是矩阵边界
-                grid[i][j] += grid[i-1][j]
+                grid[i][0] += grid[i-1][0]
             } else {    // 当左边和上边都不是矩阵边界
                 grid[i][j] += min(grid[i-1][j], grid[i][j-1])
             }
@@ -6503,7 +6503,7 @@ func rob(root *TreeNode) int {
         if node == nil {
             return []int{0, 0}
         }
-        // 后续遍历
+        // 后序遍历
         left := search(node.Left)
         right := search(node.Right)
         sum1 := node.Val + left[0] + right[0]                   // 偷当前结点
@@ -7711,11 +7711,13 @@ func searchMatrix(matrix [][]int, target int) bool {
    - 起始时，可以将整个数组看作一个几乎完整的堆，只是这个堆的堆化性质可能尚未满足。
    - 从最后一个非叶子节点开始（即数组长度的一半处向下取整），对每个节点执行堆化操作。堆化是确保节点的值大于其子节点的值（对于最大堆）。
    - 通过逐步向上进行，直至根节点，可以确保所有的父节点都大于其子节点，从而建立最大堆。
+   - 建堆过程的时间复杂度是O(n)
 3. **堆化过程（`maxHeapify`或`heapify`）**
    - 在堆化过程中，对于每个节点，比较其与两个子节点的值。
    - 如果父节点小于其任一子节点（对于最大堆），则将父节点与最大的子节点交换。
    - 交换后，继续对交换下去的子节点进行堆化，确保下面的子树也满足最大堆的性质。
    - 这个过程一直进行，直到该节点的子树都满足堆的条件。
+   - 一次堆化的时间复杂度是O(logn)
 4. **重复调整**
    - 初始堆建立后，在堆的使用过程中（如堆排序或优先队列操作），每次从堆中取出顶部元素（最大元素）后，需要将堆的最后一个元素移到顶部，然后再次进行堆化操作，以保持堆的性质。
 
@@ -7745,7 +7747,7 @@ func findKthLargest(nums []int, k int) int {
 
 // 构建最大堆
 func buildMaxHeap(a []int, heapSize int) {    
-    for i := heapSize/2; i >= 0; i-- {    // 从数组的中间位置开始（heapSize/2），向下到根部遍历非叶子节点
+    for i := heapSize/2; i >= 0; i-- {    // 从数组的中间位置开始（heapSize/2），向上到根部遍历非叶子节点
         maxHeapify(a, i, heapSize)    // 确保堆的性质，即每个父节点都大于其子节点
     }
 }
