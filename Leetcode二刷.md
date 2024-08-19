@@ -36,6 +36,10 @@
 - 逆波兰式
 
 - 栈实现队列、队列实现栈
+- 单调队列
+  - 单调队列里的值是单调递减(增)的。如果发现队尾元素小于要加入的元素，则将队尾元素出队，直到队尾元素大于等于新元素时，再让新元素入队，目的就是维护一个单调递减的队列。
+- 单调栈
+  - 遍历数组，数组中的值为待入栈元素，待入栈元素入栈时会先跟栈顶元素进行对比，如果小于等于该值则入栈，如果大于则将栈顶元素出栈，新的元素入栈。
 
 ## 树
 
@@ -9782,23 +9786,25 @@ func main() {
 }
 
 func solution(max, goCount int) *[]int {
-    lock := sync.Mutex{}
-    wg := sync.WaitGroup{}
+    lock := sync.Mutex{}    // 保证对共享变量count和result的访问是线程安全的
+    wg := sync.WaitGroup{}  // 用来等待所有协程执行完毕
     result := make([]int, 0, max)
 
-    count := 1
-    wg.Add(goCount)
-    for i := 0; i < goCount; i++ {
+    count := 1  // 记录当前要打印的数字
+    wg.Add(goCount) // 表示有goCount个协程需要等待。
+    for i := 0; i < goCount; i++ {  // i是协程的编号， 协程i只会打印满足now % GoCount == i的数字
         go func(i int) {
+            // 每个协程进入一个无限循环，直到所有数字都打印完毕
             for {
                 lock.Lock()
                 now := count
-                if now > max {
-                    lock.Unlock()
+                if now > max {  // 判断当前计数now是否大于max
+                    lock.Unlock()   // 如果大于，则释放锁并退出当前协程
                     wg.Done()
                     return
                 }
-                if now%goCount == i {
+                if now%goCount == i {   // 如果当前计数now模goCount的余数等于当前协程的编号i
+                // 则表示当前协程负责打印这个数字。将数字添加到result中，并将count自增
                     //fmt.Println(now)
                     result = append(result, now)
                     count++
@@ -9807,7 +9813,7 @@ func solution(max, goCount int) *[]int {
             }
         }(i)
     }
-    wg.Wait()
+    wg.Wait()   // 通过wg.Wait()阻塞主协程，直到所有goCount个协程都执行完毕
     return &result
 }
 ```
@@ -9815,9 +9821,19 @@ func solution(max, goCount int) *[]int {
 分析
 
 ```
+打印的顺序实际上是每个协程按顺序获取锁，然后按照逻辑条件决定是否将数字加入结果中
 这种方法有锁的争抢
+
 lock：使用sync.Mutex互斥锁，以保护共享资源count和result，避免并发访问时出现数据竞态。
 wg：使用sync.WaitGroup来同步所有goroutine，确保它们都完成任务后再继续执行。
+
+sync.WaitGroup 的核心功能是提供一种机制，确保一组 goroutine 都完成工作后再继续执行后续的代码。它通常用于主 goroutine 等待其他 goroutine 完成执行。
+
+Add(delta int):用于设置需要等待的 goroutine 的数量，delta 可以是正数或负数。通常在启动 goroutine 之前调用这个方法，参数一般是正数，表示增加需要等待的 goroutine 数量。
+
+Done():当一个 goroutine 完成任务时，它应该调用 Done() 方法，表示这个 goroutine 已经完成。Done() 实际上是 Add(-1) 的简化形式。
+
+Wait():会阻塞调用它的 goroutine，直到 WaitGroup 计数器减为 0。也就是说，Wait() 会一直等待，直到所有的 goroutine 都调用 Done() 完成了工作。
 
 性能测试基于go test bench
 3         390073667 ns/op
@@ -9864,15 +9880,14 @@ func solution2(max, goCount int) *[]int {
                 selfWg.Wait() // 在开始时等待自己的 WaitGroup（selfWg）
                 if count > max {
                     wg.Done()     // 表示完成
-                    selfWg.Add(1) // 重新加一个等待计数到 selfWg
-                    nextWg.Done() // 触发下一个 goroutine 的 WaitGroup （nextWg.Done()），然后退出
+                    // selfWg.Add(1) // 重新加一个等待计数到 selfWg
+                    // nextWg.Done() // 触发下一个 goroutine 的 WaitGroup （nextWg.Done()），然后退出
                     return
                 }
-                //println(count)
                 result = append(result, count)
                 count++
-                selfWg.Add(1) // 当前 goroutine 重新为自己的 WaitGroup 加一（selfWg.Add(1)）
-                nextWg.Done() // 触发下一个 goroutine 的 WaitGroup （nextWg.Done()）
+                selfWg.Add(1) // 当前 goroutine 重新为自己的 WaitGroup 加一
+                nextWg.Done() // 触发下一个 goroutine 的 WaitGroup
             }
         }(max, wgLine[i], wgLine[(i+1)%goCount])
 
