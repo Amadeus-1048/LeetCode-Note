@@ -9576,13 +9576,6 @@ func NewPool(workerCount int, taskQueueSize int) *Pool {
 	}
 }
 
-// 启动所有协程
-func (p *Pool) Run() {
-	for i := 0; i < p.workerCount; i++ {
-		go p.worker(i)
-	}
-}
-
 // 工作协程，从任务队列中获取任务并执行
 func (p *Pool) worker(workerID int) {
 	for task := range p.taskQueue {
@@ -9597,6 +9590,13 @@ func (p *Pool) worker(workerID int) {
 func (p *Pool) Submit(task Task) {
 	p.wg.Add(1)
 	p.taskQueue <- task
+}
+
+// 启动所有协程
+func (p *Pool) Run() {
+	for i := 0; i < p.workerCount; i++ {
+		go p.worker(i)
+	}
 }
 
 // 关闭任务队列并等待所有任务完成
