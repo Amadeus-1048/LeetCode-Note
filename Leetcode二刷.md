@@ -9551,6 +9551,73 @@ func solution2(max, goCount int) *[]int {
 36          31884292 ns/op
 ```
 
+
+### 方法3
+
+代码
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+const (
+	MAX     = 20 // 打印多少值
+	GoCount = 4  // 几个协程
+)
+
+func main() {
+	AlternatePrint2()
+}
+
+func AlternatePrint2() {
+	const N = 2
+	chs := make([]chan struct{}, N)
+	for i := 0; i < N; i++ {
+		chs[i] = make(chan struct{}, 0)
+	}
+	start := 1
+	for i := 0; i < N; i++ {
+		go func(i int) {
+			for start <= MAX-N+1 {
+				//获得执行权
+				<-chs[i]
+
+				//执行代码
+				fmt.Printf("go程%d：%d\n", i, start)
+				if (i+1)%N == 0 {
+					fmt.Println("")
+				}
+				start++
+
+				//给其他协程执行权
+				chs[(i+1)%N] <- struct{}{}
+			}
+		}(i)
+	}
+
+	//给第1个协程执行权，第1个协程的序号是0
+	chs[0] <- struct{}{}
+
+	//等待协程执行完成
+	time.Sleep(time.Second * 1)
+
+	//收回最后1个go程的执行权
+	<-chs[MAX%N]
+}
+
+
+```
+
+分析
+
+```
+channel
+```
+
 ## 协程池
 
 ```go
