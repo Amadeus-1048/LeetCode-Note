@@ -9481,57 +9481,61 @@ Wait():会阻塞调用它的 goroutine，直到 WaitGroup 计数器减为 0。�
 package main
 
 import (
-    "fmt"
-    "sync"
+	"fmt"
+	"sync"
 )
 
 const (
-    MAX     = 20 // 打印多少值
-    GoCount = 4  // 几个协程
+	MAX     = 20 // 打印多少值
+	GoCount = 4  // 几个协程
 )
 
 func main() {
-    fmt.Println(solution2(MAX, GoCount))
+	fmt.Println(solution2(MAX, GoCount))
 }
 
 func solution2(max, goCount int) *[]int {
-    result := make([]int, 0, max)
-    wgLine := make([]*sync.WaitGroup, goCount) // 控制不同 goroutine 的执行顺序
-    wg := &sync.WaitGroup{}                    // 等待所有 goroutine 的完成
+	result := make([]int, 0, max)
+	wgLine := make([]*sync.WaitGroup, goCount) // 控制不同 goroutine 的执行顺序
+	wg := &sync.WaitGroup{}                    // 等待所有 goroutine 的完成
 
-    // 循环创建 goCount 个 goroutine
-    // 每个 goroutine 都有一个自己的 WaitGroup（selfWg）和一个指向下一个 goroutine 的 WaitGroup（nextWg）
-    for i := 0; i < goCount; i++ {
-        wgLine[i] = &sync.WaitGroup{}
-        wgLine[i].Add(1)
-    }
+	// 循环创建 goCount 个 goroutine
+	// 每个 goroutine 都有一个自己的 WaitGroup（selfWg）和一个指向下一个 goroutine 的 WaitGroup（nextWg）
+	for i := 0; i < goCount; i++ {
+		wgLine[i] = &sync.WaitGroup{}
+		wgLine[i].Add(1)
+	}
 
-    count := 1
-    wg.Add(goCount)
-    for i := 0; i < goCount; i++ { // 对于每个 goroutine
-        go func(max int, selfWg, nextWg *sync.WaitGroup) {
-            for {
-                selfWg.Wait() // 在开始时等待自己的 WaitGroup（selfWg）
-                if count > max {
-                    wg.Done()     // 表示完成
-                    // selfWg.Add(1) // 重新加一个等待计数到 selfWg
-                    // nextWg.Done() // 触发下一个 goroutine 的 WaitGroup （nextWg.Done()），然后退出
-                    return
-                }
-                result = append(result, count)
-                count++
-                selfWg.Add(1) // 当前 goroutine 重新为自己的 WaitGroup 加一
-                nextWg.Done() // 触发下一个 goroutine 的 WaitGroup
-            }
-        }(max, wgLine[i], wgLine[(i+1)%goCount])
+	count := 1
+	wg.Add(goCount)
+	for i := 0; i < goCount; i++ { // 对于每个 goroutine
+		go func(max int, selfWg, nextWg *sync.WaitGroup) {
+			for {
+				selfWg.Wait() // 在开始时等待自己的 WaitGroup（selfWg）
+				if count > max {
+					wg.Done() // 一个goroutine完成任务
+					// 下面这句不能删除，因为 selfWg 的计数将在别的goroutine变为负数，而 WaitGroup 的计数不能小于 0，这会导致程序崩溃并抛出 panic 错误
+					selfWg.Add(1) // 重新加一个等待计数到 selfWg
+					// 这句也不能删除，因为去掉它后下一个 goroutine 的 WaitGroup 永远不会被解锁，所以所有 goroutine 卡住，导致死锁
+					nextWg.Done() // 触发下一个 goroutine 的 WaitGroup，然后退出
+					return
+				}
+				fmt.Println("it is goroutine ", i, " printed ", count)
+				result = append(result, count)
+				count++
+				selfWg.Add(1) // 当前 goroutine 重新为自己的 WaitGroup 加一
+				nextWg.Done() // 触发下一个 goroutine 的 WaitGroup
+			}
+		}(max, wgLine[i], wgLine[(i+1)%goCount])
 
-        if i == 0 { // 手动触发第一个 goroutine
-            wgLine[goCount-1].Done() // 第0个goroutine是由最后一个goroutine触发的
-        }
-    }
-    wg.Wait()
-    return &result
+		if i == 0 { // 手动触发第一个 goroutine
+			wgLine[0].Done() // 这里可以控制第几个goroutine打印第一个数字
+		}
+	}
+	wg.Wait()
+	return &result
 }
+
 ```
 
 分析
