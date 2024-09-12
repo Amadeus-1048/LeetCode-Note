@@ -9561,12 +9561,12 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"sync"
 )
 
 const (
-	MAX     = 20 // 打印多少值
-	GoCount = 4  // 几个协程
+	MAX     = 100 // 打印多少值
+	GoCount = 4   // 几个协程
 )
 
 func main() {
@@ -9574,42 +9574,42 @@ func main() {
 }
 
 func AlternatePrint2() {
-	const N = 2
-	chs := make([]chan struct{}, N)
-	for i := 0; i < N; i++ {
-		chs[i] = make(chan struct{}, 0)
+	chs := make([]chan int, GoCount)
+	wg := sync.WaitGroup{}
+	wg.Add(GoCount)
+	for i := 0; i < GoCount; i++ {
+		chs[i] = make(chan int, 0)
 	}
-	start := 1
-	for i := 0; i < N; i++ {
+	count := 1 // 递增的数字，用于打印
+	for i := 0; i < GoCount; i++ {
+		// 每个 Goroutine 通过无缓冲通道 chs[i] 来等待执行权限
 		go func(i int) {
-			for start <= MAX-N+1 {
-				//获得执行权
-				<-chs[i]
-
-				//执行代码
-				fmt.Printf("go程%d：%d\n", i, start)
-				if (i+1)%N == 0 {
-					fmt.Println("")
+			for {
+				// 获得执行权
+				count = <-chs[i]
+				if count > MAX {
+					fmt.Printf("go程%d done\n", i)
+					wg.Done()
+					chs[(i+1)%GoCount] <- count
+					return
 				}
-				start++
 
-				//给其他协程执行权
-				chs[(i+1)%N] <- struct{}{}
+				// 执行代码
+				fmt.Printf("go程%d：%d\n", i, count)
+				count++
+
+				// 当前协程执行完毕后，将执行权交给下一个协程
+				chs[(i+1)%GoCount] <- count
 			}
 		}(i)
 	}
 
-	//给第1个协程执行权，第1个协程的序号是0
-	chs[0] <- struct{}{}
+	// 给第1个协程执行权，第1个协程的序号是0
+	chs[0] <- count
 
-	//等待协程执行完成
-	time.Sleep(time.Second * 1)
-
-	//收回最后1个go程的执行权
-	<-chs[MAX%N]
+	// 等待协程执行完成
+	wg.Wait()
 }
-
-
 ```
 
 分析
