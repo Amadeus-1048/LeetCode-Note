@@ -9578,7 +9578,10 @@ func AlternatePrint2() {
 	wg := sync.WaitGroup{}
 	wg.Add(GoCount)
 	for i := 0; i < GoCount; i++ {
-		chs[i] = make(chan int, 0)
+        // 容量为1的话可以允许设置GoCount为1
+        // 容量为0的无缓冲通道GoCount必须大于1
+        // 区别在于 chs[(i+1)%GoCount] <- count 会不会卡住
+		chs[i] = make(chan int, 1)  
 	}
 	count := 1 // 递增的数字，用于打印
 	for i := 0; i < GoCount; i++ {
