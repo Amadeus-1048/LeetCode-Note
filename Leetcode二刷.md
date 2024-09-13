@@ -269,7 +269,7 @@ func sortedSquares(nums []int) []int {
 
 ```go
 func minSubArrayLen(target int, nums []int) int {
-    i, sum := 0, 0
+    i, sum := 0, 0  // 子序列的起始位置
     length := len(nums)
     res := length + 1
     for j := 0; j < length; j++ {    // 调节子序列的终止位置
@@ -498,18 +498,18 @@ func trap(height []int) int {
 ```go
 func mySqrt(x int) int {
     res := 0 // x 平方根的整数部分 res 是满足 k^2 ≤ x 的最大 k 值
-    sqrt := 0
+    mid := 0
     left, right := 0, x
     if x <= 1 {
         return x
     } else {
         for left <= right { // 进行二分查找
-            sqrt = left + (right-left)/2
-            if sqrt*sqrt <= x { // 比较中间元素的平方与 x 的大小关系
-                res = sqrt
-                left = sqrt + 1
+            mid = left + (right-left)/2
+            if mid*mid <= x { // 比较中间元素的平方与 x 的大小关系
+                res = mid
+                left = mid + 1
             } else {
-                right = sqrt - 1
+                right = mid - 1
             }
         }
     }
