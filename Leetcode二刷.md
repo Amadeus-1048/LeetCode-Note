@@ -9850,7 +9850,9 @@ import (
 func main() {
     inputs := bufio.NewScanner(os.Stdin) // 不用放在循环内部
     buf := make([]byte, 64*1024)         // 创建一个更大的缓冲区
-    inputs.Buffer(buf, 1024*1024)        // 设置缓冲区和最大 token 大小
+    // 如果提示index out of range，可能是token大小不够
+    // 如果少部分数据无法通过，可能是超int了，换int64
+    inputs.Buffer(buf, 1024*1024*1000)        // 设置缓冲区和最大 token 大小
     for inputs.Scan() {                  //每次读入一行
         data := strings.Split(inputs.Text(), " ") //通过空格将他们分割，并存入一个字符串切片
         var sum int
