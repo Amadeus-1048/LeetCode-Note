@@ -9826,7 +9826,9 @@ func main() {
 
 [bufio包文档](https://studygolang.com/pkgdoc)
 
-`bufio`包含了Reader、Writer、Scanner等对象，封装了很多对IO内容的处理方法，但应对键盘输入来说，通过创建Reader对象，并调用其Read*系列的方法即可
+`bufio`包含了Reader、Writer、Scanner等对象，封装了很多对IO内容的处理方法，但应对键盘输入来说，通过创建Reader对象，并调用其Read*
+
+注意：在使用了bufio之后，不能再使用fmt.Scan()之类的输入，否则会出现读取行数错误的问题。
 
 ### NewScanner
 
