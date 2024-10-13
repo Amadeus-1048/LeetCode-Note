@@ -36,9 +36,13 @@
 - 逆波兰式
 
 - 栈实现队列、队列实现栈
+
 - 单调队列
+  
   - 单调队列里的值是单调递减(增)的。如果发现队尾元素小于要加入的元素，则将队尾元素出队，直到队尾元素大于等于新元素时，再让新元素入队，目的就是维护一个单调递减的队列。
+
 - 单调栈
+  
   - 遍历数组，数组中的值为待入栈元素，待入栈元素入栈时会先跟栈顶元素进行对比，如果小于等于该值则入栈，如果大于则将栈顶元素出栈，新的元素入栈。
 
 ## 树
@@ -147,8 +151,6 @@
 
 给定一个 `n` 个元素有序的（升序）整型数组 `nums` 和一个目标值 `target`  ，写一个函数搜索 `nums` 中的 `target`，如果目标值存在返回下标，否则返回 `-1`。
 
-
-
 答案
 
 ```go
@@ -192,8 +194,6 @@ for left < right，因为left在区间成立时不可能等于right
 - 更改 `nums` 数组，使 `nums` 的前 `k` 个元素包含不等于 `val` 的元素。`nums` 的其余元素和 `nums` 的大小并不重要。
 - 返回 `k`。
 
-
-
 答案
 
 ```go
@@ -226,8 +226,6 @@ func removeElement(nums []int, val int) int {
 ## [977. 有序数组的平方](https://leetcode.cn/problems/squares-of-a-sorted-array/)
 
 给你一个按 **非递减顺序** 排序的整数数组 `nums`，返回 **每个数字的平方** 组成的新数组，要求也按 **非递减顺序** 排序。
-
-
 
 答案
 
@@ -267,13 +265,11 @@ func sortedSquares(nums []int) []int {
 
  `[numsl, numsl+1, ..., numsr-1, numsr]` ，并返回其长度。如果不存在符合条件的子数组，返回 `0` 。
 
-
-
 答案
 
 ```go
 func minSubArrayLen(target int, nums []int) int {
-    i, sum := 0, 0
+    i, sum := 0, 0  // 子序列的起始位置
     length := len(nums)
     res := length + 1
     for j := 0; j < length; j++ {    // 调节子序列的终止位置
@@ -314,8 +310,6 @@ func min(a, b int) int {
 ## [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
 
 给定一个字符串 `s` ，请你找出其中不含有重复字符的最长子串的长度。
-
-
 
 答案
 
@@ -376,8 +370,6 @@ func max(a, b int) int {
 
 你必须设计一个时间复杂度为 `O(log n)` 的算法解决此问题。
 
-
-
 答案
 
 ```go
@@ -429,8 +421,6 @@ func searchTwisted(nums []int, target int) int {
 
 注意：最终，合并后数组不应由函数返回，而是存储在数组 `nums1` 中。为了应对这种情况，`nums1` 的初始长度为 `m + n`，其中前 `m` 个元素表示应合并的元素，后 `n` 个元素为 `0` ，应忽略。`nums2` 的长度为 `n` 。
 
-
-
 答案
 
 ```go
@@ -465,8 +455,6 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 ## [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)
 
 给定 `n` 个非负整数表示每个宽度为 `1` 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
-
-
 
 答案
 
@@ -505,25 +493,23 @@ func trap(height []int) int {
 
 由于返回类型是整数，结果只保留 **整数部分** ，小数部分将被 **舍去 。**
 
-
-
 答案
 
 ```go
 func mySqrt(x int) int {
     res := 0 // x 平方根的整数部分 res 是满足 k^2 ≤ x 的最大 k 值
-    sqrt := 0
+    mid := 0
     left, right := 0, x
     if x <= 1 {
         return x
     } else {
         for left <= right { // 进行二分查找
-            sqrt = left + (right-left)/2
-            if sqrt*sqrt <= x { // 比较中间元素的平方与 x 的大小关系
-                res = sqrt
-                left = sqrt + 1
+            mid = left + (right-left)/2
+            if mid*mid <= x { // 比较中间元素的平方与 x 的大小关系
+                res = mid
+                left = mid + 1
             } else {
-                right = sqrt - 1
+                right = mid - 1
             }
         }
     }
@@ -542,8 +528,6 @@ func mySqrt(x int) int {
 给定一个数组 `nums`，编写一个函数将所有 `0` 移动到数组的末尾，同时保持非零元素的相对顺序。
 
 **请注意** ，必须在不复制数组的情况下原地对数组进行操作。
-
-
 
 答案
 
@@ -579,8 +563,6 @@ func moveZeroes(nums []int) {
 找出其中的两条线，使得它们与 `x` 轴共同构成的容器可以容纳最多的水。
 
 返回容器可以储存的最大水量。
-
-
 
 答案
 
@@ -634,8 +616,6 @@ func max(a, b int) int {
 
 **异位词** 指由相同字母重排列形成的字符串（包括相同的字符串）。
 
-
-
 答案
 
 ```go
@@ -680,8 +660,6 @@ func findAnagrams(s, p string) (ans []int) {
 
 - 对于 `t` 中重复字符，我们寻找的子字符串中该字符数量必须不少于 `t` 中该字符数量。
 - 如果 `s` 中存在这样的子串，我们保证它是唯一的答案。
-
-
 
 答案
 
@@ -732,8 +710,6 @@ func check(hashMap map[byte]int) bool {
 
 给定一个整数数组 `nums`，将数组中的元素向右轮转 `k` 个位置，其中 `k` 是非负数。
 
-
-
 答案
 
 ```go
@@ -765,8 +741,6 @@ func rotate(nums []int, k int) {
 题目数据 **保证** 数组 `nums`之中任意元素的全部前缀元素和后缀的乘积都在  **32 位** 整数范围内。
 
 请不要使用除法，且在 `O(n)` 时间复杂度内完成此题。
-
-
 
 答案
 
@@ -807,8 +781,6 @@ func productExceptSelf(nums []int) []int {
 
 请你实现时间复杂度为 `O(n)` 并且只使用常数级别额外空间的解决方案。
 
-
-
 答案
 
 ```go
@@ -846,8 +818,6 @@ func firstMissingPositive(nums []int) int {
 ## [203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/)
 
 给你一个链表的头节点 `head` 和一个整数 `val` ，请你删除链表中所有满足 `Node.val == val` 的节点，并返回 **新的头节点** 。
-
-
 
 答案
 
@@ -970,8 +940,6 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 
 给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
 
-
-
 答案
 
 ```go
@@ -1002,8 +970,6 @@ fmt.Println("p2:", p2==nil)        // p2: true
 ## [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
 
 给你单链表的头指针 `head` 和两个整数 `left` 和 `right` ，其中 `left <= right` 。请你反转从位置 `left` 到位置 `right` 的链表节点，返回 **反转后的链表** 。
-
-
 
 答案
 
@@ -1082,8 +1048,6 @@ next 的值和位置都会变化
 
 给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
 
-
-
 答案
 
 ```go
@@ -1124,8 +1088,6 @@ pre = head                用变量pre表示head结点（即pre和head同时表�
 
 给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
 
-
-
 答案
 
 ```go
@@ -1158,8 +1120,6 @@ fast和slow同时移动，直到fast指向末尾(NULL)
 ## [160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)
 
 给你两个单链表的头节点 `headA` 和 `headB` ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 `null` 。
-
-
 
 答案
 
@@ -1197,8 +1157,6 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 `k` 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 `k` 的整数倍，那么请将最后剩余的节点保持原有顺序。
 
 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
-
-
 
 答案
 
@@ -1245,8 +1203,6 @@ https://leetcode.cn/problems/reverse-nodes-in-k-group/solution/jian-dan-yi-dong-
 
 如果链表中存在环 ，则返回 `true` 。 否则，返回 `false` 。
 
-
-
 答案
 
 ```go
@@ -1282,8 +1238,6 @@ for循环的条件为：for fast!=nil && fast.Next!=nil
 如果链表中有某个节点，可以通过连续跟踪 `next` 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 `pos` 来表示链表尾连接到链表中的位置（**索引从 0 开始**）。如果 `pos` 是 `-1`，则在该链表中没有环。**注意：`pos` 不作为参数进行传递**，仅仅是为了标识链表的实际情况。
 
 **不允许修改** 链表。
-
-
 
 答案
 
@@ -1325,8 +1279,6 @@ func detectCycle(head *ListNode) *ListNode {
 
 将两个升序链表合并为一个新的 **升序** 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
 
-
-
 答案
 
 ```go
@@ -1363,8 +1315,6 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 给你一个链表数组，每个链表都已经按升序排列。
 
 请你将所有链表合并到一个升序链表中，返回合并后的链表。
-
-
 
 答案
 
@@ -1430,8 +1380,6 @@ L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
 
 不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
 
-
-
 答案
 
 ```go
@@ -1482,8 +1430,6 @@ func reorderList(head *ListNode)  {
 
 给定一个已排序的链表的头 `head` ， *删除原始链表中所有重复数字的节点，只留下不同的数字* 。返回 *已排序的链表* 。
 
-
-
 答案
 
 ```go
@@ -1521,8 +1467,6 @@ func deleteDuplicates(head *ListNode) *ListNode {
 ## [234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/)
 
 给你一个单链表的头节点 `head` ，请你判断该链表是否为回文链表。如果是，返回 `true` ；否则，返回 `false` 。
-
-
 
 答案
 
@@ -1593,8 +1537,6 @@ func isPalindrome(head *ListNode) bool {
 
 你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
 
-
-
 答案
 
 ```go
@@ -1652,8 +1594,6 @@ func addTwoNumbers(l1, l2 *ListNode)  *ListNode {
 
 你的代码 **只** 接受原链表的头节点 `head` 作为传入参数。
 
-
-
 答案
 
 ```go
@@ -1697,8 +1637,6 @@ func copyRandomList(head *Node) *Node {
 
 注意：若 `s` 和 `t` 中每个字符出现的次数都相同，则称 `s` 和 `t` 互为字母异位词。
 
-
-
 答案
 
 ```go
@@ -1730,8 +1668,6 @@ func isAnagram(s string, t string) bool {
 ## [349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
 
 给定两个数组 `nums1` 和 `nums2` ，返回 它们的交集。输出结果中的每个元素一定是 **唯一** 的。我们可以 **不考虑输出结果的顺序** 。
-
-
 
 答案
 
@@ -1770,8 +1706,6 @@ func intersection(nums1 []int, nums2 []int) []int {
 
 如果 `n` 是 *快乐数* 就返回 `true` ；不是，则返回 `false` 。
 
-
-
 答案
 
 ```go
@@ -1807,8 +1741,6 @@ func getSum(n int) int {
 
 你可以按任意顺序返回答案。
 
-
-
 答案
 
 ```go
@@ -1841,8 +1773,6 @@ key来存元素，value来存下标
 
 - `0 <= i, j, k, l < n`
 - `nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0`
-
-
 
 答案
 
@@ -1880,8 +1810,6 @@ func fourSumCount(nums1 []int, nums2 []int, nums3 []int, nums4 []int) int {
 
 `magazine` 中的每个字符只能在 `ransomNote` 中使用一次。
 
-
-
 答案
 
 ```go
@@ -1913,8 +1841,6 @@ func canConstruct(ransomNote string, magazine string) bool {
 你返回所有和为 `0` 且不重复的三元组。
 
 注意：答案中不可以包含重复的三元组。
-
-
 
 答案
 
@@ -1969,8 +1895,6 @@ func threeSum(nums []int) [][]int  {
 - `nums[a] + nums[b] + nums[c] + nums[d] == target`
 
 你可以按 **任意顺序** 返回答案 。
-
-
 
 答案
 
@@ -2037,8 +1961,6 @@ func fourSum(nums []int, target int) [][]int {
 
 **字母异位词** 是由重新排列源单词的所有字母得到的一个新单词。
 
-
-
 答案
 
 ```go
@@ -2071,8 +1993,6 @@ func groupAnagrams(strs []string) [][]string {
 给定一个未排序的整数数组 `nums` ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
 
 请你设计并实现时间复杂度为 `O(n)` 的算法解决此问题。
-
-
 
 答案
 
@@ -2113,8 +2033,6 @@ func longestConsecutive(nums []int) int {
 给你一个整数数组 `nums` 和一个整数 `k` ，请你统计并返回 *该数组中和为 `k` 的子数组的个数* 。
 
 子数组是数组中元素的连续非空序列
-
-
 
 答案
 
@@ -2165,8 +2083,6 @@ func subarraySum(nums []int, k int) int {
 
 不要给另外的数组分配额外的空间，你必须[原地](https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95)修改输入数组、使用 O(1) 的额外空间解决这一问题。
 
-
-
 答案
 
 ```go
@@ -2193,8 +2109,6 @@ func reverseString(s []byte)  {
 
 - 如果剩余字符少于 `k` 个，则将剩余字符全部反转。
 - 如果剩余字符小于 `2k` 但大于或等于 `k` 个，则反转前 `k` 个字符，其余字符保持原样。
-
-
 
 答案
 
@@ -2267,8 +2181,6 @@ func replaceSpace(s string) string {
 返回 **单词** 顺序颠倒且 **单词** 之间用单个空格连接的结果字符串。
 
 注意：输入字符串 `s`中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。
-
-
 
 答案
 
@@ -2372,8 +2284,6 @@ func reverseLeftWords(s string, n int) string {
 
 你不能使用任何內建的用于处理大整数的库（比如 `BigInteger`）， 也不能直接将输入的字符串转换为整数形式。
 
-
-
 答案
 
 ```go
@@ -2408,8 +2318,6 @@ func addStrings(num1 string, num2 string) string {
 编写一个函数来查找字符串数组中的最长公共前缀。
 
 如果不存在公共前缀，返回空字符串 `""`。
-
-
 
 答案
 
@@ -2611,8 +2519,6 @@ func postorderTraversal(root *TreeNode) (ans []int) {
 
 给你二叉树的根节点 `root` ，返回其节点值的 **层序遍历** 。 （即逐层地，从左到右访问所有节点）。
 
-
-
 答案
 
 ```go
@@ -2651,8 +2557,6 @@ func levelOrder(root *TreeNode) [][]int {
 ## [107. 二叉树的层序遍历 II](https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/)
 
 给你二叉树的根节点 `root` ，返回其节点值 **自底向上的层序遍历** 。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
-
-
 
 答案
 
@@ -2699,8 +2603,6 @@ func levelOrderBottom(root *TreeNode) [][]int {
 
 给定一个二叉树的 **根节点** `root`，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
 
-
-
 答案
 
 ```go
@@ -2739,8 +2641,6 @@ func rightSideView(root *TreeNode) []int {
 ## [637. 二叉树的层平均值](https://leetcode.cn/problems/average-of-levels-in-binary-tree/)
 
 给定一个非空二叉树的根节点 `root` , 以数组的形式返回每一层节点的平均值。与实际答案相差 `10-5` 以内的答案可以被接受。
-
-
 
 答案
 
@@ -2787,8 +2687,6 @@ func averageOfLevels(root *TreeNode) []float64 {
 
 树的序列化输入是用层序遍历，每组子节点都由 null 值分隔（参见示例）。
 
-
-
 答案
 
 ```go
@@ -2829,8 +2727,6 @@ func levelOrder(root *Node) [][]int {
 ## [515. 在每个树行中找最大值](https://leetcode.cn/problems/find-largest-value-in-each-tree-row/)
 
 给定一棵二叉树的根节点 `root` ，请找出该二叉树中每一层的最大值。
-
-
 
 答案
 
@@ -2883,8 +2779,6 @@ func max(a, b int) int {
 
 初始状态下，所有 next 指针都被设置为 `NULL`。
 
-
-
 答案
 
 ```go
@@ -2936,8 +2830,6 @@ func connect(root *PerfectNode) *PerfectNode {
 
 初始状态下，所有 next 指针都被设置为 `NULL` 。
 
-
-
 答案
 
 ```go
@@ -2987,8 +2879,6 @@ func connect(root *PerfectNode) *PerfectNode {
 
 二叉树的 **最大深度** 是指从根节点到最远叶子节点的最长路径上的节点数。
 
-
-
 答案
 
 ```go
@@ -3027,8 +2917,6 @@ func maxDepth(root *TreeNode) int {
 给定一个二叉树，找出其最小深度。
 
 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
-
-
 
 答案
 
@@ -3072,8 +2960,6 @@ func minDepth(root *TreeNode) int {
 
 给你一棵二叉树的根节点 `root` ，翻转这棵二叉树，并返回其根节点。
 
-
-
 答案
 
 ```go
@@ -3111,8 +2997,6 @@ func invertTree(root *TreeNode) *TreeNode {
 ## [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
 
 给你一个二叉树的根节点 `root` ， 检查它是否轴对称。
-
-
 
 答案
 
@@ -3153,8 +3037,6 @@ func isSymmetric(root *TreeNode) bool {
 
 [完全二叉树](https://baike.baidu.com/item/%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91/7773232?fr=aladdin) 的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 `h` 层，则该层包含 `1~ 2^h` 个节点。
 
-
-
 答案
 
 ```go
@@ -3191,8 +3073,6 @@ func countNodes(root *TreeNode) int {
 ## [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)
 
 给你二叉树的根节点 `root` ，返回其节点值的 **锯齿形层序遍历** 。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
-
-
 
 答案
 
@@ -3243,8 +3123,6 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 
 假设二叉树中至少有一个节点。
 
-
-
 答案
 
 ```go
@@ -3285,8 +3163,6 @@ func findBottomLeftValue(root *TreeNode) int {
 给定一个二叉树，判断它是否是 平衡二叉树。
 
 **平衡二叉树** 是指该树所有节点的左右子树的深度相差不超过 1。
-
-
 
 答案
 
@@ -3356,8 +3232,6 @@ func max(a, b int) int {
 
 给你一个二叉树的根节点 `root` ，按 **任意顺序** ，返回所有从根节点到叶子节点的路径。
 
-
-
 答案
 
 ```go
@@ -3393,8 +3267,6 @@ func binaryTreePaths(root *TreeNode) []string {
 
 给定二叉树的根节点 `root` ，返回所有左叶子之和。
 
-
-
 答案
 
 ```go
@@ -3428,8 +3300,6 @@ func sumOfLeftLeaves(root *TreeNode) int {
 
 给你二叉树的根节点 `root` 和一个表示目标和的整数 `targetSum` 。判断该树中是否存在 **根节点到叶子节点** 的路径，这条路径上所有节点值相加等于目标和 `targetSum` 。如果存在，返回 `true` ；否则，返回 `false` 。
 
-
-
 答案
 
 ```go
@@ -3455,8 +3325,6 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 ## [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
 
 给你二叉树的根节点 `root` 和一个整数目标和 `targetSum` ，找出所有 **从根节点到叶子节点** 路径总和等于给定目标和的路径。
-
-
 
 答案
 
@@ -3502,8 +3370,6 @@ func pathSum(root *TreeNode, targetSum int) [][]int {
 
 返回 *`nums` 构建的* ***最大二叉树*** 。
 
-
-
 答案
 
 ```go
@@ -3541,8 +3407,6 @@ func findMax(nums []int) (index int) {
 ## [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
 
 给定两个整数数组 `preorder` 和 `inorder` ，其中 `preorder` 是二叉树的**先序遍历**， `inorder` 是同一棵树的**中序遍历**，请构造二叉树并返回其根节点。
-
-
 
 答案
 
@@ -3587,8 +3451,6 @@ func buildTree2(preorder []int, inorder []int) *TreeNode {
 ## [106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 给定两个整数数组 `inorder` 和 `postorder` ，其中 `inorder` 是二叉树的中序遍历， `postorder` 是同一棵树的后序遍历，请你构造并返回这颗 *二叉树* 。
-
-
 
 答案
 
@@ -3639,8 +3501,6 @@ func findRootIndex(inorder []int, target int) (index int) {
 
 **注意:** 合并过程必须从两个树的根节点开始。
 
-
-
 答案
 
 ```go
@@ -3669,8 +3529,6 @@ func mergeTrees(root1 *TreeNode, root2 *TreeNode) *TreeNode {
 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
 
 最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（**一个节点也可以是它自己的祖先**）。”
-
-
 
 答案
 
@@ -3724,8 +3582,6 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 
 你需要在 BST 中找到节点值等于 `val` 的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 `null` 。
 
-
-
 答案
 
 ```go
@@ -3775,8 +3631,6 @@ func searchBST(root *TreeNode, val int) *TreeNode {
 - 节点的右子树只包含 **大于** 当前节点的数。
 
 - 所有左子树和右子树自身必须也是二叉搜索树。
-
-
 
 答案
 
@@ -3839,8 +3693,6 @@ func midDFS(queue []int, root *TreeNode) []int {
 给你一个二叉搜索树的根节点 `root` ，返回 **树中任意两不同节点值之间的最小差值** 。
 
 差值是一个正数，其数值等于两值之差的绝对值。
-
-
 
 答案
 
@@ -3922,8 +3774,6 @@ func getMinimumDifference(root *TreeNode) int {
 - 结点右子树中所含节点的值 **大于等于** 当前节点的值
 - 左子树和右子树都是二叉搜索树
 
-
-
 答案
 
 ```go
@@ -3969,8 +3819,6 @@ func findMode(root *TreeNode) []int {
 
 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
 
-
-
 答案
 
 ```go
@@ -4005,8 +3853,6 @@ func lowestCommonAncestor2(root, p, q *TreeNode) *TreeNode {
 给定二叉搜索树（BST）的根节点 `root` 和要插入树中的值 `value` ，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。 输入数据 **保证** ，新值和原始二叉搜索树中的任意节点值都不同。
 
 **注意**，可能存在多种有效的插入方式，只要树在插入后仍保持为二叉搜索树即可。 你可以返回 **任意有效的结果** 。
-
-
 
 答案
 
@@ -4044,8 +3890,6 @@ func insertIntoBST(root *TreeNode, val int) *TreeNode {
 
 1. 首先找到需要删除的节点；
 2. 如果找到了，删除它。
-
-
 
 答案
 
@@ -4100,8 +3944,6 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 
 所以结果应当返回修剪好的二叉搜索树的新的根节点。注意，根节点可能会根据给定的边界发生改变。
 
-
-
 答案
 
 ```go
@@ -4133,8 +3975,6 @@ func trimBST(root *TreeNode, low int, high int) *TreeNode {
 ## [108. 将有序数组转换为二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/)
 
 给你一个整数数组 `nums` ，其中元素已经按 **升序** 排列，请你将其转换为一棵平衡二叉搜索树。
-
-
 
 答案
 
@@ -4174,8 +4014,6 @@ func sortedArrayToBST(nums []int) *TreeNode {
 - 节点的右子树仅包含键 **大于** 节点键的节点。
 - 左右子树也必须是二叉搜索树。
 
-
-
 答案
 
 ```go
@@ -4211,8 +4049,6 @@ func convertBST(root *TreeNode) *TreeNode {
 **路径和** 是路径中各节点值的总和。
 
 给你一个二叉树的根节点 `root` ，返回其 **最大路径和** 。
-
-
 
 答案
 
@@ -4265,8 +4101,6 @@ func max(a, b int) int {
 
 两节点之间路径的 **长度** 由它们之间边数表示。
 
-
-
 答案
 
 ```go
@@ -4311,8 +4145,6 @@ func max(a, b int) int {
 
 给定一个二叉搜索树的根节点 `root` ，和一个整数 `k` ，请你设计一个算法查找其中第 `k` 小的元素（从 1 开始计数）。
 
-
-
 答案
 
 ```go
@@ -4348,8 +4180,6 @@ https://leetcode.cn/problems/binary-tree-inorder-traversal/solutions/412886/er-c
 
 - 展开后的单链表应该同样使用 `TreeNode` ，其中 `right` 子指针指向链表中下一个结点，而左子指针始终为 `null` 。
 - 展开后的单链表应该与二叉树 [**先序遍历**](https://baike.baidu.com/item/%E5%85%88%E5%BA%8F%E9%81%8D%E5%8E%86/6442839?fr=aladdin) 顺序相同。
-
-
 
 答案
 
@@ -4405,8 +4235,6 @@ https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/solutions/17274/
 
 **路径** 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
 
-
-
 答案
 
 ```go
@@ -4450,8 +4278,6 @@ func pathSum(root *TreeNode, targetSum int) int {
 
 你可以按 **任何顺序** 返回答案
 
-
-
 答案
 
 ```go
@@ -4492,8 +4318,6 @@ func combine(n int, k int) [][]int {
 - 每个数字 **最多使用一次** 
 
 返回 *所有可能的有效组合的列表* 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。
-
-
 
 答案
 
@@ -4537,8 +4361,6 @@ func combinationSum3(k int, n int) [][]int {
 ## [17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/)
 
 给定一个仅包含数字 `2-9` 的字符串，返回所有它能表示的字母组合。答案可以按 **任意顺序** 返回。
-
-
 
 答案
 
@@ -4594,8 +4416,6 @@ func letterCombinations(digits string) []string {
 `candidates` 中的 **同一个** 数字可以 **无限制重复被选取** 。如果至少一个数字的被选数量不同，则两种组合是不同的。 
 
 对于给定的输入，保证和为 `target` 的不同组合数少于 `150` 个。
-
-
 
 答案
 
@@ -4655,8 +4475,6 @@ func combinationSum(candidates []int, target int) [][]int {
 
 注意：解集不能包含重复的组合。
 
-
-
 答案
 
 ```go
@@ -4704,8 +4522,6 @@ func combinationSum2(candidates []int, target int) [][]int {
 ## [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
 
 给你一个字符串 `s`，请你将 `s` 分割成一些子串，使每个子串都是 回文串。返回 `s` 所有可能的分割方案。
-
-
 
 答案
 
@@ -4763,8 +4579,6 @@ func isPartition(s string, startIndex, end int) bool {
 - 例如：`"0.1.2.201"` 和 `"192.168.1.1"` 是 **有效** IP 地址，但是 `"0.011.255.245"`、`"192.168.1.312"` 和 `"192.168@1.1"` 是 **无效** IP 地址。
 
 给定一个只包含数字的字符串 `s` ，用以表示一个 IP 地址，返回所有可能的**有效 IP 地址**，这些地址可以通过在 `s` 中插入 `'.'` 来形成。你 **不能** 重新排序或删除 `s` 中的任何数字。你可以按 **任何** 顺序返回答案。
-
-
 
 答案
 
@@ -4824,8 +4638,6 @@ func isIP(s string, start int, end int) bool {
 
 解集 **不能** 包含重复的子集。你可以按 **任意顺序** 返回解集。
 
-
-
 答案
 
 ```go
@@ -4861,8 +4673,6 @@ func subsets(nums []int) [][]int {
 给你一个整数数组 `nums` ，其中可能包含重复元素，请你返回该数组所有可能的 子集（幂集）。
 
 解集 **不能** 包含重复的子集。返回的解集中，子集可以按 **任意顺序** 排列。
-
-
 
 答案
 
@@ -4901,8 +4711,6 @@ func subsetsWithDup(nums []int) [][]int {
 给你一个整数数组 `nums` ，找出并返回所有该数组中不同的递增子序列，递增子序列中 **至少有两个元素** 。你可以按 **任意顺序** 返回答案。
 
 数组中可能含有重复元素，如出现两个整数相等，也可以视作递增序列的一种特殊情况。
-
-
 
 答案
 
@@ -4947,8 +4755,6 @@ func findSubsequences(nums []int) [][]int {
 
 给定一个不含重复数字的数组 `nums` ，返回其 *所有可能的全排列* 。你可以 **按任意顺序** 返回答案。
 
-
-
 答案
 
 ```go
@@ -4990,8 +4796,6 @@ func permute(nums []int) [][]int {
 ## [47. 全排列 II](https://leetcode.cn/problems/permutations-ii/)
 
 给定一个可包含重复数字的序列 `nums` ，***按任意顺序*** 返回所有不重复的全排列。
-
-
 
 答案
 
@@ -5049,8 +4853,6 @@ func permuteUnique(nums []int) [][]int {
 给你一个整数 `n` ，返回所有不同的 **n 皇后问题** 的解决方案。
 
 每一种解法包含一个不同的 **n 皇后问题** 的棋子放置方案，该方案中 `'Q'` 和 `'.'` 分别代表了皇后和空位。
-
-
 
 答案
 
@@ -5134,8 +4936,6 @@ tmp[i] = strings.Join(rowStr, "")    // 将rowStr中的子串连接成一个单�
 
 数独部分空格内已填入了数字，空白格用 `'.'` 表示。
 
-
-
 答案
 
 ```go
@@ -5206,8 +5006,6 @@ func isvalid(row, col int, k byte, board [][]byte) bool {
 
 数字 `n` 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 **有效的** 括号组合。
 
-
-
 答案
 
 ```go
@@ -5248,8 +5046,6 @@ https://leetcode.cn/problems/generate-parentheses/solutions/938191/shen-du-you-x
 给定一个 `m x n` 二维字符网格 `board` 和一个字符串单词 `word` 。如果 `word` 存在于网格中，返回 `true` ；否则，返回 `false` 。
 
 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
-
-
 
 答案
 
@@ -5309,8 +5105,6 @@ func exist(board [][]byte, word string) bool {
 
 对每个孩子 `i`，都有一个胃口值 `g[i]`，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 `j`，都有一个尺寸 `s[j]` 。如果 `s[j] >= g[i]`，我们可以将这个饼干 `j` 分配给孩子 `i` ，这个孩子会得到满足。你的目标是尽可能满足越多数量的孩子，并输出这个最大数值。
 
-
-
 答案
 
 ```go
@@ -5351,8 +5145,6 @@ func findContentChildren(g []int, s []int) int {
 
 给你一个整数数组 `nums` ，返回 `nums` 中作为 **摆动序列** 的 **最长子序列的长度** 。
 
-
-
 答案
 
 ```go
@@ -5386,8 +5178,6 @@ func wiggleMaxLength(nums []int) int {
 给你一个整数数组 `nums` ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 
 **子数组**是数组中的一个连续部分。
-
-
 
 答案
 
@@ -5428,8 +5218,6 @@ func maxSubArray(nums []int) int {
 
 返回 *你能获得的 **最大** 利润* 。
 
-
-
 答案
 
 ```go
@@ -5460,8 +5248,6 @@ func maxProfit(prices []int) int {
 给你一个非负整数数组 `nums` ，你最初位于数组的 **第一个下标** 。数组中的每个元素代表你在该位置可以跳跃的最大长度。
 
 判断你是否能够到达最后一个下标，如果可以，返回 `true` ；否则，返回 `false` 。
-
-
 
 答案
 
@@ -5501,8 +5287,6 @@ func max(a, b int) int {
 - `i + j < n`
 
 返回到达 `nums[n - 1]` 的最小跳跃次数。生成的测试用例可以到达 `nums[n - 1]`。
-
-
 
 答案
 
@@ -5544,8 +5328,6 @@ func jump(nums []int) int {
 
 以这种方式修改数组后，返回数组 **可能的最大和** 。
 
-
-
 答案
 
 ```go
@@ -5586,8 +5368,6 @@ func largestSumAfterKNegations(nums []int, K int) int {
 
 给定一个整数 `n` ，返回 *小于或等于 `n` 的最大数字，且数字呈 **单调递增*** 。
 
-
-
 答案
 
 ```go
@@ -5626,8 +5406,6 @@ func monotoneIncreasingDigits(N int) int {
 注意，划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 `s` 。
 
 返回一个表示每个字符串片段的长度的列表。
-
-
 
 答案
 
@@ -5674,8 +5452,6 @@ F(n) = F(n - 1) + F(n - 2)，其中 n > 1
 
 给定 `n` ，请计算 `F(n)` 。
 
-
-
 答案
 
 ```go
@@ -5706,8 +5482,6 @@ func fib(n int) int {
 
 在「杨辉三角」中，每个数是它左上方和右上方的数的和。
 
-
-
 答案
 
 ```go
@@ -5736,8 +5510,6 @@ func generate(numRows int) [][]int {
 假设你正在爬楼梯。需要 `n` 阶你才能到达楼顶。
 
 每次你可以爬 `1` 或 `2` 个台阶。你有多少种不同的方法可以爬到楼顶呢？
-
-
 
 答案
 
@@ -5771,8 +5543,6 @@ dp[i] = dp[i - 1] + dp[i - 2]
 
 请你计算并返回达到楼梯顶部的最低花费。
 
-
-
 答案
 
 ```go
@@ -5803,8 +5573,6 @@ dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
 
 问总共有多少条不同的路径？
-
-
 
 答案
 
@@ -5867,8 +5635,6 @@ for (int j = 0; j < n; j++) dp[0][j] = 1;
 
 网格中的障碍物和空位置分别用 `1` 和 `0` 来表示。
 
-
-
 答案
 
 ```go
@@ -5914,8 +5680,6 @@ dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
 给定一个包含非负整数的 `m x n` 网格 `grid` ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
 
 说明：每次只能向下或者向右移动一步。
-
-
 
 答案
 
@@ -5964,8 +5728,6 @@ func minPathSum(grid [][]int) int {
 
 返回 *你可以获得的最大乘积* 。
 
-
-
 答案
 
 ```go
@@ -6005,8 +5767,6 @@ dp[i]：分拆数字i，可以得到的最大乘积为dp[i]
 
 给你一个整数 `n` ，求恰由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的 **二叉搜索树** 有多少种？返回满足题意的二叉搜索树的种数。
 
-
-
 答案
 
 ```go
@@ -6042,8 +5802,6 @@ dp[0] = 1
 ## [416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/)
 
 给你一个 **只包含正整数** 的 **非空** 数组 `nums` 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
-
-
 
 答案
 
@@ -6092,8 +5850,6 @@ dp[0]一定是0。
 - 如果 `x != y`，那么重量为 `x` 的石头将会完全粉碎，而重量为 `y` 的石头新重量为 `y-x`。
 
 最后，**最多只会剩下一块** 石头。返回此石头 **最小的可能重量** 。如果没有石头剩下，就返回 `0`。
-
-
 
 答案
 
@@ -6145,8 +5901,6 @@ dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
 - 例如，`nums = [2, 1]` ，可以在 `2` 之前添加 `'+'` ，在 `1` 之前添加 `'-'` ，然后串联起来得到表达式 `"+2-1"` 。
 
 返回可以通过上述方法构造的、运算结果等于 `target` 的不同 **表达式** 的数目。
-
-
 
 答案
 
@@ -6215,8 +5969,6 @@ dp[0] 为 1
 
 如果 `x` 的所有元素也是 `y` 的元素，集合 `x` 是集合 `y` 的 **子集** 。
 
-
-
 答案
 
 ```go
@@ -6274,8 +6026,6 @@ dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1)
 
 题目数据保证结果符合 32 位带符号整数。
 
-
-
 答案
 
 ```go
@@ -6312,8 +6062,6 @@ dp[0] = 1是 递归公式的基础。如果dp[0] = 0 的话，后面所有推导
 给你一个由 **不同** 整数组成的数组 `nums` ，和一个目标整数 `target` 。请你从 `nums` 中找出并返回总和为 `target` 的元素组合的个数。
 
 题目数据保证答案符合 32 位整数范围。
-
-
 
 答案
 
@@ -6367,8 +6115,6 @@ dp[i]（考虑nums[j]）可以由 dp[i - nums[j]]（不考虑nums[j]） 推导�
 计算并返回可以凑成总金额所需的 **最少的硬币个数** 。如果没有任何一种硬币组合能组成总金额，返回 `-1` 。
 
 你可以认为每种硬币的数量是无限的。
-
-
 
 答案
 
@@ -6437,8 +6183,6 @@ dp[j] 要取所有 dp[j - coins[i]] + 1 中最小的，所以用min()
 
 **完全平方数** 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，`1`、`4`、`9` 和 `16` 都是完全平方数，而 `3` 和 `11` 不是。
 
-
-
 答案
 
 ```go
@@ -6481,8 +6225,6 @@ dp[0]表示 和为0的完全平方数的最小数量，那么dp[0]一定是0
 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，**如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警**。
 
 给定一个代表每个房屋存放金额的非负整数数组，计算你 **不触动警报装置的情况下** ，一夜之内能够偷窃到的最高金额。
-
-
 
 答案
 
@@ -6531,8 +6273,6 @@ dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 **围成一圈** ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，**如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警** 。
 
 给定一个代表每个房屋存放金额的非负整数数组，计算你 **在不触动警报装置的情况下** ，今晚能够偷窃到的最高金额。
-
-
 
 答案
 
@@ -6586,8 +6326,6 @@ func max(a, b int) int {
 
 给定二叉树的 `root` 。返回 **在不触动警报的情况下** ，小偷能够盗取的最高金额 。
 
-
-
 答案
 
 ```go
@@ -6636,8 +6374,6 @@ left[0]表示左子树不偷左孩子的最大值，left[1]表示左子树偷左
 
 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 `0` 。
 
-
-
 答案
 
 ```go
@@ -6682,8 +6418,6 @@ dp[0][1]表示第0天不持有股票，不持有股票那么现金就是0，所�
 
 返回 *你能获得的 **最大** 利润* 。
 
-
-
 答案
 
 ```go
@@ -6719,8 +6453,6 @@ func max(a, b int) int {
 设计一个算法来计算你所能获取的最大利润。你最多可以完成 **两笔** 交易。
 
 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
-
-
 
 答案
 
@@ -6888,8 +6620,6 @@ func max(a, b int) int {
 
 **子序列** 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，`[3,6,2,7]` 是数组 `[0,3,1,6,2,2,7]` 的子序列
 
-
-
 答案
 
 ```go
@@ -6940,8 +6670,6 @@ if (nums[i] > nums[j])
 
 **连续递增的子序列** 可以由两个下标 `l` 和 `r`（`l < r`）确定，如果对于每个 `l <= i < r`，都有 `nums[i] < nums[i + 1]` ，那么子序列 `[nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]` 就是连续递增子序列。
 
-
-
 答案
 
 ```go
@@ -6989,8 +6717,6 @@ dp[i]：以下标i为结尾的连续递增的子序列长度为dp[i]
 ## [718. 最长重复子数组](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/description/)
 
 给两个整数数组 `nums1` 和 `nums2` ，返回 *两个数组中 **公共的** 、长度最长的子数组的长度* 
-
-
 
 答案
 
@@ -7043,8 +6769,6 @@ dp[1][1] = dp[0][0] + 1，只有dp[0][0]初始为0，正好符合递推公式逐
 
 两个字符串的 **公共子序列** 是这两个字符串所共同拥有的子序列。
 
-
-
 答案
 
 ```go
@@ -7092,8 +6816,6 @@ dp[i][j]：下标为[0, i - 1]的字符串text1与下标为[0, j - 1]的字符�
 
 给你一个整数数组 `nums` ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
 
-
-
 答案
 
 ```go
@@ -7137,8 +6859,6 @@ dp[0]应为nums[0]
 ## [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/description/)
 
 给你一个字符串 `s`，找到 `s` 中最长的 回文子串
-
-
 
 答案
 
@@ -7201,8 +6921,6 @@ func longestPalindrome(s string) string {
 - 插入一个字符
 - 删除一个字符
 - 替换一个字符
-
-
 
 答案
 
@@ -7278,8 +6996,6 @@ word1[i-1] != word2[j-1]
 
 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
 
-
-
 答案
 
 ```go
@@ -7313,8 +7029,6 @@ dp[i]表示字符串s前 i 个字符组成的字符串 s[0..i−1] 是否能被�
 给你一个整数数组 `nums` ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。
 
 测试用例的答案是一个 **32-位** 整数。
-
-
 
 答案
 
@@ -7562,8 +7276,6 @@ func addStrings(num1 string, num2 string) string {
 
 给你一个 `m` 行 `n` 列的矩阵 `matrix` ，请按照 **顺时针螺旋顺序** ，返回矩阵中的所有元素。
 
-
-
 第一种解法：
 
 ```go
@@ -7647,8 +7359,6 @@ func spiralOrder(matrix [][]int) []int {
 
 给你一个正整数 `n` ，生成一个包含 `1` 到 `n2` 所有元素，且元素按顺时针顺序螺旋排列的 `n x n` 正方形矩阵 `matrix` 。
 
-
-
 ```go
 func generateMatrix(n int) [][]int {
     top, bottom := 0, n-1
@@ -7695,8 +7405,6 @@ func generateMatrix(n int) [][]int {
 
 给定一个 `m x n` 的矩阵，如果一个元素为 **0** ，则将其所在行和列的所有元素都设为 **0** 。请使用 **[原地](http://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95)** 算法。
 
-
-
 ```go
 // 使用标记数组
 func setZeroes(matrix [][]int) {
@@ -7732,8 +7440,6 @@ func setZeroes(matrix [][]int) {
 
 你必须在 **[原地](https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95)** 旋转图像，这意味着你需要直接修改输入的二维矩阵。**请不要** 使用另一个矩阵来旋转图像。
 
-
-
 ```go
 func rotate(matrix [][]int) {
     n := len(matrix)
@@ -7762,8 +7468,6 @@ func rotate(matrix [][]int) {
 
 - 每行的元素从左到右升序排列。
 - 每列的元素从上到下升序排列。
-
-
 
 ```go
 func searchMatrix(matrix [][]int, target int) bool {
@@ -7825,8 +7529,6 @@ func searchMatrix(matrix [][]int, target int) bool {
 
 你必须设计并实现时间复杂度为 `O(n)` 的算法解决此问题。
 
-
-
 ```go
 func findKthLargest(nums []int, k int) int {
     heapSize := len(nums)    // 代表堆中的元素数量
@@ -7874,8 +7576,6 @@ func maxHeapify(a []int, i, heapSize int) {
 ## [347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/)
 
 给你一个整数数组 `nums` 和一个整数 `k` ，请你返回其中出现频率前 `k` 高的元素。你可以按 **任意顺序** 返回答案。
-
-
 
 ```go
 func topKFrequent(nums []int, k int) []int {
@@ -7967,8 +7667,6 @@ www.leetcode.cn/problems/top-k-frequent-elements/solutions/1524980/by-zhaobulw-t
 ## [295. 数据流的中位数](https://leetcode.cn/problems/find-median-from-data-stream/)
 
 **中位数**是有序整数列表中的中间值。如果列表的大小是偶数，则没有中间值，中位数是两个中间值的平均值。
-
-
 
 ```go
 type MinHeap []int
@@ -8068,8 +7766,6 @@ func (hp *MaxHeap) Push(x interface{}) {
 
 你必须设计并实现时间复杂度为 `O(n)` 的算法解决此问题。
 
-
-
 ```go
 func findKthLargest(nums []int, k int) int {
     start, end := 0, len(nums)-1
@@ -8119,8 +7815,6 @@ func findKthLargest(nums []int, k int) int {
 ## [912. 排序数组](https://leetcode.cn/problems/sort-an-array/description/)
 
 给你一个整数数组 `nums`，请你将该数组升序排列。
-
-
 
 ```go
 // 这种在极端情况下会超时，但是一般不会，易于理解
@@ -8198,8 +7892,6 @@ nums[i], nums[left] = nums[left], nums[i]
 
 你必须设计一个时间复杂度为 `O(log n)` 的算法解决此问题。
 
-
-
 ```go
 func search(nums []int, target int) int {
     n := len(nums)
@@ -8248,8 +7940,6 @@ func search(nums []int, target int) int {
 
 给定一个 `n` 个元素有序的（升序）整型数组 `nums` 和一个目标值 `target`  ，写一个函数搜索 `nums` 中的 `target`，如果目标值存在返回下标，否则返回 `-1`。
 
-
-
 ```go
 func search(nums []int, target int) int {
     high := len(nums)
@@ -8278,8 +7968,6 @@ func search(nums []int, target int) int {
 ## [56. 合并区间](https://leetcode.cn/problems/merge-intervals/description/)
 
 以数组 `intervals` 表示若干个区间的集合，其中单个区间为 `intervals[i] = [starti, endi]` 。请你合并所有重叠的区间，并返回 *一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间* 。
-
-
 
 ```go
 func merge(intervals [][]int) [][]int {
@@ -8322,8 +8010,6 @@ func max(a, b int) int {
 
 返回 *已排序的字符串* 。如果有多个答案，返回其中任何一个。
 
-
-
 ```go
 func frequencySort(s string) string {
     countMap := map[byte]int{}
@@ -8362,8 +8048,6 @@ func frequencySort(s string) string {
 
 请必须使用时间复杂度为 `O(log n)` 的算法。
 
-
-
 ```go
 func searchInsert(nums []int, target int) int {
     n := len(nums)
@@ -8396,8 +8080,6 @@ func searchInsert(nums []int, target int) int {
 
 你必须设计并实现时间复杂度为 `O(log n)` 的算法解决此问题。
 
-
-
 ```go
 // 这道题也可以用35题的函数来做
 func searchRange(nums []int, target int) []int {
@@ -8427,8 +8109,6 @@ SearchInts 在排序的整数切片中搜索 x 并返回 Search 指定的索引�
 - 每行的第一个整数大于前一行的最后一个整数。
 
 给你一个整数 `target` ，如果 `target` 在矩阵中，返回 `true` ；否则，返回 `false` 。
-
-
 
 ```go
 func searchMatrix(matrix [][]int, target int) bool {
@@ -8479,8 +8159,6 @@ func main() {
 
 你必须设计一个时间复杂度为 `O(log n)` 的算法解决此问题。
 
-
-
 ```go
 func findMin(nums []int) int {
     low, high := 0, len(nums) - 1
@@ -8509,8 +8187,6 @@ func findMin(nums []int) int {
 ## [232. 用栈实现队列](https://leetcode.cn/problems/implement-queue-using-stacks/)
 
 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（`push`、`pop`、`peek`、`empty`）
-
-
 
 ```go
 type MyQueue struct {
@@ -8571,8 +8247,6 @@ func (this *MyQueue) Empty() bool {
 ## [225. 用队列实现栈](https://leetcode.cn/problems/implement-stack-using-queues/)
 
 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（`push`、`top`、`pop` 和 `empty`）。
-
-
 
 ```go
 type MyStack struct {
@@ -8635,8 +8309,6 @@ func (this *MyStack) Empty() bool {
 2. 左括号必须以正确的顺序闭合。
 3. 每个右括号都有一个对应的相同类型的左括号。
 
-
-
 ```go
 func isValid(s string) bool {
     hash := map[byte]byte{')': '(', ']': '[', '}': '{'}
@@ -8666,8 +8338,6 @@ func isValid(s string) bool {
 ## [32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)
 
 给你一个只包含 `'('` 和 `')'` 的字符串，找出最长有效（格式正确且连续）括号子串的长度。
-
-
 
 答案
 
@@ -8752,8 +8422,6 @@ func removeDuplicates(s string) string {
 
 请你计算该表达式。返回一个表示表达式值的整数。
 
-
-
 ```go
 func evalRPN(tokens []string) int {
     stack := make([]int, 0)
@@ -8791,8 +8459,6 @@ func evalRPN(tokens []string) int {
 给你一个整数数组 `nums`，有一个大小为 `k` 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 `k` 个数字。滑动窗口每次只向右移动一位。
 
 返回 *滑动窗口中的最大值* 。
-
-
 
 ```go
 // push:当前元素e入队时，相对于前面的元素来说，e最后进入窗口，e一定是最后离开窗口，
@@ -8872,8 +8538,6 @@ func maxSlidingWindow(nums []int, k int) []int {
 
 给你一个整数数组 `nums` 和一个整数 `k` ，请你返回其中出现频率前 `k` 高的元素。你可以按 **任意顺序** 返回答案。
 
-
-
 ```go
 func topKFrequent(nums []int, k int) []int {
     // 初始化一个map，用来存数字和数字出现的次数
@@ -8917,8 +8581,6 @@ func topKFrequent(nums []int, k int) []int {
 - 此外，路径仅包含从根目录到目标文件或目录的路径上的目录（即，不含 `'.'` 或 `'..'`）。
 
 返回简化后得到的 **规范路径** 。
-
-
 
 ```go
 func simplifyPath(path string) string {
@@ -8966,8 +8628,6 @@ length is : 3， 元素分别为:"", "1", "2"
 - `void pop()` 删除堆栈顶部的元素。
 - `int top()` 获取堆栈顶部的元素。
 - `int getMin()` 获取堆栈中的最小元素。
-
-
 
 ```go
 type MinStack struct {
@@ -9024,8 +8684,6 @@ func min(x, y int) int {
 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
 
 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 `k` ，例如不会出现像 `3a` 或 `2[4]` 的输入。
-
-
 
 ```go
 func decodeString(s string) string {
@@ -9086,8 +8744,6 @@ func getString(v []string) string {
 
 给定一个整数数组 `temperatures` ，表示每天的温度，返回一个数组 `answer` ，其中 `answer[i]` 是指对于第 `i` 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 `0` 来代替。
 
-
-
 ```go
 func dailyTemperatures(temperatures []int) []int {
     length := len(temperatures)
@@ -9123,8 +8779,6 @@ func dailyTemperatures(temperatures []int) []int {
 给定 *n* 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
 
 求在该柱状图中，能够勾勒出来的矩形的最大面积。
-
-
 
 ```go
 func largestRectangleArea(heights []int) int {
@@ -9290,8 +8944,6 @@ func numIslands(grid [][]byte) int {
 
 计算并返回 `grid` 中最大的岛屿面积。如果没有岛屿，则返回面积为 `0` 。
 
-
-
 ```go
 func maxAreaOfIsland(grid [][]int) int {
     ans := 0
@@ -9342,8 +8994,6 @@ func maxAreaOfIsland(grid [][]int) int {
 
 给你数组 `edges` 和整数 `n`、`source` 和 `destination`，如果从 `source` 到 `destination` 存在 **有效路径** ，则返回 `true`，否则返回 `false` 。
 
-
-
 ```go
 // 并查集
 func validPath(n int, edges [][]int, source int, destination int) bool {
@@ -9364,10 +9014,8 @@ func validPath(n int, edges [][]int, source int, destination int) bool {
     return find(source) == find(destination)
 }
 
-作者：ylb
+
 链接：https://leetcode.cn/problems/find-if-path-exists-in-graph/solutions/2025571/by-lcbin-96dp/
-来源：力扣（LeetCode）
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 // DFS
 func validPath(n int, edges [][]int, source int, destination int) bool {
@@ -9464,8 +9112,6 @@ func findNext(edges [][]int,point int)[]int{
 
 请你判断是否可能完成所有课程的学习？如果可以，返回 `true` ；否则，返回 `false` 。
 
-
-
 ```go
 func canFinish(numCourses int, prerequisites [][]int) bool {
     g := make([][]int, numCourses)    // 图
@@ -9524,8 +9170,6 @@ func canFinish(numCourses int, prerequisites [][]int) bool {
 每分钟，腐烂的橘子 **周围 4 个方向上相邻** 的新鲜橘子都会腐烂。
 
 返回 *直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 `-1`* 。
-
-
 
 ```go
 // 广度优先搜索，一层一层扩展
@@ -9601,8 +9245,6 @@ func orangesRotting(grid [][]int) int {
 
 你必须设计并实现线性时间复杂度的算法来解决此问题，且该算法只使用常量额外空间。
 
-
-
 ```go
 func singleNumber(nums []int) int {
     single := 0
@@ -9628,8 +9270,6 @@ func singleNumber(nums []int) int {
 给定一个大小为 `n` 的数组 `nums` ，返回其中的多数元素。多数元素是指在数组中出现次数 **大于** `⌊ n/2 ⌋` 的元素。
 
 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
-
-
 
 ```go
 func majorityElement(nums []int) int {
@@ -9664,8 +9304,6 @@ func majorityElement(nums []int) int {
 我们使用整数 `0`、 `1` 和 `2` 分别表示红色、白色和蓝色。
 
 必须在不使用库内置的 sort 函数的情况下解决这个问题。
-
-
 
 ```go
 func sortColors(nums []int) {
@@ -9717,8 +9355,6 @@ func sortColors(nums []int) {
 
 必须 **[原地](https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95)** 修改，只允许使用额外常数空间。
 
-
-
 ```go
 func nextPermutation(nums []int) {
     if len(nums) <= 1 {
@@ -9768,8 +9404,6 @@ func nextPermutation(nums []int) {
 假设 `nums` 只有 **一个重复的整数** ，返回 **这个重复的数** 。
 
 你设计的解决方案必须 **不修改** 数组 `nums` 且只用常量级 `O(1)` 的额外空间。
-
-
 
 ```go
 // 二分法
@@ -9937,57 +9571,61 @@ Wait():会阻塞调用它的 goroutine，直到 WaitGroup 计数器减为 0。�
 package main
 
 import (
-    "fmt"
-    "sync"
+	"fmt"
+	"sync"
 )
 
 const (
-    MAX     = 20 // 打印多少值
-    GoCount = 4  // 几个协程
+	MAX     = 20 // 打印多少值
+	GoCount = 4  // 几个协程
 )
 
 func main() {
-    fmt.Println(solution2(MAX, GoCount))
+	fmt.Println(solution2(MAX, GoCount))
 }
 
 func solution2(max, goCount int) *[]int {
-    result := make([]int, 0, max)
-    wgLine := make([]*sync.WaitGroup, goCount) // 控制不同 goroutine 的执行顺序
-    wg := &sync.WaitGroup{}                    // 等待所有 goroutine 的完成
+	result := make([]int, 0, max)
+	wgLine := make([]*sync.WaitGroup, goCount) // 控制不同 goroutine 的执行顺序
+	wg := &sync.WaitGroup{}                    // 等待所有 goroutine 的完成
 
-    // 循环创建 goCount 个 goroutine
-    // 每个 goroutine 都有一个自己的 WaitGroup（selfWg）和一个指向下一个 goroutine 的 WaitGroup（nextWg）
-    for i := 0; i < goCount; i++ {
-        wgLine[i] = &sync.WaitGroup{}
-        wgLine[i].Add(1)
-    }
+	// 循环创建 goCount 个 goroutine
+	// 每个 goroutine 都有一个自己的 WaitGroup（selfWg）和一个指向下一个 goroutine 的 WaitGroup（nextWg）
+	for i := 0; i < goCount; i++ {
+		wgLine[i] = &sync.WaitGroup{}
+		wgLine[i].Add(1)
+	}
 
-    count := 1
-    wg.Add(goCount)
-    for i := 0; i < goCount; i++ { // 对于每个 goroutine
-        go func(max int, selfWg, nextWg *sync.WaitGroup) {
-            for {
-                selfWg.Wait() // 在开始时等待自己的 WaitGroup（selfWg）
-                if count > max {
-                    wg.Done()     // 表示完成
-                    // selfWg.Add(1) // 重新加一个等待计数到 selfWg
-                    // nextWg.Done() // 触发下一个 goroutine 的 WaitGroup （nextWg.Done()），然后退出
-                    return
-                }
-                result = append(result, count)
-                count++
-                selfWg.Add(1) // 当前 goroutine 重新为自己的 WaitGroup 加一
-                nextWg.Done() // 触发下一个 goroutine 的 WaitGroup
-            }
-        }(max, wgLine[i], wgLine[(i+1)%goCount])
+	count := 1
+	wg.Add(goCount)
+	for i := 0; i < goCount; i++ { // 对于每个 goroutine
+		go func(max int, selfWg, nextWg *sync.WaitGroup) {
+			for {
+				selfWg.Wait() // 在开始时等待自己的 WaitGroup（selfWg）
+				if count > max {
+					wg.Done() // 一个goroutine完成任务
+					// 下面这句不能删除，因为 selfWg 的计数将在别的goroutine变为负数，而 WaitGroup 的计数不能小于 0，这会导致程序崩溃并抛出 panic 错误
+					selfWg.Add(1) // 重新加一个等待计数到 selfWg
+					// 这句也不能删除，因为去掉它后下一个 goroutine 的 WaitGroup 永远不会被解锁，所以所有 goroutine 卡住，导致死锁
+					nextWg.Done() // 触发下一个 goroutine 的 WaitGroup，然后退出
+					return
+				}
+				fmt.Println("it is goroutine ", i, " printed ", count)
+				result = append(result, count)
+				count++
+				selfWg.Add(1) // 当前 goroutine 重新为自己的 WaitGroup 加一
+				nextWg.Done() // 触发下一个 goroutine 的 WaitGroup
+			}
+		}(max, wgLine[i], wgLine[(i+1)%goCount])
 
-        if i == 0 { // 手动触发第一个 goroutine
-            wgLine[goCount-1].Done() // 第0个goroutine是由最后一个goroutine触发的
-        }
-    }
-    wg.Wait()
-    return &result
+		if i == 0 { // 手动触发第一个 goroutine
+			wgLine[0].Done() // 这里可以控制第几个goroutine打印第一个数字
+		}
+	}
+	wg.Wait()
+	return &result
 }
+
 ```
 
 分析
@@ -10002,6 +9640,162 @@ func solution2(max, goCount int) *[]int {
 性能测试基于go test bench
 36          31884292 ns/op
 ```
+
+
+### 方法3
+
+代码
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+const (
+	MAX     = 100 // 打印多少值
+	GoCount = 4   // 几个协程
+)
+
+func main() {
+	AlternatePrint2()
+}
+
+func AlternatePrint2() {
+	chs := make([]chan int, GoCount)
+	wg := sync.WaitGroup{}
+	wg.Add(GoCount)
+	for i := 0; i < GoCount; i++ {
+        // 容量为1的话可以允许设置GoCount为1
+        // 容量为0的无缓冲通道GoCount必须大于1
+        // 区别在于 chs[(i+1)%GoCount] <- count 会不会卡住
+		chs[i] = make(chan int, 1)  
+	}
+	count := 1 // 递增的数字，用于打印
+	for i := 0; i < GoCount; i++ {
+		// 每个 Goroutine 通过无缓冲通道 chs[i] 来等待执行权限
+		go func(i int) {
+			for {
+				// 获得执行权
+				count = <-chs[i]
+				if count > MAX {
+					fmt.Printf("go程%d done\n", i)
+					wg.Done()
+					chs[(i+1)%GoCount] <- count
+					return
+				}
+
+				// 执行代码
+				fmt.Printf("go程%d：%d\n", i, count)
+				count++
+
+				// 当前协程执行完毕后，将执行权交给下一个协程
+				chs[(i+1)%GoCount] <- count
+			}
+		}(i)
+	}
+
+	// 给第1个协程执行权，第1个协程的序号是0
+	chs[0] <- count
+
+	// 等待协程执行完成
+	wg.Wait()
+}
+```
+
+分析
+
+```
+channel
+```
+
+## 协程池
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+// 定义一个任务类型
+type Task func()
+
+// Goroutine Pool 结构体
+type Pool struct {
+	taskQueue   chan Task  // 任务队列
+	workerCount int        // 协程数量
+	wg          sync.WaitGroup // 用于等待所有任务完成
+}
+
+// 创建一个新的 Goroutine Pool
+func NewPool(workerCount int, taskQueueSize int) *Pool {
+	return &Pool{
+		taskQueue:   make(chan Task, taskQueueSize),
+		workerCount: workerCount,
+	}
+}
+
+// 工作协程，从任务队列中获取任务并执行
+func (p *Pool) worker(workerID int) {
+	for task := range p.taskQueue {
+		fmt.Printf("Worker %d: Started task\n", workerID)
+		task() // 执行任务
+		fmt.Printf("Worker %d: Finished task\n", workerID)
+		p.wg.Done() // 标记任务完成
+	}
+}
+
+// 提交一个任务到任务队列
+func (p *Pool) Submit(task Task) {
+	p.wg.Add(1)
+	p.taskQueue <- task
+}
+
+// 启动所有协程
+func (p *Pool) Run() {
+	for i := 0; i < p.workerCount; i++ {
+		go p.worker(i)
+	}
+}
+
+// 关闭任务队列并等待所有任务完成
+func (p *Pool) Shutdown() {
+	close(p.taskQueue) // 关闭任务队列
+	p.wg.Wait()        // 等待所有任务完成
+}
+
+func main() {
+	// 创建一个协程池，有 3 个 worker 和 5 个任务队列大小
+	pool := NewPool(3, 5)
+
+	// 启动协程池
+	pool.Run()
+
+	// 提交任务
+	for i := 1; i <= 10; i++ {
+		taskID := i
+		pool.Submit(func() {
+			fmt.Printf("Task %d is being processed\n", taskID)
+			time.Sleep(1 * time.Second) // 模拟任务耗时
+		})
+	}
+
+	// 关闭协程池并等待所有任务完成
+	pool.Shutdown()
+
+	fmt.Println("All tasks are finished.")
+}
+
+```
+
+
+
+
 
 # ACM模式
 
@@ -10122,7 +9916,9 @@ func main() {
 
 [bufio包文档](https://studygolang.com/pkgdoc)
 
-`bufio`包含了Reader、Writer、Scanner等对象，封装了很多对IO内容的处理方法，但应对键盘输入来说，通过创建Reader对象，并调用其Read*系列的方法即可
+`bufio`包含了Reader、Writer、Scanner等对象，封装了很多对IO内容的处理方法，但应对键盘输入来说，通过创建Reader对象，并调用其Read*
+
+注意：在使用了bufio之后，不能再使用fmt.Scan()之类的输入，否则会出现读取行数错误的问题。
 
 ### NewScanner
 
@@ -10146,7 +9942,9 @@ import (
 func main() {
     inputs := bufio.NewScanner(os.Stdin) // 不用放在循环内部
     buf := make([]byte, 64*1024)         // 创建一个更大的缓冲区
-    inputs.Buffer(buf, 1024*1024)        // 设置缓冲区和最大 token 大小
+    // 如果提示index out of range，可能是token大小不够
+    // 如果少部分数据无法通过，可能是超int了，换int64
+    inputs.Buffer(buf, 1024*1024*1000)        // 设置缓冲区和最大 token 大小
     for inputs.Scan() {                  //每次读入一行
         data := strings.Split(inputs.Text(), " ") //通过空格将他们分割，并存入一个字符串切片
         var sum int
