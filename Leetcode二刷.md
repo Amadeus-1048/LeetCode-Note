@@ -2517,6 +2517,96 @@ func postorderTraversal(root *TreeNode) (res []int) {
 }
 ```
 
+
+
+## 二叉树非递归遍历
+
+为什么可以用迭代法（非递归的方式）来实现二叉树的前后中序遍历呢？
+
+递归的实现就是：每一次递归调用都会把函数的局部变量、参数值和返回地址等压入调用栈中，然后递归返回的时候，从栈顶弹出上一次递归的各项参数，所以这就是递归为什么可以返回上一层位置的原因。
+
+所以区别在于递归的时候隐式地维护了一个栈，而在迭代的时候需要显式地将这个栈模拟出来，其他都相同。
+
+
+
+### [144. 二叉树的前序遍历](https://leetcode.cn/problems/binary-tree-preorder-traversal/)
+
+给你二叉树的根节点 `root` ，返回它节点值的 **前序** 遍历。
+
+```go
+func preorderTraversal(root *TreeNode) (vals []int) {
+    // 前序遍历是中左右，每次先处理的是中间节点，
+    // 所以先将跟节点放入栈中，然后将右孩子加入栈，再加入左孩子。
+	// 这样出栈的时候才是中左右的顺序。
+    stack := []*TreeNode{}
+    node := root
+    for node != nil || len(stack) > 0 {
+        for node != nil {
+            vals = append(vals, node.Val)
+            stack = append(stack, node)
+            node = node.Left
+        }
+        node = stack[len(stack)-1].Right
+        stack = stack[:len(stack)-1]
+    }
+    return
+}
+```
+
+### [94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/)
+
+```go
+func inorderTraversal(root *TreeNode) (res []int) {
+	stack := []*TreeNode{}
+    // 如果如果所有节点都遍历完成，或者放到栈中的数据全部被弹出，才遍历完成
+	for root != nil || len(stack) > 0 {
+        // 将树的左节点依次入栈
+		for root != nil {	
+			stack = append(stack, root)
+			root = root.Left
+		}
+        // 左节点为空时，弹出栈顶元素并处理
+		root = stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		res = append(res, root.Val)
+		root = root.Right	// 将从栈中提取的上一个节点的右子树的节点赋值给进行循环的节点
+	}
+	return
+}
+```
+
+### [145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/)
+
+```go
+func postorderTraversal(root *TreeNode) (ans []int) {
+    // 先序遍历是中左右，后续遍历是左右中，
+    // 只需要调整一下先序遍历的代码顺序，就变成中右左的遍历顺序，
+    // 然后在反转result数组，输出的结果顺序就是左右中了
+	if root == nil {
+		return
+	}
+	stack := []*TreeNode{root}
+	for len(stack) > 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		ans = append(ans, node.Val)
+		if node.Left != nil {
+			stack = append(stack, node.Left)
+		}
+		if node.Right != nil {
+			stack = append(stack, node.Right)
+		}
+	}
+	for i, j := 0, len(ans)-1; i < j; i, j = i+1, j-1 {
+		ans[i], ans[j] = ans[j], ans[i]
+	}
+	return
+}
+
+```
+
+
+
 ## [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
 
 给你二叉树的根节点 `root` ，返回其节点值的 **层序遍历** 。 （即逐层地，从左到右访问所有节点）。
