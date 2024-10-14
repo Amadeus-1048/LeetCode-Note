@@ -4415,6 +4415,110 @@ func pathSum(root *TreeNode, targetSum int) int {
 
 ```
 
+
+
+## 前缀树
+
+https://study.geekai.co/posts/go-trie-tree-algorithm 
+
+构建 Trie 树的过程比较耗时，对于有 n 个字符的字符串集合而言，需要遍历所有字符，对应的时间复杂度是 O(n)，但是一旦构建之后，查询效率很高，如果匹配串的长度是 k，那只需要匹配 k 次即可，与原来的主串没有关系，所以对应的时间复杂度是 O(k)，基本上是个常量级的数字。 
+Trie 树显然也是一种空间换时间的做法，构建 Trie 树的过程需要额外的存储空间存储 Trie 树，而且这个额外的空间是原来的数倍。
+
+
+
+答案
+
+```go
+// Trie 树节点
+type trieNode struct {
+    char string                    // Unicode 字符
+    isEnding bool                  // 是否是单词结尾
+    children map[rune]*trieNode    // 该节点的子节点字典
+}
+
+// 初始化 Trie 树节点
+func NewTrieNode(char string) *trieNode  {
+    return &trieNode{
+        char: char,
+        isEnding: false,
+        children: make(map[rune]*trieNode),
+    }
+}
+
+// Trie 树结构
+type Trie struct {
+    root *trieNode     // 根节点指针
+}
+
+// 初始化 Trie 树
+func NewTrie() *Trie {
+    // 初始化根节点
+    trieNode := NewTrieNode("/")
+    return &Trie{trieNode}
+}
+
+// 往 Trie 树中插入一个单词
+func (t *Trie) Insert(word string) {
+    node := t.root   // 获取根节点
+    for _, code := range word {  // 以 Unicode 字符遍历该单词
+        value, ok := node.children[code]  // 获取 code 编码对应子节点
+        if !ok {
+            // 不存在则初始化该节点
+            value = NewTrieNode(string(code))
+            // 然后将其添加到子节点字典
+            node.children[code] = value
+        }
+        // 当前节点指针指向当前子节点
+        node = value
+    }
+    node.isEnding = true  // 一个单词遍历完所有字符后将结尾字符打上标记
+}
+
+// 在 Trie 树中查找一个单词
+func (t *Trie) Find(word string) bool {
+    node := t.root
+    for _, code := range word {
+        value, ok := node.children[code] // 获取对应子节点
+        if !ok {
+            // 不存在则直接返回
+            return false
+        }
+        // 否则继续往后遍历
+        node = value
+    }
+    if node.isEnding == false {
+        return false // 不能完全匹配，只是前缀
+    }
+    return true // 找到对应单词
+}
+
+func main() {
+    trie := NewTrie()
+    words := []string{"Golang", "学院君", "Language", "Trie", "Go"}
+    // 构建 Trie 树
+    for _, word := range words {
+        trie.Insert(word)
+    }
+    // 从 Trie 树中查找字符串
+    term := "学院君"
+    if trie.Find(term) {
+        fmt.Printf("包含单词\"%s\"\n", term)
+    } else {
+        fmt.Printf("不包含单词\"%s\"\n", term)
+    }
+}
+```
+
+分析
+
+```go
+
+```
+
+# 
+
+
+
 # 回溯
 
 ## [77. 组合](https://leetcode.cn/problems/combinations/)
