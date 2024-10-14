@@ -2346,6 +2346,8 @@ func longestCommonPrefix(strs []string) string {
 如果不相同则当前列不再属于公共前缀，当前列之前的部分为最长公共前缀
 ```
 
+
+
 ## KMP算法
 
 答案
@@ -2362,6 +2364,149 @@ https://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algor
 已知空格与D不匹配时，前面六个字符"ABCDAB"是匹配的。查表可知，最后一个匹配字符B对应的"部分匹配值"为2，因此按照下面的公式算出向后移动的位数：
 移动位数 = 已匹配的字符数 - 对应的部分匹配值
 ```
+
+
+
+## 手搓哈希表
+
+答案
+
+```go
+package main
+
+import (
+        "fmt"
+)
+
+// 定义一个链表节点
+type Node struct {
+        key   string
+        value int
+        next  *Node
+}
+
+// 定义一个HashMap
+type HashMap struct {
+        buckets []*Node    // 切片的每个元素是一个链表的头节点
+        size    int    // 哈希表的大小，决定了哈希表有多少个桶
+}
+
+// 初始化HashMap
+func NewHashMap(size int) *HashMap {
+        return &HashMap{
+                buckets: make([]*Node, size),
+                size:    size,
+        }
+}
+
+// 哈希函数，将字符串键转换为一个数组索引
+// 每个字符的 ASCII 值乘以其在字符串中的位置（i + 1）来增加分散性，避免相似字符串得到相同的哈希值
+// 最后通过 hash % size 确保哈希值在表的范围内。
+func (hm *HashMap) hash(key string) int {
+    var hash int
+    for i, char := range key {
+        hash += int(char) * (i + 1) // 使用字符 ASCII 值乘以其位置的权重
+    }
+    return hash % size // 取模确保哈希值在表大小范围内
+}
+
+// Put操作：在HashMap中插入或更新键值对
+func (hm *HashMap) Put(key string, value int) {
+        index := hm.hash(key)
+        node := hm.buckets[index]
+        
+        // 遍历链表，更新已有的键
+        for node != nil {
+                if node.key == key {
+                        node.value = value
+                        return
+                }
+                node = node.next
+        }
+        
+        // 插入新节点到链表头
+        newNode := &Node{key: key, value: value, next: hm.buckets[index]}
+        hm.buckets[index] = newNode
+}
+
+// Get操作：通过键查找值
+func (hm *HashMap) Get(key string) (int, bool) {
+        index := hm.hash(key)
+        node := hm.buckets[index]
+        
+        // 遍历链表查找键
+        for node != nil {
+                if node.key == key {
+                        return node.value, true
+                }
+                node = node.next
+        }
+        return 0, false // 如果找不到，返回false
+}
+
+// Delete操作：通过键删除键值对
+func (hm *HashMap) Delete(key string) {
+        index := hm.hash(key)
+        node := hm.buckets[index]
+        
+        // 特殊情况：链表头就是目标节点
+        if node != nil && node.key == key {
+                hm.buckets[index] = node.next
+                return
+        }
+
+        // 遍历链表找到目标节点，并删除它
+        var prev *Node
+        for node != nil {
+                if node.key == key {
+                        prev.next = node.next
+                        return
+                }
+                prev = node
+                node = node.next
+        }
+}
+
+// 打印HashMap内容（用于调试）
+func (hm *HashMap) Print() {
+        for i, bucket := range hm.buckets {
+                fmt.Printf("Bucket %d: ", i)
+                node := bucket
+                for node != nil {
+                        fmt.Printf("%s:%d -> ", node.key, node.value)
+                        node = node.next
+                }
+                fmt.Println("nil")
+        }
+}
+
+func main() {
+        hm := NewHashMap(10)
+        
+        hm.Put("apple", 5)
+        hm.Put("banana", 7)
+        hm.Put("orange", 8)
+        hm.Put("grape", 6)
+        
+        fmt.Println("Get apple:", hm.Get("apple")) // 输出: 5, true
+        fmt.Println("Get banana:", hm.Get("banana")) // 输出: 7, true
+        
+        hm.Delete("banana")
+        fmt.Println("Get banana after delete:", hm.Get("banana")) // 输出: 0, false
+        
+        hm.Print() // 打印整个HashMap内容
+}
+```
+
+分析
+
+```go
+
+```
+
+
+
+
 
 # 树
 
@@ -9794,6 +9939,81 @@ func main() {
 ```
 
 
+
+# 设计模式
+
+## 单例模式
+
+### 懒汉式
+
+```go
+// 懒汉式
+// 需要去解决多线程的问题
+package main
+
+import (
+    "fmt""sync"
+)
+
+var lock = &sync.Mutex{}
+
+type single struct {
+}
+
+var singleInstance *single
+
+func getInstance() *single {
+    if singleInstance == nil {
+        lock.Lock()
+        defer lock.Unlock()
+        if singleInstance == nil {
+            fmt.Println("Creating single instance now.")
+            singleInstance = &single{}
+        } else {
+            fmt.Println("Single instance already created.")
+        }
+    } else {
+        fmt.Println("Single instance already created.")
+    }
+
+    return singleInstance
+}
+```
+
+
+
+### 饿汉式
+
+```go
+// 饿汉式
+// init时instance被初始化，单例的唯一实例被创建
+package main
+
+import (
+    "fmt""sync"
+)
+
+var once sync.Once
+
+type single struct {
+}
+
+var singleInstance *single
+
+func getInstance() *single {
+    if singleInstance == nil {
+        once.Do(
+            func() {
+                fmt.Println("Creating single instance now.")
+                singleInstance = &single{}
+            })
+    } else {
+        fmt.Println("Single instance already created.")
+    }
+
+    return singleInstance
+}
+```
 
 
 
