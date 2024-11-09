@@ -2796,9 +2796,9 @@ func averageOfLevels(root *TreeNode) []float64 {
         return ans
     }
     queue := []*TreeNode{root}
-    sum := 0
     for len(queue)>0 {
-    //tmp := []int{}
+    	//tmp := []int{}
+        sum := 0
         length := len(queue)    //保存当前层的长度，然后处理当前层
         for i:=0; i<length; i++ {
             node := queue[0]
@@ -2813,7 +2813,6 @@ func averageOfLevels(root *TreeNode) []float64 {
             sum += node.Val
         }
         ans = append(ans, float64(sum)/float64(length))    //放入结果集
-        sum = 0
     }
     return ans
 }
