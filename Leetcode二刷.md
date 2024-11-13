@@ -7741,6 +7741,81 @@ func searchMatrix(matrix [][]int, target int) bool {
 
 ```
 
+
+
+## 并查集
+
+并查集是一种树（森林）型的数据结构。将编号分别为1-N的N个对象划分为不相交集合。在每个集合（树）中，选择1个元素（树的根）代表所在集合。能够高效的实现对集合进行合并和查询集合中元素的关系。
+
+```go
+package main
+import "fmt"
+
+/*
+并查集，判连通用
+*/
+type UnionFindSet struct {
+   father  []int // 存储结点的父亲
+   nodeNum int   // 总结点个数
+}
+
+func (us *UnionFindSet) InitUnionSet(n int) {
+   us.nodeNum = n+1 // 不加也可以，有人喜欢以0开头
+   us.father = make([]int, us.nodeNum)
+   for i, _ := range us.father {
+      us.father[i] = i
+   }
+}
+
+// 查找并返回给定元素 x 所在集合的代表元素（即根节点）
+func (us *UnionFindSet) Find(x int) int {
+    // 判断 x 是否是自己的父节点。如果 x 不是，说明它不是根节点，而是某个集合的子节点
+    // 需要沿着父节点继续查找，直到找到根节点
+   if us.father[x] != x {
+   // 递归查找 x 的父节点，并将查找到的根节点直接赋值给 x。
+   // 这就是路径压缩的关键：在递归的过程中，把路径上的所有节点直接连接到根节点。
+   // 这样做的好处是，在未来的 Find 操作中，查找这些节点会更快，因为它们直接指向根节点。
+       us.father[x] = us.Find(us.father[x])
+   }
+   return us.father[x]
+}
+
+//合并结点
+func (us *UnionFindSet) Union(x, y int) bool {
+   x = us.Find(x)    // 查找 x 的根节点
+   y = us.Find(y)    // 查找 y 的根节点
+   if x == y {    // x 和 y 已经在同一个集合中，无需再次合并，直接返回 false 表示没有发生变化。
+      return false
+   }
+   us.father[x] = y    // 将 x 的根节点的父节点设置为 y（x 的集合被并入了 y 的集合）
+   return true    // 成功合并
+}
+
+func main() {
+   us:= &UnionFindSet{}
+   us.InitUnionSet(11)
+   us.Union(1, 2)
+   us.Union(10, 9)
+   us.Union(7,8)
+   us.Union(8,3)
+   us.Union(8,9)
+
+   for i:=0;i<=10; i++  {
+      fmt.Println(i, us.Find(i))
+   }
+}
+```
+
+分析
+
+```go
+
+```
+
+
+
+
+
 # 堆
 
 ## 数组构建堆
