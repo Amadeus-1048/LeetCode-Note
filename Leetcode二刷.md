@@ -7491,6 +7491,143 @@ delete(this.cache, this.LRUList.Remove(this.LRUList.Back()).(LRUNode).key)
 最后利用delete删除了map里的key
 ```
 
+
+
+## LRU
+
+- get(key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。 
+- put(key, value) 如果关键字 key 已经存在，则变更其数据值 value ；如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
+- 时间复杂度：所有操作均为 O(1)。
+
+```go
+type entry struct {
+    key, value int
+}
+
+type LRUCache struct {
+    capacity  int
+    list      *list.List // 双向链表
+    keyToNode map[int]*list.Element
+}
+
+func Constructor(capacity int) LRUCache {
+    return LRUCache{capacity, list.New(), map[int]*list.Element{}}
+}
+
+func (c *LRUCache) Get(key int) int {
+    node := c.keyToNode[key]
+    if node == nil { // 没有要找的节点
+        return -1
+    }
+    c.list.MoveToFront(node) // 把这个节点放在最上面
+    return node.Value.(entry).value
+}
+
+func (c *LRUCache) Put(key, value int) {
+    if node := c.keyToNode[key]; node != nil { // 有要找的节点
+        node.Value = entry{key, value} // 更新
+        c.list.MoveToFront(node) // 把节点放在最上面
+        return
+    }
+    c.keyToNode[key] = c.list.PushFront(entry{key, value}) // 新节点，放在最上面
+    if len(c.keyToNode) > c.capacity { // 节点太多了
+        delete(c.keyToNode, c.list.Remove(c.list.Back()).(entry).key) // 去掉最后的节点
+    }
+}
+```
+
+分析
+
+```go
+
+```
+
+
+
+## LFU
+
+get( key) - 如果键 key 存在于缓存中，则获取键的值，否则返回 -1 。 
+
+put(key, value) - 如果键 key 已存在，则变更其值；如果键不存在，请插入键值对。当缓存达到其容量 capacity 时，则应该在插入新项之前，移除最不经常使用的项。在此问题中，当存在平局（即两个或更多个键具有相同使用频率）时，应该去除 最久未使用 的键。
+
+```go
+type entry struct {
+    key, value, freq int // freq 表示这个节点被访问的次数
+}
+
+type LFUCache struct {
+    capacity   int
+    minFreq    int
+    keyToNode  map[int]*list.Element
+    freqToList map[int]*list.List    // 不同访问次数的节点list
+}
+
+func Constructor(capacity int) LFUCache {
+    return LFUCache{
+        capacity:   capacity,
+        keyToNode:  map[int]*list.Element{},
+        freqToList: map[int]*list.List{},
+    }
+}
+
+func (c *LFUCache) pushFront(e *entry) {
+    if _, ok := c.freqToList[e.freq]; !ok {    // 找不到这个节点访问次数所属的节点list
+        c.freqToList[e.freq] = list.New() // 双向链表
+    }
+    c.keyToNode[e.key] = c.freqToList[e.freq].PushFront(e)    // 放到对应的节点list中
+}
+
+func (c *LFUCache) getEntry(key int) *entry {
+    node := c.keyToNode[key]
+    if node == nil { // 没有找到节点
+        return nil
+    }
+    e := node.Value.(*entry)
+    lst := c.freqToList[e.freq]
+    lst.Remove(node) // 把这个节点抽出来
+    if lst.Len() == 0 { // 抽出来后，如果节点原来所属的节点list是空的
+        delete(c.freqToList, e.freq) // 移除空链表
+        if c.minFreq == e.freq { // 如果节点list是最左边的
+            c.minFreq++
+        }
+    }
+    e.freq++ // 访问次数 +1
+    c.pushFront(e) // 放在右边节点list的最上面
+    return e
+}
+
+func (c *LFUCache) Get(key int) int {
+    if e := c.getEntry(key); e != nil { // 有这个节点
+        return e.value
+    }
+    return -1 // 没有这个节点
+}
+
+func (c *LFUCache) Put(key, value int) {
+    if e := c.getEntry(key); e != nil { // 有这个节点
+        e.value = value // 更新 value
+        return
+    }
+    if len(c.keyToNode) == c.capacity { // 节点太多了
+        lst := c.freqToList[c.minFreq] // 最左边的节点list
+        delete(c.keyToNode, lst.Remove(lst.Back()).(*entry).key) // 移除这个list最下面的节点
+        if lst.Len() == 0 { // 这个节点list是空的
+            delete(c.freqToList, c.minFreq) // 移除空链表
+        }
+    }
+    c.pushFront(&entry{key, value, 1}) // 新节点放在「看过 1 次」的最上面
+    c.minFreq = 1
+}
+```
+
+分析
+
+```go
+
+```
+
+
+
 ## 415. 字符串相加
 
 ```go
@@ -7519,6 +7656,8 @@ func addStrings(num1 string, num2 string) string {
 ```go
 
 ```
+
+
 
 ## [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/description/)
 
